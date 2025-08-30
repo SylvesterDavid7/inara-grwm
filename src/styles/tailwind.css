@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Colors */
+    --color-background: #FEFEFE; /* pure white with subtle warmth */
+    --color-foreground: #1A1D23; /* near-black with blue undertones */
+    --color-border: #E5E7EB; /* surface gray for essential content separation */
+    --color-input: #F8F9FA; /* soft gray for form inputs */
+    --color-ring: #2D5A87; /* deep trustworthy blue for focus rings */
+    
+    /* Card Colors */
+    --color-card: #FEFEFE; /* pure white with subtle warmth */
+    --color-card-foreground: #1A1D23; /* near-black with blue undertones */
+    --color-popover: #FEFEFE; /* pure white with subtle warmth */
+    --color-popover-foreground: #1A1D23; /* near-black with blue undertones */
+    
+    /* Muted Colors */
+    --color-muted: #F8F9FA; /* soft gray for subtle elevation */
+    --color-muted-foreground: #6B7280; /* medium gray for supporting information */
+    
+    /* Primary Colors */
+    --color-primary: #2D5A87; /* deep trustworthy blue */
+    --color-primary-foreground: #FEFEFE; /* pure white with subtle warmth */
+    
+    /* Secondary Colors */
+    --color-secondary: #F4F1EA; /* warm skin-toned neutral */
+    --color-secondary-foreground: #1A1D23; /* near-black with blue undertones */
+    
+    /* Accent Colors */
+    --color-accent: #7BA098; /* sage green for natural wellness */
+    --color-accent-foreground: #FEFEFE; /* pure white with subtle warmth */
+    
+    /* Destructive Colors */
+    --color-destructive: #DC2626; /* clear red for critical issues */
+    --color-destructive-foreground: #FEFEFE; /* pure white with subtle warmth */
+    
+    /* Success Colors */
+    --color-success: #059669; /* clinical green for positive results */
+    --color-success-foreground: #FEFEFE; /* pure white with subtle warmth */
+    
+    /* Warning Colors */
+    --color-warning: #D97706; /* amber for caution */
+    --color-warning-foreground: #FEFEFE; /* pure white with subtle warmth */
+    
+    /* Error Colors */
+    --color-error: #DC2626; /* clear red for critical issues */
+    --color-error-foreground: #FEFEFE; /* pure white with subtle warmth */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .font-caption {
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  
+  .font-data {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .shadow-clinical {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+  
+  .shadow-clinical-lg {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .transition-clinical {
+    transition: all 200ms ease-out;
+  }
+  
+  .transition-clinical-slow {
+    transition: all 300ms ease-out;
+  }
+}
