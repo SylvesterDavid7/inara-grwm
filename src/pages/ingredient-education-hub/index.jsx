@@ -432,7 +432,7 @@ const IngredientEducationHub = () => {
       </Helmet>
       <Header />
       <QuickAccessToolbar />
-      <main className="pt-32">
+      <main className="pt-2">
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Page Header */}
           <div className="flex items-center justify-between mb-8">

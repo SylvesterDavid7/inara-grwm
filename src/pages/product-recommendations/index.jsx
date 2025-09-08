@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import Header from '../../components/ui/Header';
 import QuickAccessToolbar from '../../components/ui/QuickAccessToolbar';
 import SectionContextMenu from '../../components/ui/SectionContextMenu';
 import Icon from '../../components/AppIcon';
@@ -252,7 +251,6 @@ const ProductRecommendations = () => {
         <meta name="description" content="Discover personalized skincare product recommendations based on your routine analysis and skin assessment. Find the perfect products for your skin type and concerns." />
       </Helmet>
       <div className="min-h-screen bg-background">
-        <Header />
         <QuickAccessToolbar />
 
         {/* Page Header */}

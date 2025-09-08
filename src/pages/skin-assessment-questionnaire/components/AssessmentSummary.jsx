@@ -136,13 +136,14 @@ const AssessmentSummary = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-8 pt-6 border-t border-border space-y-3 sm:space-y-0 sm:space-x-4">
           <Button
             variant="outline"
             onClick={() => onEdit(0)}
             iconName="ArrowLeft"
             iconPosition="left"
             iconSize={16}
+            className="w-full sm:w-auto"
           >
             Review Answers
           </Button>
@@ -153,7 +154,7 @@ const AssessmentSummary = ({
             iconName="CheckCircle"
             iconPosition="right"
             iconSize={16}
-            className="bg-success hover:bg-success/90"
+            className="w-full sm:w-auto bg-success hover:bg-success/90"
           >
             Complete Assessment
           </Button>

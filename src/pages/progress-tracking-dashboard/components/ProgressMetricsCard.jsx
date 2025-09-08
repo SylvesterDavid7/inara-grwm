@@ -15,7 +15,7 @@ const ProgressMetricsCard = ({ title, value, change, changeType, icon, descripti
   };
 
   return (
-    <div className={`bg-card border border-border rounded-clinical p-6 shadow-clinical ${className}`}>
+    <div className={`bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical ${className}`}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-3 mb-2">

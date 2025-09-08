@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../components/AppIcon';
 
 import Select from '../../components/ui/Select';
-import Header from '../../components/ui/Header';
-import QuickAccessToolbar from '../../components/ui/QuickAccessToolbar';
 import SectionContextMenu from '../../components/ui/SectionContextMenu';
 import ProgressMetricsCard from './components/ProgressMetricsCard';
 import ProgressChart from './components/ProgressChart';
@@ -213,153 +211,153 @@ const ProgressTrackingDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      <QuickAccessToolbar />
-      <main className="pt-32 pb-12">
-        <div className="max-w-7xl mx-auto px-6">
+      <main className="py-6 sm:py-8 lg:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-            <div>
-              <h1 className="font-heading font-heading-bold text-3xl text-foreground mb-2">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 sm:mb-8">
+            <div className="mb-4 md:mb-0">
+              <h1 className="font-heading font-heading-bold text-2xl sm:text-3xl text-foreground mb-2">
                 Progress Dashboard
               </h1>
-              <p className="font-body font-body-normal text-muted-foreground">
+              <p className="font-body font-body-normal text-base sm:text-lg text-muted-foreground">
                 Track your skincare journey and monitor routine effectiveness over time
               </p>
             </div>
             
-            <div className="flex items-center space-x-4 mt-4 md:mt-0">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Select
                 options={dateRangeOptions}
                 value={dateRange}
                 onChange={setDateRange}
-                className="w-40"
+                className="w-32 sm:w-40"
               />
               <Select
                 options={viewModeOptions}
                 value={viewMode}
                 onChange={setViewMode}
-                className="w-40"
+                className="w-32 sm:w-40"
               />
               <SectionContextMenu />
             </div>
           </div>
 
-          {/* Progress Metrics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {progressMetrics?.map((metric, index) => (
-              <ProgressMetricsCard
-                key={index}
-                title={metric?.title}
-                value={metric?.value}
-                change={metric?.change}
-                changeType={metric?.changeType}
-                icon={metric?.icon}
-                description={metric?.description}
+          <div className="space-y-6 sm:space-y-8">
+            {/* Progress Metrics Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {progressMetrics?.map((metric, index) => (
+                <ProgressMetricsCard
+                  key={index}
+                  title={metric?.title}
+                  value={metric?.value}
+                  change={metric?.change}
+                  changeType={metric?.changeType}
+                  icon={metric?.icon}
+                  description={metric?.description}
+                />
+              ))}
+            </div>
+
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ProgressChart
+                data={routineScoreData}
+                title="Routine Score Trend"
+                type="line"
+                color="#2D5A87"
               />
-            ))}
-          </div>
-
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <ProgressChart
-              data={routineScoreData}
-              title="Routine Score Trend"
-              type="line"
-              color="#2D5A87"
-            />
-            <ProgressChart
-              data={skinConcernData}
-              title="Skin Concern Improvement"
-              type="area"
-              color="#7BA098"
-            />
-          </div>
-
-          {/* Photo Comparison and Calendar */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="lg:col-span-2">
-              <PhotoComparison
-                beforePhoto="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop"
-                afterPhoto="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop&brightness=1.1&contrast=1.1"
-                date="March 5, 2025"
-                notes="Significant improvement in skin texture and reduced redness. The new retinol serum is showing excellent results after 8 weeks of consistent use."
+              <ProgressChart
+                data={skinConcernData}
+                title="Skin Concern Improvement"
+                type="area"
+                color="#7BA098"
               />
             </div>
-            <div>
-              <RoutineAdherenceCalendar
-                adherenceData={adherenceData}
-                currentMonth={currentMonth}
-                onMonthChange={setCurrentMonth}
-              />
+
+            {/* Photo Comparison and Calendar */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <PhotoComparison
+                  beforePhoto="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop"
+                  afterPhoto="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop&brightness=1.1&contrast=1.1"
+                  date="March 5, 2025"
+                  notes="Significant improvement in skin texture and reduced redness. The new retinol serum is showing excellent results after 8 weeks of consistent use."
+                />
+              </div>
+              <div>
+                <RoutineAdherenceCalendar
+                  adherenceData={adherenceData}
+                  currentMonth={currentMonth}
+                  onMonthChange={setCurrentMonth}
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Goals and Insights */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <GoalProgressWidget goals={goalsData} />
-            <SmartInsights insights={insightsData} />
-          </div>
+            {/* Goals and Insights */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <GoalProgressWidget goals={goalsData} />
+              <SmartInsights insights={insightsData} />
+            </div>
 
-          {/* Quick Actions */}
-          <QuickActions />
+            {/* Quick Actions */}
+            <QuickActions />
 
-          {/* Navigation Links */}
-          <div className="mt-12 pt-8 border-t border-border">
-            <h3 className="font-heading font-heading-semibold text-lg text-foreground mb-6">
-              Continue Your Skincare Journey
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Link
-                to="/skincare-routine-input"
-                className="group flex items-center space-x-4 p-4 bg-card border border-border rounded-clinical hover:border-primary/20 hover:shadow-clinical transition-clinical"
-              >
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-clinical group-hover:bg-primary/20 transition-clinical">
-                  <Icon name="Plus" size={20} className="text-primary" />
-                </div>
-                <div>
-                  <h4 className="font-body font-body-medium text-sm text-card-foreground group-hover:text-primary transition-clinical">
-                    Update Routine
-                  </h4>
-                  <p className="font-caption font-caption-normal text-xs text-muted-foreground">
-                    Add or modify your skincare products
-                  </p>
-                </div>
-              </Link>
+            {/* Navigation Links */}
+            <div className="pt-8 sm:pt-12 border-t border-border">
+              <h3 className="font-heading font-heading-semibold text-lg sm:text-xl text-foreground mb-4 sm:mb-6">
+                Continue Your Skincare Journey
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Link
+                  to="/skincare-routine-input"
+                  className="group flex items-center space-x-4 p-4 bg-card border border-border rounded-clinical hover:border-primary/20 hover:shadow-clinical transition-clinical"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-clinical group-hover:bg-primary/20 transition-clinical">
+                    <Icon name="Plus" size={20} className="text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-body font-body-medium text-sm text-card-foreground group-hover:text-primary transition-clinical">
+                      Update Routine
+                    </h4>
+                    <p className="font-caption font-caption-normal text-xs text-muted-foreground">
+                      Add or modify your skincare products
+                    </p>
+                  </div>
+                </Link>
 
-              <Link
-                to="/skin-assessment-questionnaire"
-                className="group flex items-center space-x-4 p-4 bg-card border border-border rounded-clinical hover:border-primary/20 hover:shadow-clinical transition-clinical"
-              >
-                <div className="flex items-center justify-center w-12 h-12 bg-accent/10 rounded-clinical group-hover:bg-accent/20 transition-clinical">
-                  <Icon name="ClipboardList" size={20} className="text-accent" />
-                </div>
-                <div>
-                  <h4 className="font-body font-body-medium text-sm text-card-foreground group-hover:text-primary transition-clinical">
-                    Reassess Skin
-                  </h4>
-                  <p className="font-caption font-caption-normal text-xs text-muted-foreground">
-                    Update your skin type and concerns
-                  </p>
-                </div>
-              </Link>
+                <Link
+                  to="/skin-assessment-questionnaire"
+                  className="group flex items-center space-x-4 p-4 bg-card border border-border rounded-clinical hover:border-primary/20 hover:shadow-clinical transition-clinical"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 bg-accent/10 rounded-clinical group-hover:bg-accent/20 transition-clinical">
+                    <Icon name="ClipboardList" size={20} className="text-accent" />
+                  </div>
+                  <div>
+                    <h4 className="font-body font-body-medium text-sm text-card-foreground group-hover:text-primary transition-clinical">
+                      Reassess Skin
+                    </h4>
+                    <p className="font-caption font-caption-normal text-xs text-muted-foreground">
+                      Update your skin type and concerns
+                    </p>
+                  </div>
+                </Link>
 
-              <Link
-                to="/ingredient-education-hub"
-                className="group flex items-center space-x-4 p-4 bg-card border border-border rounded-clinical hover:border-primary/20 hover:shadow-clinical transition-clinical"
-              >
-                <div className="flex items-center justify-center w-12 h-12 bg-success/10 rounded-clinical group-hover:bg-success/20 transition-clinical">
-                  <Icon name="BookOpen" size={20} className="text-success" />
-                </div>
-                <div>
-                  <h4 className="font-body font-body-medium text-sm text-card-foreground group-hover:text-primary transition-clinical">
-                    Learn More
-                  </h4>
-                  <p className="font-caption font-caption-normal text-xs text-muted-foreground">
-                    Explore ingredient education
-                  </p>
-                </div>
-              </Link>
+                <Link
+                  to="/ingredient-education-hub"
+                  className="group flex items-center space-x-4 p-4 bg-card border border-border rounded-clinical hover:border-primary/20 hover:shadow-clinical transition-clinical"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 bg-success/10 rounded-clinical group-hover:bg-success/20 transition-clinical">
+                    <Icon name="BookOpen" size={20} className="text-success" />
+                  </div>
+                  <div>
+                    <h4 className="font-body font-body-medium text-sm text-card-foreground group-hover:text-primary transition-clinical">
+                      Learn More
+                    </h4>
+                    <p className="font-caption font-caption-normal text-xs text-muted-foreground">
+                      Explore ingredient education
+                    </p>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

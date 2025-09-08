@@ -25,12 +25,14 @@ const ProgressChart = ({ data, title, type = 'line', color = '#2D5A87', classNam
           <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
           <XAxis 
             dataKey="date" 
-            tick={{ fontSize: 12, fill: '#6B7280' }}
+            tick={{ fontSize: 10, fill: '#6B7280' }}
             axisLine={{ stroke: '#E5E7EB' }}
+            tickLine={{ stroke: '#E5E7EB' }}
           />
           <YAxis 
-            tick={{ fontSize: 12, fill: '#6B7280' }}
+            tick={{ fontSize: 10, fill: '#6B7280' }}
             axisLine={{ stroke: '#E5E7EB' }}
+            tickLine={{ stroke: '#E5E7EB' }}
           />
           <Tooltip content={<CustomTooltip />} />
           <Area 
@@ -49,12 +51,14 @@ const ProgressChart = ({ data, title, type = 'line', color = '#2D5A87', classNam
         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
         <XAxis 
           dataKey="date" 
-          tick={{ fontSize: 12, fill: '#6B7280' }}
+          tick={{ fontSize: 10, fill: '#6B7280' }}
           axisLine={{ stroke: '#E5E7EB' }}
+          tickLine={{ stroke: '#E5E7EB' }}
         />
         <YAxis 
-          tick={{ fontSize: 12, fill: '#6B7280' }}
+          tick={{ fontSize: 10, fill: '#6B7280' }}
           axisLine={{ stroke: '#E5E7EB' }}
+          tickLine={{ stroke: '#E5E7EB' }}
         />
         <Tooltip content={<CustomTooltip />} />
         <Line 
@@ -62,19 +66,19 @@ const ProgressChart = ({ data, title, type = 'line', color = '#2D5A87', classNam
           dataKey="value" 
           stroke={color} 
           strokeWidth={2}
-          dot={{ fill: color, strokeWidth: 2, r: 4 }}
-          activeDot={{ r: 6, stroke: color, strokeWidth: 2 }}
+          dot={{ fill: color, strokeWidth: 1.5, r: 3 }}
+          activeDot={{ r: 5, stroke: color, strokeWidth: 2 }}
         />
       </LineChart>
     );
   };
 
   return (
-    <div className={`bg-card border border-border rounded-clinical p-6 shadow-clinical ${className}`}>
-      <h3 className="font-heading font-heading-semibold text-lg text-card-foreground mb-6">
+    <div className={`bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical ${className}`}>
+      <h3 className="font-heading font-heading-semibold text-lg text-card-foreground mb-4 sm:mb-6">
         {title}
       </h3>
-      <div className="w-full h-64">
+      <div className="w-full h-56 sm:h-64">
         <ResponsiveContainer width="100%" height="100%">
           {renderChart()}
         </ResponsiveContainer>

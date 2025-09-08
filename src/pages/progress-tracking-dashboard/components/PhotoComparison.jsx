@@ -29,9 +29,9 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
   };
 
   return (
-    <div className={`bg-card border border-border rounded-clinical p-6 shadow-clinical ${className}`}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-heading-semibold text-lg text-card-foreground">
+    <div className={`bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical ${className}`}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4">
+        <h3 className="font-heading font-heading-semibold text-lg text-card-foreground mb-2 sm:mb-0">
           Progress Comparison
         </h3>
         <div className="flex items-center space-x-2">
@@ -46,7 +46,7 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
       {/* Photo Comparison Slider */}
       <div className="relative mb-4">
         <div 
-          className="relative w-full h-64 md:h-80 overflow-hidden rounded-clinical cursor-col-resize"
+          className="relative w-full h-56 sm:h-64 md:h-80 overflow-hidden rounded-clinical cursor-col-resize"
           onMouseMove={handleMouseMove}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
@@ -59,8 +59,8 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
               alt="Before progress photo"
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-4 left-4 bg-background/90 px-3 py-1 rounded-clinical">
-              <span className="font-body font-body-medium text-sm text-foreground">Before</span>
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-background/90 px-2 py-1 sm:px-3 rounded-clinical">
+              <span className="font-body font-body-medium text-xs sm:text-sm text-foreground">Before</span>
             </div>
           </div>
 
@@ -74,8 +74,8 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
               alt="After progress photo"
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-4 right-4 bg-background/90 px-3 py-1 rounded-clinical">
-              <span className="font-body font-body-medium text-sm text-foreground">After</span>
+            <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-background/90 px-2 py-1 sm:px-3 rounded-clinical">
+              <span className="font-body font-body-medium text-xs sm:text-sm text-foreground">After</span>
             </div>
           </div>
 
@@ -107,7 +107,7 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
       </div>
       {/* Notes Section */}
       {notes && (
-        <div className="bg-muted rounded-clinical p-4">
+        <div className="bg-muted rounded-clinical p-3 sm:p-4">
           <h4 className="font-body font-body-medium text-sm text-foreground mb-2">Progress Notes</h4>
           <p className="font-body font-body-normal text-sm text-muted-foreground">
             {notes}
@@ -115,12 +115,12 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
         </div>
       )}
       {/* Action Buttons */}
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" iconName="Download" iconSize={16}>
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between mt-4 pt-4 border-t border-border">
+        <div className="flex items-center space-x-2 mb-2 sm:mb-0">
+          <Button variant="outline" size="sm" iconName="Download" iconSize={16} className="flex-grow sm:flex-grow-0">
             Export
           </Button>
-          <Button variant="outline" size="sm" iconName="Share2" iconSize={16}>
+          <Button variant="outline" size="sm" iconName="Share2" iconSize={16} className="flex-grow sm:flex-grow-0">
             Share
           </Button>
         </div>

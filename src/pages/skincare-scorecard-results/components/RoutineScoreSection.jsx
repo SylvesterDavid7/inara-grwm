@@ -39,16 +39,16 @@ const RoutineScoreSection = ({ title, score, products, timeOfDay, isExpanded: in
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-6 hover:bg-secondary/50 transition-clinical"
+        className="w-full flex items-center justify-between p-4 sm:p-6 hover:bg-secondary/50 transition-clinical"
       >
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
           <Icon 
             name={timeOfDay === 'morning' ? 'Sun' : 'Moon'} 
             size={24} 
-            className="text-primary" 
+            className="text-primary flex-shrink-0" 
           />
-          <div className="text-left">
-            <h3 className="text-lg font-heading font-heading-semibold text-foreground">
+          <div className="text-left min-w-0">
+            <h3 className="text-lg font-heading font-heading-semibold text-foreground truncate">
               {title}
             </h3>
             <p className="text-sm font-caption font-caption-normal text-muted-foreground">
@@ -57,30 +57,30 @@ const RoutineScoreSection = ({ title, score, products, timeOfDay, isExpanded: in
           </div>
         </div>
         
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3 pl-3">
           <div className={`px-3 py-1 rounded-clinical-sm font-data font-data-normal text-sm ${getScoreBadgeColor(score)}`}>
             {score}/100
           </div>
           <Icon 
             name={isExpanded ? "ChevronUp" : "ChevronDown"} 
             size={20} 
-            className="text-muted-foreground" 
+            className="text-muted-foreground flex-shrink-0" 
           />
         </div>
       </button>
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="border-t border-border p-6 space-y-4">
+        <div className="border-t border-border p-4 sm:p-6 space-y-4">
           {/* Products List */}
           <div className="space-y-3">
             {products?.map((product, index) => (
               <div key={index} className="flex items-center justify-between p-4 bg-muted rounded-clinical">
-                <div className="flex items-center space-x-3 flex-1">
-                  <div className="w-12 h-12 bg-secondary rounded-clinical flex items-center justify-center">
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div className="w-12 h-12 bg-secondary rounded-clinical flex items-center justify-center flex-shrink-0">
                     <Icon name="Package" size={20} className="text-secondary-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-body font-body-medium text-sm text-foreground truncate">
+                    <h4 className="font-body font-body-medium text-sm text-foreground">
                       {product?.name}
                     </h4>
                     <p className="text-xs font-caption font-caption-normal text-muted-foreground">
@@ -97,11 +97,11 @@ const RoutineScoreSection = ({ title, score, products, timeOfDay, isExpanded: in
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 pl-2">
                   <Icon 
                     name={getProductRatingIcon(product?.rating)} 
                     size={16} 
-                    className={getProductRatingColor(product?.rating)} 
+                    className={`${getProductRatingColor(product?.rating)} flex-shrink-0`}
                   />
                   <span className={`text-sm font-data font-data-normal ${getProductRatingColor(product?.rating)}`}>
                     {product?.score}/10

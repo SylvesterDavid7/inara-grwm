@@ -40,8 +40,8 @@ const SmartInsights = ({ insights, className = "" }) => {
   };
 
   return (
-    <div className={`bg-card border border-border rounded-clinical p-6 shadow-clinical ${className}`}>
-      <div className="flex items-center justify-between mb-6">
+    <div className={`bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical ${className}`}>
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <h3 className="font-heading font-heading-semibold text-lg text-card-foreground">
           Smart Insights
         </h3>
@@ -53,16 +53,16 @@ const SmartInsights = ({ insights, className = "" }) => {
         {insights?.map((insight) => (
           <div
             key={insight?.id}
-            className={`border rounded-clinical p-4 transition-clinical hover:shadow-clinical ${getInsightColor(insight?.type)}`}
+            className={`border rounded-clinical p-3 sm:p-4 transition-clinical hover:shadow-clinical ${getInsightColor(insight?.type)}`}
           >
             <div className="flex items-start space-x-3">
               <div className="flex-shrink-0 mt-0.5">
-                <Icon name={getInsightIcon(insight?.type)} size={20} />
+                <Icon name={getInsightIcon(insight?.type)} size={18} sm:size={20} />
               </div>
               
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-body font-body-medium text-sm text-card-foreground">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2">
+                  <h4 className="font-body font-body-medium text-sm text-card-foreground mb-1 sm:mb-0">
                     {insight?.title}
                   </h4>
                   <div className="flex items-center space-x-2">
@@ -80,10 +80,10 @@ const SmartInsights = ({ insights, className = "" }) => {
                 {/* Metrics or Data */}
                 {insight?.metrics && (
                   <div className="bg-background/50 rounded-clinical p-3 mb-3">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                       {insight?.metrics?.map((metric, index) => (
-                        <div key={index} className="text-center">
-                          <div className="font-data font-data-normal text-lg text-card-foreground">
+                        <div key={index} className="text-center sm:text-left">
+                          <div className="font-data font-data-normal text-base sm:text-lg text-card-foreground">
                             {metric?.value}
                           </div>
                           <div className="font-caption font-caption-normal text-xs text-muted-foreground">
@@ -116,7 +116,7 @@ const SmartInsights = ({ insights, className = "" }) => {
 
                 {/* Action Buttons */}
                 {insight?.actionButtons && (
-                  <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-border">
+                  <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-border">
                     {insight?.actionButtons?.map((button, index) => (
                       <Button
                         key={index}

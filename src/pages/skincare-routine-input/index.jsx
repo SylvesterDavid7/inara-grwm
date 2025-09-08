@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../components/ui/Header';
 import StepNavigation from './components/StepNavigation';
 import RoutineStepContent from './components/RoutineStepContent';
 import RoutinePreviewPanel from './components/RoutinePreviewPanel';
@@ -183,7 +182,6 @@ const SkincareRoutineInput = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       {/* Progress Navigation */}
       <StepNavigation
         currentStep={currentStep}

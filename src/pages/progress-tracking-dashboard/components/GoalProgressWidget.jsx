@@ -38,8 +38,8 @@ const GoalProgressWidget = ({ goals, className = "" }) => {
   };
 
   return (
-    <div className={`bg-card border border-border rounded-clinical p-6 shadow-clinical ${className}`}>
-      <div className="flex items-center justify-between mb-6">
+    <div className={`bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical ${className}`}>
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <h3 className="font-heading font-heading-semibold text-lg text-card-foreground">
           Goal Progress
         </h3>
@@ -47,12 +47,12 @@ const GoalProgressWidget = ({ goals, className = "" }) => {
           Add Goal
         </Button>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {goals?.map((goal) => (
           <div key={goal?.id} className="space-y-3">
             {/* Goal Header */}
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
+            <div className="flex flex-col sm:flex-row items-start justify-between">
+              <div className="flex-1 mb-2 sm:mb-0">
                 <div className="flex items-center space-x-2 mb-1">
                   <Icon 
                     name={getStatusIcon(goal?.status)} 
@@ -67,7 +67,7 @@ const GoalProgressWidget = ({ goals, className = "" }) => {
                   Target: {goal?.target} | Deadline: {goal?.deadline}
                 </p>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <div className={`font-data font-data-normal text-sm ${getProgressTextColor(goal?.progress)}`}>
                   {goal?.progress}%
                 </div>
@@ -124,7 +124,7 @@ const GoalProgressWidget = ({ goals, className = "" }) => {
       </div>
       {/* Summary Stats */}
       <div className="mt-6 pt-6 border-t border-border">
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="flex flex-wrap items-center justify-around gap-4 text-center">
           <div>
             <div className="font-data font-data-normal text-lg text-success">
               {goals?.filter(g => g?.status === 'completed')?.length}

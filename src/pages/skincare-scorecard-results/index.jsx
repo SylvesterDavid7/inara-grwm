@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../components/AppIcon';
-import Header from '../../components/ui/Header';
 import SectionContextMenu from '../../components/ui/SectionContextMenu';
 import OverallScoreCard from './components/OverallScoreCard';
 import RoutineScoreSection from './components/RoutineScoreSection';
@@ -106,7 +105,7 @@ const SkincareScoreCardResults = () => {
         severity: "medium",
         description: "May cause increased skin sensitivity when used together",
         detailedDescription: "Both salicylic acid and retinol are active ingredients that can increase skin cell turnover. Using them simultaneously may lead to excessive dryness, irritation, and increased photosensitivity.",
-        explanation: "These ingredients work by accelerating skin cell renewal, but combining them can overwhelm the skin's natural barrier function, especially for sensitive skin types.",
+        explanation: "These ingredients work by accelerating skin cell renewal, but combining them can overwhelm the skin\'s natural barrier function, especially for sensitive skin types.",
         products: ["Paula\'s Choice BHA", "Olay Regenerist Cream"],
         recommendations: [
           "Use salicylic acid in the morning and retinol at night",
@@ -231,7 +230,6 @@ const SkincareScoreCardResults = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="pt-16 flex items-center justify-center min-h-[calc(100vh-4rem)]">
           <div className="text-center space-y-4">
             <Icon name="Loader2" size={48} className="text-primary animate-spin mx-auto" />
@@ -251,11 +249,10 @@ const SkincareScoreCardResults = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      <div className="pt-16">
+      <div className="pt-2">
         {/* Page Header */}
         <div className="bg-card border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
               <div>
                 <div className="flex items-center space-x-2 mb-2">
@@ -289,8 +286,8 @@ const SkincareScoreCardResults = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-background border-b border-border sticky top-16 z-secondary-nav">
-          <div className="max-w-7xl mx-auto px-6">
+        <div className="bg-background border-b border-border sticky top-16 z-30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex space-x-1 overflow-x-auto">
               {tabs?.map((tab) => (
                 <button
@@ -310,7 +307,7 @@ const SkincareScoreCardResults = () => {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="lg:grid lg:grid-cols-12 lg:gap-8">
             {/* Main Content Area */}
             <div className="lg:col-span-8 space-y-8">
@@ -369,19 +366,21 @@ const SkincareScoreCardResults = () => {
 
         {/* Mobile Action Bar */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 z-secondary-nav">
-          <div className="flex space-x-3">
-            <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-primary text-primary-foreground rounded-clinical hover:bg-primary/90 transition-clinical">
-              <Icon name="Download" size={16} />
-              <span className="font-body font-body-medium text-sm">Export</span>
-            </button>
-            <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-secondary text-secondary-foreground rounded-clinical hover:bg-secondary/80 transition-clinical">
-              <Icon name="Share2" size={16} />
-              <span className="font-body font-body-medium text-sm">Share</span>
-            </button>
-            <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-accent text-accent-foreground rounded-clinical hover:bg-accent/90 transition-clinical">
-              <Icon name="Zap" size={16} />
-              <span className="font-body font-body-medium text-sm">Optimize</span>
-            </button>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="flex items-center space-x-2">
+              <button className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-primary text-primary-foreground rounded-clinical hover:bg-primary/90 transition-clinical">
+                <Icon name="Download" size={14} />
+                <span className="font-body font-body-medium text-xs">Export</span>
+              </button>
+              <button className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-secondary text-secondary-foreground rounded-clinical hover:bg-secondary/80 transition-clinical">
+                <Icon name="Share2" size={14} />
+                <span className="font-body font-body-medium text-xs">Share</span>
+              </button>
+              <button className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-accent text-accent-foreground rounded-clinical hover:bg-accent/90 transition-clinical">
+                <Icon name="Zap" size={14} />
+                <span className="font-body font-body-medium text-xs">Optimize</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

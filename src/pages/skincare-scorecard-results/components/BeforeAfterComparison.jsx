@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 
@@ -6,6 +6,20 @@ const BeforeAfterComparison = ({ progressData }) => {
   const [selectedTimeframe, setSelectedTimeframe] = useState('1month');
   const [viewMode, setViewMode] = useState('split'); // 'split', 'slider', 'overlay'
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
+  const [isTimeframeDropdownOpen, setIsTimeframeDropdownOpen] = useState(false);
+  const timeframeDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+        if (timeframeDropdownRef.current && !timeframeDropdownRef.current.contains(event.target)) {
+            setIsTimeframeDropdownOpen(false);
+        }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const timeframes = [
     { value: '1week', label: '1 Week' },
@@ -44,19 +58,35 @@ const BeforeAfterComparison = ({ progressData }) => {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+          <div className="flex items-center justify-between lg:justify-start lg:space-x-2">
             {/* Timeframe Selector */}
-            <select
-              value={selectedTimeframe}
-              onChange={(e) => setSelectedTimeframe(e?.target?.value)}
-              className="px-3 py-2 bg-background border border-border rounded-clinical text-sm font-body font-body-normal focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              {timeframes?.map((timeframe) => (
-                <option key={timeframe?.value} value={timeframe?.value}>
-                  {timeframe?.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative" ref={timeframeDropdownRef}>
+              <button
+                onClick={() => setIsTimeframeDropdownOpen(!isTimeframeDropdownOpen)}
+                className="flex items-center justify-between w-[130px] px-3 py-2 bg-background border border-border rounded-clinical text-sm font-body font-body-normal focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <span>{timeframes.find(t => t.value === selectedTimeframe)?.label}</span>
+                <Icon name="ChevronDown" size={16} className={`ml-2 text-muted-foreground transition-transform ${isTimeframeDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {isTimeframeDropdownOpen && (
+                <div className="absolute top-full right-0 mt-1 w-full bg-popover border border-border rounded-clinical shadow-clinical-lg z-10">
+                  <div className="py-1">
+                    {timeframes.map((timeframe) => (
+                      <button
+                        key={timeframe.value}
+                        onClick={() => {
+                          setSelectedTimeframe(timeframe.value);
+                          setIsTimeframeDropdownOpen(false);
+                        }}
+                        className="w-full text-left flex items-center space-x-3 px-3 py-2 text-sm transition-clinical text-popover-foreground hover:bg-secondary/50"
+                      >
+                        <span>{timeframe.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* View Mode Selector */}
             <div className="flex bg-muted rounded-clinical p-1">
