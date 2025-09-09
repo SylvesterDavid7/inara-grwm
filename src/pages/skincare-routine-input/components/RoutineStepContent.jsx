@@ -47,7 +47,6 @@ const RoutineStepContent = ({
   };
 
   const checkIngredientConflicts = (product, productIndex) => {
-    // Mock conflict detection logic
     const conflictingCombinations = [
       ['retinol', 'vitamin c'],
       ['aha', 'bha'],
@@ -55,21 +54,34 @@ const RoutineStepContent = ({
       ['retinol', 'benzoyl peroxide']
     ];
 
-    const currentIngredients = (product?.ingredients || '')?.toLowerCase()?.split(',')?.map(i => i?.trim());
+    const getIngredientsAsArray = (ingredients) => {
+      if (!ingredients) {
+        return [];
+      }
+      if (Array.isArray(ingredients)) {
+        return ingredients.map(ing => String(ing || '').toLowerCase().trim());
+      }
+      if (typeof ingredients === 'string') {
+        return ingredients.split(',').map(ing => ing.toLowerCase().trim());
+      }
+      return [];
+    };
+
+    const currentIngredients = getIngredientsAsArray(product?.ingredients);
     
     for (let i = 0; i < products?.length; i++) {
       if (i === productIndex) continue;
       
-      const otherIngredients = (products?.[i]?.ingredients || '')?.toLowerCase()?.split(',')?.map(ing => ing?.trim());
+      const otherIngredients = getIngredientsAsArray(products?.[i]?.ingredients);
       
       for (const combination of conflictingCombinations) {
-        const hasFirst = currentIngredients?.some(ing => combination?.[0]?.includes(ing) || ing?.includes(combination?.[0]));
-        const hasSecond = otherIngredients?.some(ing => combination?.[1]?.includes(ing) || ing?.includes(combination?.[1]));
+        const hasFirst = currentIngredients.some(ing => ing.includes(combination[0]));
+        const hasSecond = otherIngredients.some(ing => ing.includes(combination[1]));
         
         if (hasFirst && hasSecond) {
           return {
             hasConflict: true,
-            message: `${combination?.[0]} and ${combination?.[1]} may cause irritation when used together`
+            message: `${combination[0]} and ${combination[1]} may cause irritation when used together`
           };
         }
       }
@@ -99,14 +111,11 @@ const RoutineStepContent = ({
     const newProducts = [...products];
     const draggedProduct = newProducts?.[draggedIndex];
     
-    // Remove dragged item
     newProducts?.splice(draggedIndex, 1);
     
-    // Insert at new position
     const insertIndex = draggedIndex < dropIndex ? dropIndex - 1 : dropIndex;
     newProducts?.splice(insertIndex, 0, draggedProduct);
     
-    // Update order numbers
     newProducts?.forEach((product, index) => {
       product.order = index + 1;
     });
@@ -133,7 +142,6 @@ const RoutineStepContent = ({
           </div>
         </div>
 
-        {/* Step Guidelines */}
         {step?.guidelines && (
           <div className="bg-accent/5 border border-accent/20 rounded-clinical p-4">
             <div className="flex items-start space-x-3">
