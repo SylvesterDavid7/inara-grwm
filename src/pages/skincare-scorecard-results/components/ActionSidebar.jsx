@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 
-const ActionSidebar = ({ className = "" }) => {
+const ActionSidebar = ({ 
+  analysis, 
+  routine, 
+  className = "", 
+  onExportPDF, 
+  isGeneratingPDF 
+}) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [shareOptions, setShareOptions] = useState({
@@ -16,11 +22,6 @@ const ActionSidebar = ({ className = "" }) => {
     // Simulate save operation
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsSaving(false);
-  };
-
-  const handleExportPDF = () => {
-    // Simulate PDF export
-    console.log('Exporting PDF...');
   };
 
   const handleShareScorecard = async () => {
@@ -48,7 +49,8 @@ const ActionSidebar = ({ className = "" }) => {
       id: 'export',
       label: 'Export PDF',
       icon: 'Download',
-      action: handleExportPDF,
+      action: onExportPDF,
+      loading: isGeneratingPDF,
       description: 'Download detailed report as PDF'
     },
     {
@@ -95,7 +97,7 @@ const ActionSidebar = ({ className = "" }) => {
 
   return (
     <div className={`bg-card border border-border rounded-clinical p-6 space-y-6 ${className}`}>
-      {/* Quick Actions */}
+        {/* Quick Actions */}
       <div>
         <h3 className="font-heading font-heading-semibold text-sm text-foreground mb-4">
           Quick Actions
@@ -107,7 +109,7 @@ const ActionSidebar = ({ className = "" }) => {
               onClick={action?.action}
               disabled={action?.loading}
               className={`w-full flex items-center space-x-3 p-3 rounded-clinical transition-clinical text-left group ${
-                action?.variant === 'primary' ?'bg-primary text-primary-foreground hover:bg-primary/90' :'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                action?.variant === 'primary' ?'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
               }`}
             >
               <Icon 
@@ -117,7 +119,7 @@ const ActionSidebar = ({ className = "" }) => {
               />
               <div className="flex-1 min-w-0">
                 <div className="font-body font-body-medium text-sm">
-                  {action?.label}
+                  {action?.loading ? 'Generating...' : action?.label}
                 </div>
                 <div className="text-xs opacity-80 mt-0.5">
                   {action?.description}

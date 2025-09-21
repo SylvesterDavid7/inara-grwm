@@ -10,7 +10,7 @@ export const fetchGeminiAnalysis = async (routine) => {
   const prompt = `
   Analyze the following skincare routine and return a single, valid JSON object. Do not include any text or markdown formatting before or after the JSON object.
 
-  **User's Routine:**
+  **User\'s Routine:**
   - **Morning:** ${JSON.stringify(routine.morningProducts.map(p => ({ id: p.id, name: p.name, category: p.category, ingredients: p.ingredients })) )}
   - **Evening:** ${JSON.stringify(routine.eveningProducts.map(p => ({ id: p.id, name: p.name, category: p.category, ingredients: p.ingredients })) )}
   - **Weekly:** ${JSON.stringify(routine.weeklyTreatments.map(p => ({ id: p.id, name: p.name, category: p.category, ingredients: p.ingredients })) )}
@@ -28,27 +28,38 @@ export const fetchGeminiAnalysis = async (routine) => {
       ]
     },
     "metrics": {
-        "effectiveness": { 
-            "value": "number (0-100)", 
-            "explanation": "string (Detailed explanation of why this score was given, considering product types, active ingredients, and routine structure.)"
-        },
-        "safety": { 
-            "value": "number (0-100)",
-            "explanation": "string (Detailed explanation of the safety score, focusing on potential irritants, ingredient concentrations, and compatibility issues.)"
-        },
-        "goalAlignment": { 
-            "value": "number (0-100)",
-            "explanation": "string (Detailed explanation of how well the routine aligns with common goals like anti-aging, hydration, or acne control.)"
-        },
-        "costEfficiency": { 
-            "value": "number (0-10)",
-            "explanation": "string (A subjective explanation of the routine\'s value, considering product prices, ingredient quality, and potential for similar results with more affordable options.)"
-        }
+      "Effectiveness": {
+        "score": "number (0-100)",
+        "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
+        "explanation": "string (Detailed explanation of why this score was given, considering product types, active ingredients, and routine structure.)"
+      },
+      "Safety": {
+        "score": "number (0-100)",
+        "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
+        "explanation": "string (Detailed explanation of the safety score, focusing on potential irritants, ingredient concentrations, and compatibility issues.)"
+      },
+      "Goal Alignment": {
+        "score": "number (0-100)",
+        "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
+        "explanation": "string (Detailed explanation of how well the routine aligns with common goals like anti-aging, hydration, or acne control.)"
+      },
+      "Routine Consistency": {
+        "score": "number (0-100)",
+        "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
+        "explanation": "string (Detailed explanation of how consistent the routine is, e.g., using key products daily.)"
+      }
     },
     "morningRoutine": {
       "score": "number (0-100)",
       "analysis": "string (A detailed paragraph analyzing the morning routine\'s strengths and weaknesses)",
-      "products": [], // This will be populated by the application later
+      "products": [
+          {
+            "id": "string (The original product ID)",
+            "score": "number (0-10, score for the individual product)",
+            "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
+            "issues": ["string (List any specific issues or conflicts with this product in the routine)"]
+          }
+      ],
       "insights": [
         {"text": "string (A specific, actionable insight for the morning routine. Include suggestions for missing products (e.g., \'Consider adding an antioxidant serum\'), good pairings (e.g., \'Vitamin C and sunscreen work well together\'), or potential issues.)", "icon": "string (e.g., \'Sun\', \'PlusCircle\')", "type": "string (e.g., \'pro\', \'suggestion\', \'warning\')"}
       ]
@@ -56,7 +67,14 @@ export const fetchGeminiAnalysis = async (routine) => {
     "eveningRoutine": {
       "score": "number (0-100)",
       "analysis": "string (A detailed paragraph analyzing the evening routine\'s strengths and weaknesses)",
-      "products": [], // This will be populated by the application later
+      "products": [
+          {
+            "id": "string (The original product ID)",
+            "score": "number (0-10, score for the individual product)",
+            "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
+            "issues": ["string (List any specific issues or conflicts with this product in the routine)"]
+          }
+      ],
       "insights": [
         {"text": "string (A specific, actionable insight for the evening routine. Include suggestions like using retinoids, avoiding conflicts, or adding a specific type of moisturizer.)", "icon": "string (e.g., \'Moon\', \'Zap\')", "type": "string (e.g., \'pro\', \'suggestion\', \'warning\')"}
       ]
@@ -117,13 +135,36 @@ export const fetchGeminiAnalysis = async (routine) => {
     const jsonString = data.candidates[0].content.parts[0].text;
     const analysisResult = JSON.parse(jsonString);
 
-    // Ensure the final object has the required keys, even if the model omits them.
-    analysisResult.productRecommendations = analysisResult.productRecommendations || [];
-    analysisResult.progressTracking = analysisResult.progressTracking || [];
+    // --- DATA NORMALIZATION --- 
+    // Ensure the final object has a consistent structure, even if the model omits empty keys.
+    analysisResult.overallScore = analysisResult.overallScore || { score: 0, rating: 'N/A', improvement: '', insights: [] };
+    analysisResult.overallScore.insights = analysisResult.overallScore.insights || [];
+    
+    analysisResult.metrics = analysisResult.metrics || {};
 
-    // Manually inject the product data back into the routine sections for UI display
-    analysisResult.morningRoutine.products = routine.morningProducts;
-    analysisResult.eveningRoutine.products = routine.eveningProducts;
+    analysisResult.morningRoutine = analysisResult.morningRoutine || { score: 0, analysis: '', products: [], insights: [] };
+    analysisResult.morningRoutine.products = analysisResult.morningRoutine.products || [];
+    analysisResult.morningRoutine.insights = analysisResult.morningRoutine.insights || [];
+
+    analysisResult.eveningRoutine = analysisResult.eveningRoutine || { score: 0, analysis: '', products: [], insights: [] };
+    analysisResult.eveningRoutine.products = analysisResult.eveningRoutine.products || [];
+    analysisResult.eveningRoutine.insights = analysisResult.eveningRoutine.insights || [];
+
+    analysisResult.detailedIngredientAnalysis = analysisResult.detailedIngredientAnalysis || [];
+    analysisResult.ingredientCompatibility = analysisResult.ingredientCompatibility || [];
+    analysisResult.productRecommendations = analysisResult.productRecommendations || []; // This was already here, keeping for completeness
+
+    // Manually merge the analysis scores back into the original product data
+    const mergeProductData = (originalProducts, analyzedProducts) => {
+        if (!analyzedProducts) return originalProducts;
+        return originalProducts.map(origP => {
+            const analyzedP = analyzedProducts.find(p => p.id === origP.id);
+            return { ...origP, ...analyzedP };
+        });
+    };
+
+    analysisResult.morningRoutine.products = mergeProductData(routine.morningProducts, analysisResult.morningRoutine.products);
+    analysisResult.eveningRoutine.products = mergeProductData(routine.eveningProducts, analysisResult.eveningRoutine.products);
 
     return analysisResult;
 

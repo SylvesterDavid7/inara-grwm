@@ -1,16 +1,27 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 const StepNavigation = ({ 
   currentStep = 0, 
   steps = [], 
   onStepChange = () => {},
-  canNavigateToStep = () => true 
+  onComplete = () => {},
+  canNavigateToStep = () => true, 
 }) => {
+  const navigate = useNavigate();
   const isStepCompleted = (stepIndex) => stepIndex < currentStep;
   const isStepCurrent = (stepIndex) => stepIndex === currentStep;
   const isStepAccessible = (stepIndex) => canNavigateToStep(stepIndex);
+
+  const handleNextOrComplete = () => {
+    if (currentStep === steps.length - 1) {
+      onComplete();
+    } else {
+      onStepChange(Math.min(steps.length - 1, currentStep + 1));
+    }
+  };
 
   return (
     <div className="bg-background border-b border-border">
@@ -154,13 +165,12 @@ const StepNavigation = ({
 
           <Button
             variant="default"
-            onClick={() => onStepChange(Math.min(steps?.length - 1, currentStep + 1))}
-            disabled={currentStep === steps?.length - 1}
-            iconName="ChevronRight"
+            onClick={handleNextOrComplete}
+            iconName={currentStep === steps.length - 1 ? 'Check' : 'ChevronRight'}
             iconPosition="right"
             iconSize={16}
           >
-            {currentStep === steps?.length - 1 ? 'Complete' : 'Next'}
+            {currentStep === steps.length - 1 ? 'Complete' : 'Next'}
           </Button>
         </div>
       </div>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db, auth } from '../../firebase.js';
+import { db, auth } from '../../firebase';
 import StepNavigation from './components/StepNavigation';
 import RoutineStepContent from './components/RoutineStepContent';
 import RoutinePreviewPanel from './components/RoutinePreviewPanel';
 import Icon from '../../components/AppIcon';
-import { fetchGeminiAnalysis } from '../../utils/gemini.js';
+import { fetchGeminiAnalysis } from '../../utils/gemini';
 
 const SkincareRoutineInput = () => {
   const navigate = useNavigate();

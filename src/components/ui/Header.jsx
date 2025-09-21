@@ -73,7 +73,7 @@ const Header = () => {
               {/* Logo */}
               <Link to="/splash" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-clinical">
                   <img
-                  src="/Inara Logo.svg"
+                  src="/Inara_Logo.svg"
                   alt="Inara Logo"
                   className="h-6 md:h-8 object-contain"
                   onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/120x40/f1f5f9/334155?text=Logo'; }}
@@ -146,7 +146,7 @@ const Header = () => {
           {/* Menu Header */}
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 border-b border-border flex-shrink-0">
             <Link to="/" onClick={closeMobileMenu} className="flex items-center space-x-2">
-              <img src="/Inara Logo.svg" alt="Inara Logo" className="h-6 object-contain" />
+              <img src="/Inara_Logo.svg" alt="Inara Logo" className="h-6 object-contain" />
               <span className="text-gray-800 text-base">X</span>
               <div>
                 <h1 className="text-base font-sans font-extrabold">GRWM</h1>
