@@ -176,3 +176,171 @@ export const fetchGeminiAnalysis = async (routine) => {
     throw new Error("Could not get a new analysis from the AI. Please check your API key and network connection.");
   }
 };
+
+
+export const fetchGeminiAnalysisFromAssessment = async (answers, questions) => {
+
+    const formattedAnswers = questions.map((q, index) => {
+        const answer = answers[index];
+        if (!answer) return null;
+        
+        let answerDisplay;
+        switch (q.type) {
+            case 'single-select':
+            case 'image-select':
+                answerDisplay = q.options.find(opt => opt.value === answer)?.label || answer;
+                break;
+            case 'multi-select':
+                answerDisplay = answer.map(val => q.options.find(opt => opt.value === val)?.label || val).join(', ');
+                break;
+            case 'slider':
+                answerDisplay = `${answer} out of ${q.max}`;
+                break;
+            default:
+                answerDisplay = answer;
+        }
+        return {
+            question: q.title,
+            answer: answerDisplay
+        };
+    }).filter(Boolean);
+
+
+  const prompt = `
+  Act as an expert dermatologist and skincare consultant. Based on the user's answers to the following skin assessment, generate a complete and personalized skincare scorecard. The user has NOT provided an existing routine; you are to CREATE a recommended routine for them from scratch.
+
+  **User's Assessment Answers:**
+  ${JSON.stringify(formattedAnswers, null, 2)}
+
+  **Your Task:**
+  Generate a valid JSON object that provides a comprehensive skincare analysis and a recommended daily and weekly routine. The JSON object must strictly follow the structure below. For each product, provide detailed usage instructions.
+
+  **JSON Output Structure:**
+  {
+    "overallScore": {
+      "score": "number (0-100, This is a projected score if the user follows your recommended routine)",
+      "rating": "string (e.g., 'Excellent Potential', 'Strong Foundation')",
+      "improvement": "string (A one-sentence summary of how the new routine will help their primary concerns)",
+      "insights": [
+        {"text": "string (A key insight about the user's skin based on their answers)", "icon": "string (e.g., 'ShieldCheck', 'FlaskConical')", "type": "string ('suggestion')"}
+      ]
+    },
+    "metrics": {
+      "Effectiveness": { "score": 95, "rating": "Excellent", "explanation": "This routine is highly effective because it directly targets the user\'s stated concerns (e.g., acne, aging) with proven active ingredients in a consistent structure." },
+      "Safety": { "score": 90, "rating": "Excellent", "explanation": "The routine is designed to be safe by starting with lower concentrations of active ingredients and avoiding common irritants, based on the user's sensitivity level." },
+      "Goal Alignment": { "score": 98, "rating": "Excellent", "explanation": "Every product in this recommended routine is chosen specifically to address the user\'s primary goals, such as reducing hyperpigmentation and improving skin texture." },
+      "Routine Consistency": { "score": 100, "rating": "Excellent", "explanation": "This foundational routine is designed for easy and consistent daily use, which is critical for achieving long-term results." }
+    },
+    "morningRoutine": {
+      "score": "number (90-100, a high score reflecting a well-designed routine)",
+      "analysis": "string (A detailed paragraph explaining WHY this morning routine is ideal for the user. Mention the purpose of each product type, e.g., 'The gentle cleanser removes overnight buildup without stripping the skin, the antioxidant serum protects against environmental damage...')",
+      "products": [
+          {
+            "id": "m-rec-1",
+            "name": "string (Generic but descriptive product name, e.g., 'Hydrating Cream Cleanser')",
+            "category": "Cleanser",
+            "ingredients": ["string (List 2-3 key beneficial ingredients, e.g., 'Ceramides', 'Glycerin')"],
+            "usage": "string (e.g., 'Daily, in the morning')",
+            "quantity": "string (e.g., 'A dime-sized amount')",
+            "application": "string (e.g., 'Gently massage onto damp skin for 60 seconds, then rinse with lukewarm water.')",
+            "tips": "string (e.g., 'Avoid using hot water, which can strip the skin\'s natural oils.')",
+            "score": 10, "rating": "Excellent", "issues": []
+          }
+      ]
+    },
+    "eveningRoutine": {
+      "score": "number (90-100, a high score reflecting a well-designed routine)",
+      "analysis": "string (A detailed paragraph explaining the evening routine's focus on repair and treatment, e.g., 'The evening is for cleansing the day away and using targeted treatments... The double cleanse ensures all impurities are removed...')",
+      "products": [
+           {
+            "id": "e-rec-1",
+            "name": "string (e.g., 'Micellar Water or Cleansing Balm')",
+            "category": "Cleanser",
+            "ingredients": ["string (e.g., 'Glycerin', 'Micelles')"],
+            "usage": "string (e.g., 'Daily, in the evening')",
+            "quantity": "string (e.g., 'A cotton pad soaked, or a pea-sized amount')",
+            "application": "string (e.g., 'Apply to dry skin to break down makeup and sunscreen before your main cleanser.')",
+            "tips": "string (e.g., 'This is the first step of a double cleanse, crucial for removing oil-based impurities.')",
+            "score": 10, "rating": "Excellent", "issues": []
+          }
+      ]
+    },
+    "weeklyRoutine": {
+        "analysis": "string (A paragraph explaining the importance of weekly treatments for the user\'s goals, like exfoliation for texture or a hydrating mask for dryness.)",
+        "products": [
+            {
+                "id": "w-rec-1",
+                "name": "string (e.g., 'AHA/BHA Exfoliating Serum')",
+                "category": "Exfoliant",
+                "usage": "string (e.g., '2-3 times per week, at night')",
+                "quantity": "string (e.g., 'A few drops')",
+                "application": "string (e.g., 'Apply to clean, dry skin. Leave on for 10 minutes, then rinse.')",
+                "tips": "string (e.g., 'Avoid using on the same night as other strong actives like retinoids.')",
+                "ingredients": ["string (e.g., 'Glycolic Acid', 'Salicylic Acid')"],
+                "score": 10,
+                "rating": "Excellent",
+                "issues": []
+            }
+        ]
+    },
+    "detailedIngredientAnalysis": [],
+    "ingredientCompatibility": [],
+    "productRecommendations": []
+  }
+`;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+            "response_mime_type": "application/json",
+        }
+      })
+    });
+
+    if (!response.ok) {
+        const errorBody = await response.json();
+        console.error("Gemini API Error:", errorBody);
+        throw new Error(`API request failed with status ${response.status}: ${errorBody.error.message}`);
+    }
+
+    const data = await response.json();
+    const jsonString = data.candidates[0].content.parts[0].text;
+    const analysisResult = JSON.parse(jsonString);
+
+    // --- DATA NORMALIZATION ---
+    analysisResult.overallScore = analysisResult.overallScore || { score: 0, rating: 'N/A', improvement: '', insights: [] };
+    analysisResult.metrics = analysisResult.metrics || {};
+    analysisResult.morningRoutine = analysisResult.morningRoutine || { score: 0, analysis: '', products: [], insights: [] };
+    analysisResult.eveningRoutine = analysisResult.eveningRoutine || { score: 0, analysis: '', products: [], insights: [] };
+    analysisResult.weeklyRoutine = analysisResult.weeklyRoutine || { analysis: '', products: [], insights: [] };
+    analysisResult.detailedIngredientAnalysis = analysisResult.detailedIngredientAnalysis || [];
+    analysisResult.ingredientCompatibility = analysisResult.ingredientCompatibility || [];
+    analysisResult.productRecommendations = analysisResult.productRecommendations || [];
+
+    // The recommended routine doesn't have original products to merge with, so we just use the generated ones.
+    analysisResult.routine = {
+        morningProducts: analysisResult.morningRoutine.products,
+        eveningProducts: analysisResult.eveningRoutine.products,
+        weeklyTreatments: analysisResult.weeklyRoutine.products,
+    };
+
+    return analysisResult;
+
+  } catch (error) {
+    console.error("Error fetching Gemini analysis from assessment:", error);
+     if (error.message.includes('API key not valid')) {
+        throw new Error("Invalid Gemini API Key. Please check the VITE_GEMINI_API_KEY in your .env file.");
+    }
+    throw new Error("Could not get a new analysis from the AI. Please check your API key and network connection.");
+  }
+};

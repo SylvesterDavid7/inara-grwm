@@ -1,8 +1,14 @@
-import React from 'react';
+
 import { pdf } from '@react-pdf/renderer';
 import PdfDocument from './PdfDocument';
+import generatePdfWithHtml2Canvas from './generatePdfWithHtml2Canvas';
+import ReportTemplate from '../../pages/skincare-scorecard-results/components/ReportTemplate';
 
-const generatePdfFromReact = async (analysis) => {
+const generatePdfFromReact = async (analysis, useHtml2Canvas = false) => {
+  if (useHtml2Canvas) {
+    return generatePdfWithHtml2Canvas(ReportTemplate, analysis);
+  }
+
   console.log("Starting PDF generation with @react-pdf/renderer...");
 
   try {

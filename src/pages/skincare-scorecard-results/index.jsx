@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '../../components/ui/Header';
@@ -9,7 +10,7 @@ import RecommendationCards from './components/RecommendationCards';
 import BeforeAfterComparison from './components/BeforeAfterComparison';
 import ActionSidebar from './components/ActionSidebar';
 import ScoreCardModal from './components/Scorecard/ScoreCardModal';
-import generatePdfFromReact from '../../lib/pdf/generatePdfFromReact.jsx'; // CORRECTED IMPORT
+import generatePdfFromReact from '../../lib/pdf/generatePdfFromReact.jsx';
 import PdfPreviewModal from './components/PdfPreviewModal';
 
 const SkincareScoreCardResults = () => {
@@ -19,13 +20,13 @@ const SkincareScoreCardResults = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isGeneratingHtml2CanvasPDF, setIsGeneratingHtml2CanvasPDF] = useState(false);
   const [isPdfPreviewOpen, setIsPdfPreviewOpen] = useState(false);
   const [pdfPreviewData, setPdfPreviewData] = useState(null);
   const contentRef = useRef(null);
 
   useEffect(() => {
     if (location.state && location.state.analysis) {
-      // Simulate async fetching of detailed data after initial load
       setTimeout(() => {
         const fullAnalysis = { ...location.state.analysis, routine: location.state.routine };
         setAnalysis(fullAnalysis);
@@ -38,21 +39,37 @@ const SkincareScoreCardResults = () => {
     }
   }, [location.state]);
 
-  const handleExportPDF = useCallback(async () => {
+  const handleExportWithReactPdf = useCallback(async () => {
     if (!analysis) {
       alert("Analysis data is not available yet. Please wait a moment and try again.");
       return;
     }
     setIsGeneratingPDF(true);
     try {
-      const dataUri = await generatePdfFromReact(analysis); // CORRECTED FUNCTION CALL
+      const dataUri = await generatePdfFromReact(analysis, false);
       setPdfPreviewData(dataUri);
       setIsPdfPreviewOpen(true);
     } catch (error) {
-      // Error is already logged and alerted in the generator function
+      console.error("Error generating PDF with @react-pdf/renderer:", error);
     }
     setIsGeneratingPDF(false);
-  }, [analysis]); // Dependency on analysis ensures the latest data is used
+  }, [analysis]);
+
+  const handleExportWithHtml2Canvas = useCallback(async () => {
+    if (!analysis) {
+      alert("Analysis data is not available yet. Please wait a moment and try again.");
+      return;
+    }
+    setIsGeneratingHtml2CanvasPDF(true);
+    try {
+      const dataUri = await generatePdfFromReact(analysis, true);
+      setPdfPreviewData(dataUri);
+      setIsPdfPreviewOpen(true);
+    } catch (error) {
+      console.error("Error generating PDF with html2canvas:", error);
+    }
+    setIsGeneratingHtml2CanvasPDF(false);
+  }, [analysis]);
 
   if (error || !analysis) {
     return <div className="flex items-center justify-center h-screen bg-background text-foreground p-8 text-center">{error || 'Loading Analysis...'}</div>;
@@ -74,7 +91,12 @@ const SkincareScoreCardResults = () => {
       case 'overview':
         return (
           <div className="space-y-8">
-            <OverallScoreCard {...overallScore} onGenerateCardClick={() => setIsModalOpen(true)} />
+            <OverallScoreCard 
+              {...overallScore} 
+              onGenerateCardClick={() => setIsModalOpen(true)} 
+              onExportWithHtml2Canvas={handleExportWithHtml2Canvas}
+              isGenerating={isGeneratingHtml2CanvasPDF}
+            />
             <MetricsDashboard metrics={metrics} />
             <div className="space-y-4">
               <h2 className="text-xl font-heading font-heading-semibold text-foreground">Routine Breakdown</h2>
@@ -156,7 +178,7 @@ const SkincareScoreCardResults = () => {
                 <ActionSidebar 
                     analysis={analysis} 
                     routine={routine} 
-                    onExportPDF={handleExportPDF}
+                    onExportPDF={handleExportWithReactPdf}
                     isGeneratingPDF={isGeneratingPDF}
                 />
               </div>

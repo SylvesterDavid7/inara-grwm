@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from '../../../components/AppIcon';
 
 const PdfPreviewModal = ({ isOpen, onClose, pdfDataUri }) => {
   if (!isOpen) return null;
@@ -13,45 +14,37 @@ const PdfPreviewModal = ({ isOpen, onClose, pdfDataUri }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-full flex flex-col" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Report Preview</h2>
-          <div className="space-x-3">
-            <button 
-              onClick={handleDownload}
-              className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-transform transform hover:scale-105"
-            >
-              Download PDF
-            </button>
-            <button 
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors"
-            >
-              Close
-            </button>
-          </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-card rounded-lg shadow-xl w-full max-w-4xl h-full max-h-[90vh] flex flex-col">
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h3 className="font-heading font-heading-semibold text-lg text-foreground">PDF Preview</h3>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+            <Icon name="X" size={20} />
+          </button>
         </div>
-
-        {/* Content */}
-        <div className="flex-grow bg-gray-100 h-0"> {/* Added h-0 to allow flex-grow to work correctly in Chrome/Safari */}
+        <div className="flex-1 p-4 overflow-hidden">
           {pdfDataUri ? (
-            <iframe 
-              src={`${pdfDataUri}#view=FitH`} 
-              width="100%" 
-              height="100%" 
-              title="PDF Preview" 
-              className="border-none"
-            ></iframe>
+            <object data={pdfDataUri} type="application/pdf" width="100%" height="100%">
+              <p className="text-center text-muted-foreground">
+                Your browser does not support PDF previews. 
+                <button onClick={handleDownload} className="text-primary underline ml-1">Download it here</button> instead.
+              </p>
+            </object>
           ) : (
-            <div className="flex items-center justify-center w-full h-full text-gray-500">
-              <p>Generating PDF preview...</p>
+            <div className="flex items-center justify-center h-full">
+                <Icon name="Loader2" size={32} className="animate-spin text-primary" />
             </div>
           )}
         </div>
-
+        <div className="flex justify-end p-4 border-t border-border bg-muted/50 rounded-b-lg">
+          <button 
+            onClick={handleDownload} 
+            className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-clinical hover:bg-primary/90 transition-clinical"
+          >
+            <Icon name="Download" size={16} />
+            <span className="font-body font-body-medium text-sm">Download PDF</span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
 const logoUrl = "/Inara_Logo.png"; // Use absolute URL for the logo
+const watermarkUrl = "/Inara Smiley Black.png"; // Use absolute URL for the watermark
 const brandColor = '#51b748';
 
 const styles = StyleSheet.create({
@@ -13,6 +14,15 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
     color: '#333',
     backgroundColor: '#ffffff'
+  },
+  watermark: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 250,
+    height: 250,
+    opacity: 0.1,
+    transform: 'rotate(-15deg)',
   },
   brandingHeader: {
     flexDirection: 'row',
@@ -241,9 +251,11 @@ const styles = StyleSheet.create({
 const PdfDocument = ({ analysis }) => (
   <Document>
     <Page size="A4" style={styles.page}>
+      <Image style={styles.watermark} src={watermarkUrl} fixed />
       <View>
         <View style={styles.brandingHeader}>
           <Image style={styles.headerLogo} src={logoUrl} />
+          <Text style={{...styles.headerBrandText, marginRight: 10}}>X</Text>
           <View style={styles.brandTitleContainer}>
             <Text style={styles.headerBrandText}>GRWM</Text>
             <Text style={styles.headerBrandSubtitle}>Get Results With Metrics</Text>

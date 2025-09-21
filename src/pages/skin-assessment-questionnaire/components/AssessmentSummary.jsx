@@ -7,6 +7,7 @@ const AssessmentSummary = ({
   questions, 
   onEdit, 
   onComplete, 
+  isAnalyzing = false,
   className = "" 
 }) => {
   const getAnswerDisplay = (question, answer) => {
@@ -105,6 +106,7 @@ const AssessmentSummary = ({
                       iconName="Edit2"
                       iconSize={14}
                       className="ml-2 flex-shrink-0"
+                      disabled={isAnalyzing}
                     >
                       Edit
                     </Button>
@@ -144,6 +146,7 @@ const AssessmentSummary = ({
             iconPosition="left"
             iconSize={16}
             className="w-full sm:w-auto"
+            disabled={isAnalyzing}
           >
             Review Answers
           </Button>
@@ -151,12 +154,14 @@ const AssessmentSummary = ({
           <Button
             variant="default"
             onClick={onComplete}
-            iconName="CheckCircle"
+            disabled={isAnalyzing}
+            iconName={isAnalyzing ? 'Loader2' : 'CheckCircle'}
             iconPosition="right"
             iconSize={16}
             className="w-full sm:w-auto bg-success hover:bg-success/90"
+            iconCustomClass={isAnalyzing ? 'animate-spin' : ''}
           >
-            Complete Assessment
+            {isAnalyzing ? 'Analyzing...' : 'Complete Assessment'}
           </Button>
         </div>
       </div>

@@ -10,6 +10,7 @@ import SkincareRoutineInput from './pages/skincare-routine-input';
 import ProgressTrackingDashboard from './pages/progress-tracking-dashboard';
 import SkinAssessmentQuestionnaire from './pages/skin-assessment-questionnaire';
 import SkincareScoreCardResults from './pages/skincare-scorecard-results';
+import AssessmentResults from './pages/assessment-results';
 import SplashScreen from './pages/SplashScreen';
 import HomePage from './pages/HomePage';
 
@@ -29,6 +30,7 @@ const Routes = () => {
             <Route path="/progress-tracking-dashboard" element={<ProgressTrackingDashboard />} />
             <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />
             <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
+            <Route path="/assessment-results" element={<AssessmentResults />} />
           </Route>
           {/* Routes without the layout (e.g., NotFound) can go here */}
           <Route path="*" element={<NotFound />} />

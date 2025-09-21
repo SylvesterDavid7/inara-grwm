@@ -11,7 +11,7 @@ const ProgressIndicator = ({
   const completedPercentage = (completedSteps?.length / totalSteps) * 100;
 
   return (
-    <div className={`bg-background border-b border-border ${className}`}>
+    <div className={`bg-background border-b border-border z-10 ${className}`}>
       <div className="max-w-4xl mx-auto px-6 py-4">
         {/* Desktop Progress */}
         <div className="hidden md:flex items-center justify-between mb-4">

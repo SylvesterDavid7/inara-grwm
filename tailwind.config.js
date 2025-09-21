@@ -94,6 +94,19 @@ export default {
         'modal': '1100',
         'tooltip': '1200',
       },
+      animation: {
+        spin: 'spin 1s linear infinite',
+      },
+      keyframes: {
+        spin: {
+          from: {
+            transform: 'rotate(0deg)',
+          },
+          to: {
+            transform: 'rotate(360deg)',
+          },
+        },
+      },
     },
   },
   plugins: [

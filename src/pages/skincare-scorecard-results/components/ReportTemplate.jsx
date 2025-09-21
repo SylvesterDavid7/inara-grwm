@@ -1,31 +1,85 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import ReportHeader from './ReportHeader';
+import ReportFooter from './ReportFooter';
+import MetricsDashboard from './MetricsDashboard';
+import RoutineScoreSection from './RoutineScoreSection';
 
-const ReportTemplate = ({ onRendered }) => {
-  // Signal when the component has rendered for PDF capture
-  useEffect(() => {
-    if (onRendered) {
-      setTimeout(onRendered, 50); // A short delay is all that's needed for this simple component
-    }
-  }, [onRendered]);
+const ReportTemplate = ({ analysis }) => {
+    const { metrics, morningRoutine, eveningRoutine, overallScore } = analysis;
 
-  const debugStyles = {
-    width: '800px',
-    height: '1120px', // Approx A4 height at this width
-    backgroundColor: '#ff4d4d', // A bright red color
-    color: 'white',
-    textAlign: 'center',
-    paddingTop: '200px',
-    fontSize: '48px',
-    fontFamily: 'sans-serif',
-    fontWeight: 'bold',
-  };
+    const styles = {
+        page: {
+            width: '794px',
+            padding: '40px',
+            backgroundColor: 'white',
+            color: 'black',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '1123px',
+        },
+        content: {
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        main: {
+            flexGrow: 1,
+        },
+        routinesContainer: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '16px',
+        },
+        routineWrapper: {
+            flex: 1,
+            minWidth: 0,
+        },
+    };
 
-  return (
-    <div id="pdf-report" style={debugStyles}>
-      <p>PDF Generation Test</p>
-      <p>If you can see this red box, the rendering pipeline is working.</p>
-    </div>
-  );
+    return (
+        <div style={styles.page}>
+            <ReportHeader overallScore={overallScore} />
+            <div style={styles.content}>
+                <main style={styles.main}>
+                    {metrics && (
+                        <div style={{ marginBottom: '24px' }}>
+                           <MetricsDashboard metrics={metrics} isPdfMode={true} />
+                        </div>
+                    )}
+
+                    <div style={styles.routinesContainer}>
+                        {morningRoutine && (
+                            <div style={styles.routineWrapper}>
+                                <RoutineScoreSection
+                                    title="Morning Routine Analysis"
+                                    score={morningRoutine.score}
+                                    products={morningRoutine.products}
+                                    insights={morningRoutine.insights}
+                                    timeOfDay="morning"
+                                    isPdfMode={true}
+                                />
+                            </div>
+                        )}
+
+                        {eveningRoutine && (
+                            <div style={styles.routineWrapper}>
+                                <RoutineScoreSection
+                                    title="Evening Routine Analysis"
+                                    score={eveningRoutine.score}
+                                    products={eveningRoutine.products}
+                                    insights={eveningRoutine.insights}
+                                    timeOfDay="evening"
+                                    isPdfMode={true}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </main>
+            </div>
+            <ReportFooter />
+        </div>
+    );
 };
 
 export default ReportTemplate;

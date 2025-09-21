@@ -1,11 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../../components/ui/Header';
 import ProgressIndicator from './components/ProgressIndicator';
 import QuestionCard from './components/QuestionCard';
 import QuestionNavigation from './components/QuestionNavigation';
 import AssessmentSummary from './components/AssessmentSummary';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
+import { fetchGeminiAnalysisFromAssessment } from '../../utils/gemini';
 
 const SkinAssessmentQuestionnaire = () => {
   const navigate = useNavigate();
@@ -13,6 +16,7 @@ const SkinAssessmentQuestionnaire = () => {
   const [answers, setAnswers] = useState({});
   const [showSummary, setShowSummary] = useState(false);
   const [showNavigation, setShowNavigation] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Mock questionnaire data
   const questions = [ 
@@ -322,7 +326,7 @@ const SkinAssessmentQuestionnaire = () => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < questions?.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
       setShowSummary(true);
@@ -346,27 +350,36 @@ const SkinAssessmentQuestionnaire = () => {
     setShowSummary(false);
   };
 
-  const handleCompleteAssessment = () => {
-    // Save final assessment data
-    const assessmentData = {
-      answers,
-      completedAt: new Date()?.toISOString(),
-      completionRate: Math.round((Object.keys(answers)?.length / questions?.length) * 100)
-    };
-    
-    localStorage.setItem('skinAssessmentResults', JSON.stringify(assessmentData));
-    
-    // Navigate to results
-    navigate('/skincare-scorecard-results');
+  const handleCompleteAssessment = async () => {
+    setIsAnalyzing(true);
+    try {
+      const analysis = await fetchGeminiAnalysisFromAssessment(answers, questions);
+      
+      const assessmentData = {
+        answers,
+        questions,
+        completedAt: new Date().toISOString(),
+        completionRate: Math.round((Object.keys(answers).length / questions.length) * 100)
+      };
+      localStorage.setItem('skinAssessmentResults', JSON.stringify(assessmentData));
+
+      navigate('/assessment-results', { state: { analysis, questions, answers } });
+    } catch (error) {
+      console.error("Error during assessment completion:", error);
+      alert(`There was an error generating your assessment: ${error.message}`);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
-  const completedSteps = Object.keys(answers)?.map(Number);
+  const completedSteps = Object.keys(answers).map(Number);
 
   return (
     <div className="min-h-screen bg-background">
+       <Header />
       <ProgressIndicator
         currentStep={currentQuestion}
-        totalSteps={questions?.length}
+        totalSteps={questions.length}
         completedSteps={completedSteps}
         className="sticky top-16"
       />
@@ -380,6 +393,7 @@ const SkinAssessmentQuestionnaire = () => {
                 questions={questions}
                 onEdit={handleEditFromSummary}
                 onComplete={handleCompleteAssessment}
+                isAnalyzing={isAnalyzing}
               />
             ) : (
               <div className="space-y-6">
@@ -398,13 +412,13 @@ const SkinAssessmentQuestionnaire = () => {
                 </div>
 
                 <QuestionCard
-                  question={questions?.[currentQuestion]}
-                  currentAnswer={answers?.[currentQuestion]}
+                  question={questions[currentQuestion]}
+                  currentAnswer={answers[currentQuestion]}
                   onAnswerChange={handleAnswerChange}
                   onNext={handleNext}
                   onPrevious={handlePrevious}
                   isFirst={currentQuestion === 0}
-                  isLast={currentQuestion === questions?.length - 1}
+                  isLast={currentQuestion === questions.length - 1}
                 />
 
                 {/* Quick Actions */}
