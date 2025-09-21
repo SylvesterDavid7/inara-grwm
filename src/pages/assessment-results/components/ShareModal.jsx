@@ -27,7 +27,7 @@ const ShareModal = ({ isOpen, onClose }) => {
             value={shareableLink} 
             className="flex-grow p-2 border border-border rounded-md bg-background text-foreground font-data"
           />
-          <Button onClick={handleCopy} variant="outline" size="icon" className="hover:bg-secondary hover:text-secondary-foreground">
+          <Button onClick={handleCopy} variant="outline" size="icon" className="hover:bg-muted">
             <Copy className="h-4 w-4" />
           </Button>
         </div>
