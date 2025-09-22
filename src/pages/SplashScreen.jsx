@@ -10,7 +10,7 @@ function SplashScreen() {
     setStartAnimation(true);
 
     const timer = setTimeout(() => {
-      navigate('/');
+      navigate('/home');
     }, 5000); // 5 seconds delay
 
     return () => clearTimeout(timer); // Cleanup the timer on component unmount

@@ -72,7 +72,7 @@ const ProgressIndicator = ({
               <div className="flex items-center space-x-1">
                 <Icon name="Clock" size={14} className="text-muted-foreground" />
                 <span className="font-caption font-caption-normal text-xs text-muted-foreground">
-                  ~{Math.max(1, totalSteps - currentStep - 1)} min remaining
+                  {Math.max(1, totalSteps - currentStep - 1)} min remaining
                 </span>
               </div>
             </div>

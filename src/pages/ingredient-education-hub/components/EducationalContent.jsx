@@ -66,7 +66,7 @@ const EducationalContent = ({ className = "" }) => {
     myths: [
       {
         id: 6,
-        title: "Debunking the \'Natural is Always Better\' Myth",
+        title: "Debunking the 'Natural is Always Better' Myth",
         description: "Why natural doesn't always mean safer or more effective in skincare.",image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=250&fit=crop",readTime: "6 min read",category: "Myths",
         content: `The 'natural is better' belief is one of the most persistent skincare myths.\n\n**Reality Check:**\n• Poison ivy is natural, but not safe for skin\n• Synthetic ingredients often have better safety profiles\n• Lab-created ingredients can be more stable and effective\n• Natural doesn't mean non-allergenic\n\n**The Truth:** Both natural and synthetic ingredients can be beneficial. What matters is the ingredient's safety profile, efficacy, and how it works with your skin type.`
       },
@@ -196,13 +196,15 @@ const EducationalContent = ({ className = "" }) => {
                         <p key={index} className="font-body font-body-normal text-sm text-card-foreground mb-3 last:mb-0">
                           {paragraph?.split('\n')?.map((line, lineIndex) => (
                             <React.Fragment key={lineIndex}>
-                              {line?.startsWith('**') && line?.endsWith('**') ? (
-                                <strong className="font-body-medium">{line?.slice(2, -2)}</strong>
-                              ) : line?.startsWith('• ') ? (
-                                <span className="block ml-4">{line}</span>
-                              ) : (
-                                line
-                              )}
+                              {line?.startsWith('• ')
+                                ? <span className="block ml-4">{line}</span>
+                                : line?.split(/(\*\*.*?\*\*)/g).filter(Boolean).map((part, i) => {
+                                    if (part.startsWith('**') && part.endsWith('**')) {
+                                      return <strong key={i} className="font-body-medium">{part.slice(2, -2)}</strong>;
+                                    }
+                                    return <React.Fragment key={i}>{part}</React.Fragment>;
+                                  })
+                              }
                               {lineIndex < paragraph?.split('\n')?.length - 1 && <br />}
                             </React.Fragment>
                           ))}

@@ -142,7 +142,7 @@ const IngredientFilters = ({
           </div>
 
           {/* Category Filter */}
-          <div>
+          <div className="relative z-30">
             <label className="font-body font-body-medium text-sm text-foreground mb-2 block">
               Category
             </label>
@@ -155,7 +155,7 @@ const IngredientFilters = ({
           </div>
 
           {/* Safety Rating Filter */}
-          <div>
+          <div className="relative z-20">
             <label className="font-body font-body-medium text-sm text-foreground mb-2 block">
               Safety Rating
             </label>
@@ -168,7 +168,7 @@ const IngredientFilters = ({
           </div>
 
           {/* Skin Concerns Filter */}
-          <div>
+          <div className="relative z-10">
             <label className="font-body font-body-medium text-sm text-foreground mb-3 block">
               Skin Concerns
             </label>

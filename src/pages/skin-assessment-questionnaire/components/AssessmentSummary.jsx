@@ -154,12 +154,12 @@ const AssessmentSummary = ({
           <Button
             variant="default"
             onClick={onComplete}
+            loading={isAnalyzing}
             disabled={isAnalyzing}
-            iconName={isAnalyzing ? 'Loader2' : 'CheckCircle'}
+            iconName="CheckCircle"
             iconPosition="right"
             iconSize={16}
             className="w-full sm:w-auto bg-success hover:bg-success/90"
-            iconCustomClass={isAnalyzing ? 'animate-spin' : ''}
           >
             {isAnalyzing ? 'Analyzing...' : 'Complete Assessment'}
           </Button>

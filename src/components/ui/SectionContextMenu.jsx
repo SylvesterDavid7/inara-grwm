@@ -1,12 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
+import useClickOutside from '../../utils/useClickOutside';
 
 const SectionContextMenu = ({ className = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const location = useLocation();
+
+  useClickOutside(menuRef, () => setIsOpen(false));
 
   const getContextActions = () => {
     const path = location?.pathname;
@@ -118,17 +121,6 @@ const SectionContextMenu = ({ className = "" }) => {
   };
 
   const actions = getContextActions();
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef?.current && !menuRef?.current?.contains(event?.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handleActionClick = (action) => {
     action?.action();

@@ -20,10 +20,10 @@ const Routes = () => {
       <ErrorBoundary>
         <ScrollToTop />
         <RouterRoutes>
-          <Route path="/splash" element={<SplashScreen />} />
+          <Route path="/" element={<SplashScreen />} />
           <Route element={<Layout />}>
             {/* All pages with the new layout go here */}
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/product-recommendations" element={<ProductRecommendations />} />
             <Route path="/ingredient-education-hub" element={<IngredientEducationHub />} />
             <Route path="/skincare-routine-input" element={<SkincareRoutineInput />} />

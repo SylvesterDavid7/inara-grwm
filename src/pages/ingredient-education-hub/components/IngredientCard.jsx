@@ -67,13 +67,10 @@ const IngredientCard = ({
                   size="icon"
                   onClick={() => onBookmark(ingredient?.id)}
                   iconName={isBookmarked ? "Bookmark" : "BookmarkPlus"}
-                  iconSize={16}
-                  className="h-8 w-8"
-                >
-                  <span className="sr-only">
-                    {isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-                  </span>
-                </Button>
+                  iconSize={20}
+                  aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
+                  className="text-gray-400"
+                />
               </div>
             </div>
             
@@ -136,7 +133,7 @@ const IngredientCard = ({
   }
 
   return (
-    <div className="bg-card border border-border rounded-clinical overflow-hidden hover:shadow-clinical transition-clinical group">
+    <div className="bg-card border border-border rounded-clinical overflow-hidden hover:shadow-clinical transition-clinical group flex flex-col">
       <div className="relative">
         <div className="aspect-video bg-muted overflow-hidden">
           <Image
@@ -155,53 +152,52 @@ const IngredientCard = ({
             size="icon"
             onClick={() => onBookmark(ingredient?.id)}
             iconName={isBookmarked ? "Bookmark" : "BookmarkPlus"}
-            iconSize={16}
-            className="h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background"
-          >
-            <span className="sr-only">
-              {isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-            </span>
-          </Button>
+            iconSize={20}
+            aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
+            className="bg-background/80 backdrop-blur-sm hover:bg-black text-gray-400"
+          />
         </div>
       </div>
-      <div className="p-4">
-        <div className="mb-3">
-          <h3 className="font-heading font-heading-semibold text-base text-card-foreground mb-1">
-            {ingredient?.name}
-          </h3>
-          <p className="font-caption font-caption-normal text-sm text-muted-foreground">
-            {ingredient?.scientificName}
-          </p>
-        </div>
-        
-        <p className="font-body font-body-normal text-sm text-card-foreground mb-3 line-clamp-3">
-          {ingredient?.description}
-        </p>
-        
-        <div className="flex flex-wrap gap-2 mb-4">
-          {ingredient?.skinConcerns?.slice(0, 2)?.map((concern, index) => (
-            <span
-              key={index}
-              className={`px-2 py-1 rounded-clinical-sm text-xs font-caption font-caption-normal ${getConcernBadgeColor(concern)}`}
-            >
-              {concern}
-            </span>
-          ))}
-          {ingredient?.skinConcerns?.length > 2 && (
-            <span className="px-2 py-1 rounded-clinical-sm text-xs font-caption font-caption-normal bg-muted text-muted-foreground">
-              +{ingredient?.skinConcerns?.length - 2}
-            </span>
-          )}
-        </div>
-        
-        <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
-          <div className="flex items-center space-x-1">
-            <Icon name="Beaker" size={14} />
-            <span className="font-data font-data-normal">{ingredient?.concentration}</span>
+      <div className="p-4 flex flex-col flex-grow">
+        <div className="flex-grow">
+          <div className="mb-3">
+            <h3 className="font-heading font-heading-semibold text-base text-card-foreground mb-1">
+              {ingredient?.name}
+            </h3>
+            <p className="font-caption font-caption-normal text-sm text-muted-foreground">
+              {ingredient?.scientificName}
+            </p>
           </div>
-          <div className="flex items-center space-x-1">
-            <Icon name="Star" size={14} />
-            <span className="font-data font-data-normal">{ingredient?.rating}/5</span>
+          
+          <p className="font-body font-body-normal text-sm text-card-foreground mb-3 line-clamp-3">
+            {ingredient?.description}
+          </p>
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+            {ingredient?.skinConcerns?.slice(0, 2)?.map((concern, index) => (
+              <span
+                key={index}
+                className={`px-2 py-1 rounded-clinical-sm text-xs font-caption font-caption-normal ${getConcernBadgeColor(concern)}`}
+              >
+                {concern}
+              </span>
+            ))}
+            {ingredient?.skinConcerns?.length > 2 && (
+              <span className="px-2 py-1 rounded-clinical-sm text-xs font-caption font-caption-normal bg-muted text-muted-foreground">
+                +{ingredient?.skinConcerns?.length - 2} more
+              </span>
+            )}
+          </div>
+          
+          <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
+            <div className="flex items-center space-x-1">
+              <Icon name="Beaker" size={14} />
+              <span className="font-data font-data-normal">{ingredient?.concentration}</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <Icon name="Star" size={14} />
+              <span className="font-data font-data-normal">{ingredient?.rating}/5</span>
+            </div>
           </div>
         </div>
         

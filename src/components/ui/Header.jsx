@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import { Sling as Hamburger } from 'hamburger-react';
+import useClickOutside from '../../utils/useClickOutside';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const location = useLocation();
-  let menuTimeout;
+  const menuRefs = useRef({});
 
   const navigationItems = [
     {
@@ -39,14 +40,11 @@ const Header = () => {
   ];
 
   const handleMenuEnter = (label) => {
-    clearTimeout(menuTimeout);
     setActiveMenu(label);
   };
 
   const handleMenuLeave = () => {
-    menuTimeout = setTimeout(() => {
-      setActiveMenu(null);
-    }, 2000);
+    setActiveMenu(null);
   };
 
   const isActiveSection = (section) => {
@@ -65,13 +63,19 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const setMenuRef = (label) => (el) => {
+    menuRefs.current[label] = el;
+  };
+
+  useClickOutside(menuRefs, () => setActiveMenu(null), activeMenu !== null);
+
   return (
     <>
       <header className="h-16 flex items-center w-full border-b border-slate-100 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 fixed top-0 z-40 shadow-sm">
         <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               {/* Logo */}
-              <Link to="/splash" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-clinical">
+              <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-clinical">
                   <img
                   src="/Inara_Logo.svg"
                   alt="Inara Logo"
@@ -91,6 +95,7 @@ const Header = () => {
                   <div 
                     key={section?.label} 
                     className="relative group"
+                    ref={setMenuRef(section.label)}
                     onMouseEnter={() => handleMenuEnter(section.label)}
                     onMouseLeave={handleMenuLeave}
                   >

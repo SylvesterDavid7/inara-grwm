@@ -1,9 +1,10 @@
 // components/ui/Select.jsx - Shadcn style Select
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ChevronDown, Check, Search, X } from "lucide-react";
 import { cn } from "../../utils/cn";
 import Button from "./Button";
 import Input from "./Input";
+import useClickOutside from "../../utils/useClickOutside";
 
 const Select = React.forwardRef(({
     className,
@@ -28,6 +29,17 @@ const Select = React.forwardRef(({
 }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const selectContainerRef = useRef(null);
+
+    const closeDropdown = () => {
+        setIsOpen(false);
+        if (onOpenChange) {
+            onOpenChange(false);
+        }
+        setSearchTerm("");
+    };
+
+    useClickOutside(selectContainerRef, closeDropdown, isOpen);
 
     // Generate unique ID if not provided
     const selectId = id || `select-${Math.random()?.toString(36)?.substr(2, 9)}`;
@@ -75,8 +87,7 @@ const Select = React.forwardRef(({
             onChange?.(updatedValue);
         } else {
             onChange?.(option?.value);
-            setIsOpen(false);
-            onOpenChange?.(false);
+            closeDropdown();
         }
     };
 
@@ -99,7 +110,7 @@ const Select = React.forwardRef(({
     const hasValue = multiple ? value?.length > 0 : value !== undefined && value !== '';
 
     return (
-        <div className={cn("relative", className)}>
+        <div className={cn("relative", className)} ref={selectContainerRef}>
             {label && (
                 <label
                     htmlFor={selectId}
@@ -173,7 +184,7 @@ const Select = React.forwardRef(({
 
                 {/* Dropdown */}
                 {isOpen && (
-                    <div className="absolute z-999 w-full mt-1 bg-white text-black border border-border rounded-md shadow-md">
+                    <div className="absolute z-50 w-full mt-1 bg-white text-black border border-border rounded-md shadow-md">
                         {searchable && (
                             <div className="p-2 border-b">
                                 <div className="relative">

@@ -5,7 +5,7 @@ import Button from './Button';
 import Input from './Input';
 import Select from './Select';
 
-const QuickAccessToolbar = ({ className = "" }) => {
+const QuickAccessToolbar = ({ onSearch, className = "" }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -46,16 +46,8 @@ const QuickAccessToolbar = ({ className = "" }) => {
       case '/ingredient-education-hub':
         return {
           showSearch: true,
-          showFilters: true,
+          showFilters: false,
           searchPlaceholder: 'Search ingredients, articles...',
-          filters: [
-            { value: '', label: 'All Categories' },
-            { value: 'actives', label: 'Active Ingredients' },
-            { value: 'moisturizers', label: 'Moisturizers' },
-            { value: 'cleansers', label: 'Cleansers' },
-            { value: 'sunscreens', label: 'Sunscreens' },
-            { value: 'treatments', label: 'Treatments' }
-          ],
           actions: [
             { 
               label: 'Bookmark', 
@@ -80,9 +72,11 @@ const QuickAccessToolbar = ({ className = "" }) => {
   const config = getToolbarConfig();
 
   const handleSearch = (e) => {
-    setSearchQuery(e?.target?.value);
-    // Implement search logic here
-    console.log('Searching for:', e?.target?.value);
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (onSearch) {
+      onSearch(query);
+    }
   };
 
   const handleFilterChange = (value) => {
@@ -97,7 +91,7 @@ const QuickAccessToolbar = ({ className = "" }) => {
       // Focus search input when expanded
       setTimeout(() => {
         const searchInput = document.querySelector('[data-search-input]');
-        if (searchInput) searchInput?.focus();
+        if (searchInput) searchInput.focus();
       }, 100);
     }
   };
@@ -122,7 +116,7 @@ const QuickAccessToolbar = ({ className = "" }) => {
                         placeholder={config?.searchPlaceholder}
                         value={searchQuery}
                         onChange={handleSearch}
-                        className="pl-10"
+                        className="pl-10 border border-border"
                         data-search-input
                     />
                     <Icon 
@@ -141,7 +135,7 @@ const QuickAccessToolbar = ({ className = "" }) => {
                             placeholder={config?.searchPlaceholder}
                             value={searchQuery}
                             onChange={handleSearch}
-                            className="flex-1"
+                            className="flex-1 border border-border"
                             data-search-input
                         />
                         <Button
