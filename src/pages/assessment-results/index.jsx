@@ -48,6 +48,19 @@ const AssessmentResults = () => {
     return answer;
   };
 
+  const skinType = getAnswerDisplay('skin-type');
+
+  const skinTypeImages = {
+    'Dry': '/Dry Skin.webp',
+    'Oily': '/Oily Skin.webp',
+    'Combination': '/Combination Skin.webp',
+    'Sensitive': '/Sensitive Skin.webp',
+    'Normal': '/Normal Skin.webp'
+  };
+
+  const skinTypeImage = skinTypeImages[skinType];
+
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -61,7 +74,12 @@ const AssessmentResults = () => {
         <div className="mb-12">
             <h2 className="text-2xl font-heading font-heading-semibold text-foreground mb-6">Your Skin Profile</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <SummaryCard icon="Smile" title="Skin Type" value={getAnswerDisplay('skin-type')} />
+            <SummaryCard 
+                icon="Smile" 
+                title="Skin Type" 
+                value={getAnswerDisplay('skin-type')} 
+                image={skinTypeImage} 
+            />
                 <SummaryCard icon="AlertCircle" title="Main Concerns" value={getAnswerDisplay('skin-concerns')} />
                 <SummaryCard icon="Thermometer" title="Sensitivity" value={`${getAnswerDisplay('sensitivity-level')} / 10`} />
                 <SummaryCard icon="Cloud" title="Climate" value={getAnswerDisplay('climate')} />

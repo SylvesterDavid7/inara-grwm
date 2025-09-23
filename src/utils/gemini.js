@@ -10,7 +10,7 @@ export const fetchGeminiAnalysis = async (routine) => {
   const prompt = `
   Analyze the following skincare routine and return a single, valid JSON object. Do not include any text or markdown formatting before or after the JSON object.
 
-  **User\'s Routine:**
+  **User's Routine:**
   - **Morning:** ${JSON.stringify(routine.morningProducts.map(p => ({ id: p.id, name: p.name, category: p.category, ingredients: p.ingredients })) )}
   - **Evening:** ${JSON.stringify(routine.eveningProducts.map(p => ({ id: p.id, name: p.name, category: p.category, ingredients: p.ingredients })) )}
   - **Weekly:** ${JSON.stringify(routine.weeklyTreatments.map(p => ({ id: p.id, name: p.name, category: p.category, ingredients: p.ingredients })) )}
@@ -51,7 +51,7 @@ export const fetchGeminiAnalysis = async (routine) => {
     },
     "morningRoutine": {
       "score": "number (0-100)",
-      "analysis": "string (A detailed paragraph analyzing the morning routine\'s strengths and weaknesses)",
+      "analysis": "string (A detailed paragraph analyzing the morning routine's strengths and weaknesses)",
       "products": [
           {
             "id": "string (The original product ID)",
@@ -61,12 +61,12 @@ export const fetchGeminiAnalysis = async (routine) => {
           }
       ],
       "insights": [
-        {"text": "string (A specific, actionable insight for the morning routine. Include suggestions for missing products (e.g., \'Consider adding an antioxidant serum\'), good pairings (e.g., \'Vitamin C and sunscreen work well together\'), or potential issues.)", "icon": "string (e.g., \'Sun\', \'PlusCircle\')", "type": "string (e.g., \'pro\', \'suggestion\', \'warning\')"}
+        {"text": "string (A specific, actionable insight for the morning routine. Include suggestions for missing products (e.g., 'Consider adding an antioxidant serum'), good pairings (e.g., 'Vitamin C and sunscreen work well together'), or potential issues.)", "icon": "string (e.g., 'Sun', 'PlusCircle')", "type": "string (e.g., 'pro', 'suggestion', 'warning')"}
       ]
     },
     "eveningRoutine": {
       "score": "number (0-100)",
-      "analysis": "string (A detailed paragraph analyzing the evening routine\'s strengths and weaknesses)",
+      "analysis": "string (A detailed paragraph analyzing the evening routine's strengths and weaknesses)",
       "products": [
           {
             "id": "string (The original product ID)",
@@ -76,7 +76,7 @@ export const fetchGeminiAnalysis = async (routine) => {
           }
       ],
       "insights": [
-        {"text": "string (A specific, actionable insight for the evening routine. Include suggestions like using retinoids, avoiding conflicts, or adding a specific type of moisturizer.)", "icon": "string (e.g., \'Moon\', \'Zap\')", "type": "string (e.g., \'pro\', \'suggestion\', \'warning\')"}
+        {"text": "string (A specific, actionable insight for the evening routine. Include suggestions like using retinoids, avoiding conflicts, or adding a specific type of moisturizer.)", "icon": "string (e.g., 'Moon', 'Zap')", "type": "string (e.g., 'pro', 'suggestion', 'warning')"}
       ]
     },
     "detailedIngredientAnalysis": [
@@ -85,10 +85,10 @@ export const fetchGeminiAnalysis = async (routine) => {
         "purpose": "string (e.g., 'Anti-aging, cell turnover')",
         "strength": "string (e.g., 'High', 'Moderate', 'Low')",
         "products": ["string (List of product names containing this ingredient)"],
-        "suggestions": ["string (Suggestions for using this ingredient, e.g., \'Start with a lower concentration\')"],
-        "warnings": ["string (Potential side effects or interactions, e.g., \'Can cause dryness and irritation\')"],
+        "suggestions": ["string (Suggestions for using this ingredient, e.g., 'Start with a lower concentration')"],
+        "warnings": ["string (Potential side effects or interactions, e.g., 'Can cause dryness and irritation')"],
         "evidence": {
-          "summary": "string (A brief summary of the scientific evidence for this ingredient\'s effectiveness)",
+          "summary": "string (A brief summary of the scientific evidence for this ingredient's effectiveness)",
           "url": "string (A link to a reputable source, like an NCBI study or dermatology journal)"
         }
       }
@@ -226,9 +226,9 @@ export const fetchGeminiAnalysisFromAssessment = async (answers, questions) => {
       ]
     },
     "metrics": {
-      "Effectiveness": { "score": 95, "rating": "Excellent", "explanation": "This routine is highly effective because it directly targets the user\'s stated concerns (e.g., acne, aging) with proven active ingredients in a consistent structure." },
+      "Effectiveness": { "score": 95, "rating": "Excellent", "explanation": "This routine is highly effective because it directly targets the user's stated concerns (e.g., acne, aging) with proven active ingredients in a consistent structure." },
       "Safety": { "score": 90, "rating": "Excellent", "explanation": "The routine is designed to be safe by starting with lower concentrations of active ingredients and avoiding common irritants, based on the user's sensitivity level." },
-      "Goal Alignment": { "score": 98, "rating": "Excellent", "explanation": "Every product in this recommended routine is chosen specifically to address the user\'s primary goals, such as reducing hyperpigmentation and improving skin texture." },
+      "Goal Alignment": { "score": 98, "rating": "Excellent", "explanation": "Every product in this recommended routine is chosen specifically to address the user's primary goals, such as reducing hyperpigmentation and improving skin texture." },
       "Routine Consistency": { "score": 100, "rating": "Excellent", "explanation": "This foundational routine is designed for easy and consistent daily use, which is critical for achieving long-term results." }
     },
     "morningRoutine": {
@@ -243,7 +243,7 @@ export const fetchGeminiAnalysisFromAssessment = async (answers, questions) => {
             "usage": "string (e.g., 'Daily, in the morning')",
             "quantity": "string (e.g., 'A dime-sized amount')",
             "application": "string (e.g., 'Gently massage onto damp skin for 60 seconds, then rinse with lukewarm water.')",
-            "tips": "string (e.g., 'Avoid using hot water, which can strip the skin\'s natural oils.')",
+            "tips": "string (e.g., 'Avoid using hot water, which can strip the skin's natural oils.')",
             "score": 10, "rating": "Excellent", "issues": []
           }
       ]
@@ -266,7 +266,7 @@ export const fetchGeminiAnalysisFromAssessment = async (answers, questions) => {
       ]
     },
     "weeklyRoutine": {
-        "analysis": "string (A paragraph explaining the importance of weekly treatments for the user\'s goals, like exfoliation for texture or a hydrating mask for dryness.)",
+        "analysis": "string (A paragraph explaining the importance of weekly treatments for the user's goals, like exfoliation for texture or a hydrating mask for dryness.)",
         "products": [
             {
                 "id": "w-rec-1",
@@ -342,5 +342,75 @@ export const fetchGeminiAnalysisFromAssessment = async (answers, questions) => {
         throw new Error("Invalid Gemini API Key. Please check the VITE_GEMINI_API_KEY in your .env file.");
     }
     throw new Error("Could not get a new analysis from the AI. Please check your API key and network connection.");
+  }
+};
+
+export const getOptimizedRoutine = async (analysis) => {
+  const prompt = `
+  You are an expert dermatologist and AI skincare consultant. Your task is to provide actionable optimization suggestions based on a user's skincare scorecard analysis. The analysis provided is a JSON object that includes overall scores, metric breakdowns, and detailed analysis of morning and evening routines.
+
+  **User's Skincare Analysis:**
+  ${JSON.stringify(analysis, null, 2)}
+
+  **Your Task:**
+  Generate a valid JSON object containing a list of 3 to 5 personalized, high-impact, and actionable suggestions to improve the user's routine. Focus on the most impactful changes first. The suggestions should be easy to understand, scientifically grounded, and implementable for a regular user.
+
+  **JSON Output Structure:**
+  Follow this structure precisely. Do not include any text or markdown formatting before or after the JSON object.
+
+  {
+    "suggestions": [
+      {
+        "icon": "string (A relevant icon name from lucide-react, e.g., 'PlusCircle', 'Repeat', 'Sunrise', 'Layers', 'Droplets')",
+        "title": "string (A short, catchy title for the suggestion, e.g., 'Introduce Double Cleansing')",
+        "category": "string (e.g., 'Product Addition', 'Ingredient Swap', 'Routine Timing', 'Application Technique')",
+        "description": "string (A brief, one-sentence summary of the suggestion and its main benefit. E.g., 'Add a Vitamin C serum in the morning to boost sun protection and fight free radicals.')",
+        "details": "string (A detailed paragraph explaining the rationale behind the suggestion. Explain what problem it solves based on their analysis (e.g., 'Your routine is missing a dedicated antioxidant...'), how to implement it (e.g., 'Apply 2-3 drops after cleansing and before moisturizing...'), and what to expect. Be specific and scientific where appropriate.)"
+      }
+    ]
+  }
+`;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+            "response_mime_type": "application/json",
+        }
+      })
+    });
+
+    if (!response.ok) {
+        const errorBody = await response.json();
+        console.error("Gemini API Error:", errorBody);
+        throw new Error(`API request failed with status ${response.status}: ${errorBody.error.message}`);
+    }
+
+    const data = await response.json();
+    
+    const jsonString = data.candidates[0].content.parts[0].text;
+    const optimizationResult = JSON.parse(jsonString);
+
+    if (!optimizationResult.suggestions) {
+      optimizationResult.suggestions = [];
+    }
+
+    return optimizationResult;
+
+  } catch (error) {
+    console.error("Error fetching Gemini optimization:", error);
+    if (error.message.includes('API key not valid')) {
+        throw new Error("Invalid Gemini API Key. Please check the VITE_GEMINI_API_KEY in your .env file.");
+    }
+    throw new Error("Could not get optimization suggestions from the AI. Please check your API key and network connection.");
   }
 };

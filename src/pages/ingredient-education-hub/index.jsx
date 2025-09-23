@@ -31,9 +31,9 @@ const IngredientEducationHub = () => {
       scientificName: "Vitamin A",
       description: "A powerful anti-aging ingredient that promotes cell turnover and collagen production, helping to reduce fine lines and improve skin texture.",
       detailedDescription: `Retinol is a derivative of Vitamin A and one of the most researched anti‑aging ingredients in skincare. It works by accelerating cell turnover, promoting the shedding of old skin cells and the generation of new ones. This process helps to smooth fine lines, improve skin texture, and fade dark spots.
-  
-  Retinol also stimulates collagen production in the deeper layers of the skin, which helps to improve skin firmness and elasticity over time. It's particularly effective for treating acne, as it helps to unclog pores and prevent the formation of new breakouts.`,
-      image: "https://images.unsplash.com/photo‑1556228720‑195a672e8a03?w=400&h=300&fit=crop",
+    
+    Retinol also stimulates collagen production in the deeper layers of the skin, which helps to improve skin firmness and elasticity over time. It's particularly effective for treating acne, as it helps to unclog pores and prevent the formation of new breakouts.`,
+      image: "/Retinol.webp",
       safetyRating: "moderate",
       rating: 4.5,
       concentration: "0.25‑1%",
@@ -86,9 +86,9 @@ const IngredientEducationHub = () => {
       scientificName: "Vitamin B3",
       description: "A multi‑tasking vitamin that calms inflammation, improves skin barrier, and reduces hyperpigmentation.",
       detailedDescription: `Niacinamide, also known as Vitamin B3, is valued for its versatility in skincare. It helps strengthen the lipid barrier of the skin, reducing moisture loss and protecting against environmental stressors.
-  
-  It reduces redness and blotchiness by calming inflammation, and helps fade pigmentation by inhibiting the transfer of melanosomes to skin cells. Additionally, it regulates sebum production, which makes it helpful for oily and acne‑prone skin.`,
-      image: "https://images.unsplash.com/photo‑1580749211217‑2c3d29909358?w=400&h=300&fit=crop",
+    
+    It reduces redness and blotchiness by calming inflammation, and helps fade pigmentation by inhibiting the transfer of melanosomes to skin cells. Additionally, it regulates sebum production, which makes it helpful for oily and acne‑prone skin.`,
+      image: "/Niacinamide.webp",
       safetyRating: "high",
       rating: 4.7,
       concentration: "2‑10%",
@@ -131,9 +131,9 @@ const IngredientEducationHub = () => {
       scientificName: "o‑Hydroxybenzoic Acid",
       description: "A beta hydroxy acid that penetrates oil ducts to exfoliate inside pores; excellent for acne and congestion.",
       detailedDescription: `Salicylic Acid (BHA) is oil‑soluble, enabling it to penetrate into the sebum‑filled pores and exfoliate the inner walls of follicles. It loosens bonds between dead skin cells and helps with congestion, blackheads, and acne.
-  
-  It also has anti‑inflammatory properties, which help soothe inflamed lesions. Over time, regular use can improve skin texture and reduce breakouts without overly drying the surface skin if proper moisturization is maintained.`,
-      image: "https://images.unsplash.com/photo‑1584287260909‑cffd64fa9f69?w=400&h=300&fit=crop",
+    
+    It also has anti‑inflammatory properties, which help soothe inflamed lesions. Over time, regular use can improve skin texture and reduce breakouts without overly drying the surface skin if proper moisturization is maintained.`,
+      image: "/Salicylic Acid.webp",
       safetyRating: "moderate",
       rating: 4.4,
       concentration: "0.5‑2%",
@@ -178,9 +178,9 @@ const IngredientEducationHub = () => {
       scientificName: "Sodium Hyaluronate / Hyaluronic Acid",
       description: "A humectant that draws moisture into the skin, helping to hydrate and plump the skin surface.",
       detailedDescription: `Hyaluronic Acid is a naturally occurring polysaccharide in the skin that has remarkable ability to hold up to 1000x its weight in water. In topical skincare, it hydrates the surface and deeper layers, helping to plump fine lines and reduce dryness.
-  
-  It also supports skin barrier function, making it particularly beneficial post‑exfoliation or for dry, sensitive skin. Because of its large size, different molecular weights are used in formulations to penetrate different depths.`,
-      image: "https://images.unsplash.com/photo‑1522337660859‑02fbefca4702?w=400&h=300&fit=crop",
+    
+    It also supports skin barrier function, making it particularly beneficial post‑exfoliation or for dry, sensitive skin. Because of its large size, different molecular weights are used in formulations to penetrate different depths.`,
+      image: "/Hyaluronic Acid.webp",
       safetyRating: "very high",
       rating: 4.9,
       concentration: "0.1‑2%",
@@ -220,9 +220,9 @@ const IngredientEducationHub = () => {
       scientificName: "L‑Ascorbic Acid",
       description: "A potent antioxidant that brightens skin, fades dark spots, and protects against environmental damage.",
       detailedDescription: `Vitamin C (Ascorbic Acid) is one of the strongest antioxidants in skincare. It neutralizes free radicals generated by UV exposure, pollution, and other environmental stresses, helping to prevent collagen degradation.
-  
-  It also inhibits tyrosinase, the enzyme responsible for melanin production, thus fading hyperpigmentation and brightening skin tone. Because it is water‑soluble and unstable when exposed to light and air, proper packaging (dark, air‑tight bottles) is important for efficacy.`,
-      image: "https://images.unsplash.com/photo‑1518255815074‑2a6b3b7e4e65?w=400&h=300&fit=crop",
+    
+    It also inhibits tyrosinase, the enzyme responsible for melanin production, thus fading hyperpigmentation and brightening skin tone. Because it is water‑soluble and unstable when exposed to light and air, proper packaging (dark, air‑tight bottles) is important for efficacy.`,
+      image: "/Vitamin C (Ascorbic Acid).webp",
       safetyRating: "moderate",
       rating: 4.6,
       concentration: "5‑20%",
@@ -266,9 +266,9 @@ const IngredientEducationHub = () => {
       scientificName: "Alpha Hydroxy Acid (AHA)",
       description: "A small‑molecule exfoliant derived from sugar cane, helps remove dead surface skin cells and improve uneven texture.",
       detailedDescription: `Glycolic Acid is one of the smallest AHAs and penetrates the skin surface easily. It loosens the ‘glue’ between dead skin cells, encouraging shedding of dull surface layers and revealing smoother skin beneath.
-  
-  It can help fade dark spots, smooth rough patches, and increase cell turnover. Regular use improves skin texture and radiance, though it may increase sensitivity to sun and irritation risk if overused.`,
-      image: "https://images.unsplash.com/photo‑1522337660859‑02fbefca4702?w=400&h=300&fit=crop",
+    
+    It can help fade dark spots, smooth rough patches, and increase cell turnover. Regular use improves skin texture and radiance, though it may increase sensitivity to sun and irritation risk if overused.`,
+      image: "/Glycolic Acid.webp",
       safetyRating: "moderate",
       rating: 4.3,
       concentration: "5‑15%",
@@ -296,7 +296,7 @@ const IngredientEducationHub = () => {
       ],
       incompatibleWith: [
         { name: "Retinol (high strength)", reason: "Risk of irritation" },
-        { name: "Strong BHAs", reason: "Over‑exfoliation" }
+        { name: "Other strong acids (BHA)", reason: "Over‑exfoliation" }
       ],
       studies: [
         {
@@ -313,9 +313,9 @@ const IngredientEducationHub = () => {
       scientificName: "Alpha Hydroxy Acid (AHA)",
       description: "A gentler AHA that exfoliates while providing mild hydration; good for sensitive or dry skin.",
       detailedDescription: `Lactic Acid is larger in molecular size than glycolic acid, so it works a bit more gently. It exfoliates the skin surface, improving texture and tone, while also acting as a humectant attracting moisture to the upper skin layers.
-  
-  It is often used in low concentrations for sensitive or dry skin to avoid the irritation that stronger acids can cause. Also helpful in smoothing rough patches and improving dullness with less risk of over‑exfoliation.`,
-      image: "https://images.unsplash.com/photo‑1596464716122‑5a15f8f5b3ce?w=400&h=300&fit=crop",
+    
+    It is often used in low concentrations for sensitive or dry skin to avoid the irritation that stronger acids can cause. Also helpful in smoothing rough patches and improving dullness with less risk of over‑exfoliation.`,
+      image: "/Lactic Acid.webp",
       safetyRating: "good for sensitive types",
       rating: 4.2,
       concentration: "5‑10%",
@@ -358,9 +358,9 @@ const IngredientEducationHub = () => {
       scientificName: "Ceramide NP / Other ceramides",
       description: "Lipids that help restore and maintain the skin’s barrier and retain moisture.",
       detailedDescription: `Ceramides are lipid molecules naturally present in the skin’s stratum corneum. They form part of the intercellular matrix that holds skin cells together and prevent transepidermal water loss.
-  
-  Using ceramide‑rich products helps repair barrier damage, reduce sensitivity, and improve hydration retention. They're especially beneficial after exfoliation, retinol use, or environmental stress, helping skin heal and stay resilient.`,
-      image: "https://images.unsplash.com/photo‑1596920632063‑2abe0b8ca1ac?w=400&h=300&fit=crop",
+    
+    Using ceramide‑rich products helps repair barrier damage, reduce sensitivity, and improve hydration retention. They're especially beneficial after exfoliation, retinol use, or environmental stress, helping skin heal and stay resilient.`,
+      image: "/Ceramides.webp",
       safetyRating: "very high",
       rating: 4.8,
       concentration: "1‑5%",
@@ -399,9 +399,9 @@ const IngredientEducationHub = () => {
       scientificName: "Oligopeptides / Palmitoyl Peptide",
       description: "Short chains of amino acids that signal skin to produce collagen, improving firmness and reducing wrinkles.",
       detailedDescription: `Peptides are small protein fragments that act as signaling molecules in skin. When applied topically, certain peptides can prompt skin cells to produce more collagen, elastin, and other structural proteins.
-  
-  Some peptides also help reduce inflammation or antimicrobial defense. They are generally gentle and used for anti‑aging, firmness, and improving skin resilience without the harsh side effects of retinol or strong acids.`,
-      image: "https://images.unsplash.com/photo‑1589987604278‑1433cba4e500?w=400&h=300&fit=crop",
+    
+    Some peptides also help reduce inflammation or antimicrobial defense. They are generally gentle and used for anti‑aging, firmness, and improving skin resilience without the harsh side effects of retinol or strong acids.`,
+      image: "/Peptides.webp",
       safetyRating: "high",
       rating: 4.6,
       concentration: "0.5‑2%",
@@ -409,7 +409,7 @@ const IngredientEducationHub = () => {
       skinConcerns: ["aging", "loss of firmness", "fine lines", "elasticity"],
       category: "actives / anti‑aging",
       phLevel: "5.0‑7.0",
-      molecularWeight: "varies (peptide chains)",  
+      molecularWeight: "varies (peptide chains)",
       solubility: "Water‑soluble or mixed solvent",
       stability: "Sensitive to heat / improper storage",
       timeOfUse: ["morning", "evening"],
@@ -442,9 +442,9 @@ const IngredientEducationHub = () => {
       scientificName: "Alpha‑Arbutin",
       description: "A skin‑brightening agent that gently inhibits melanin production, reducing dark spots and pigmentation.",
       detailedDescription: `Alpha Arbutin is a glycosylated hydroquinone derivative that inhibits tyrosinase, the enzyme involved in melanin synthesis. Because of its gentle mechanism, it's often preferred over hydroquinone for sensitive skin wanting brightening effects.
-  
-  It helps fade sun spots, age spots, and hyperpigmentation without as much risk of irritation. Works best with consistent use and should be paired with UV protection to prevent new pigmentation.`,
-      image: "https://images.unsplash.com/photo‑1582719478142‑2e742bcc7b58?w=400&h=300&fit=crop",
+    
+    It helps fade sun spots, age spots, and hyperpigmentation without as much risk of irritation. Works best with consistent use and should be paired with UV protection to prevent new pigmentation.`,
+      image: "/Alpha Arbutin.webp",
       safetyRating: "good",
       rating: 4.4,
       concentration: "1‑2%",
@@ -484,9 +484,9 @@ const IngredientEducationHub = () => {
       scientificName: "9‑Oxocyclohexane Carboxylic Acid",
       description: "Multipurpose acid that calms inflammation, fades pigmentation, and treats acne with a gentle profile.",
       detailedDescription: `Azelaic Acid has antibacterial and anti‑inflammatory properties, making it useful for acne and rosacea. It also helps with hyperpigmentation by inhibiting tyrosinase.
-  
-  Because it is less irritating than many strong acids, it is often tolerated by sensitive skin. It can help lighten dark spots, reduce redness, and prevent breakouts without the peeling often seen with stronger chemical exfoliants.`,
-      image: "https://images.unsplash.com/photo‑1609944495573‑be397c10ac85?w=400&h=300&fit=crop",
+    
+    Because it is less irritating than many strong acids, it is often tolerated by sensitive skin. It can help lighten dark spots, reduce redness, and prevent breakouts without the peeling often seen with stronger chemical exfoliants.`,
+      image: "/Azelaic Acid.webp",
       safetyRating: "good",
       rating: 4.5,
       concentration: "10‑20%",
@@ -530,9 +530,9 @@ const IngredientEducationHub = () => {
       scientificName: "Hydrogenated Squalene",
       description: "A stable, lightweight oil that mimics skin’s natural oils, deeply moisturizing without greasiness.",
       detailedDescription: `Squalane is derived from squalene (a lipid naturally present in skin) but hydrogenated to improve stability. It’s non‑comedogenic and easily absorbed, leaving skin smooth and protected without clogging pores.
-  
-  It helps restore lipids, reduce water loss, and soothe dryness and irritation. It is often used in oils, serums, and creams to provide silky texture and deep moisture, especially for dry or compromised skin.`,
-      image: "https://images.unsplash.com/photo‑1581291518857‑4e27b48ff24e?w=400&h=300&fit=crop",
+    
+    It helps restore lipids, reduce water loss, and soothe dryness and irritation. It is often used in oils, serums, and creams to provide silky texture and deep moisture, especially for dry or compromised skin.`,
+      image: "/Squalane.webp",
       safetyRating: "very high",
       rating: 4.8,
       concentration: "up to 10‑20%",
@@ -571,9 +571,9 @@ const IngredientEducationHub = () => {
       scientificName: "Zinc Oxide",
       description: "A broad‐spectrum physical sunscreen that protects skin from UVA and UVB rays.",
       detailedDescription: `Zinc Oxide is a mineral filter effective against both UVA and UVB radiation. It sits on top of the skin and reflects / scatters UV rays, offering broad‑spectrum protection.
-  
-  It is often well tolerated, especially by sensitive and acne‑prone skin. Formulations with non‑nano or properly blended zinc oxide are preferred. Regular use prevents hyperpigmentation, sunburn, premature aging, and lowers risk of skin cancer.`,
-      image: "https://images.unsplash.com/photo‑1549575812‑e68d979ef1a9?w=400&h=300&fit=crop",
+    
+    It is often well tolerated, especially by sensitive and acne‑prone skin. Formulations with non‑nano or properly blended zinc oxide are preferred. Regular use prevents hyperpigmentation, sunburn, premature aging, and lowers risk of skin cancer.`,
+      image: "/SPF (Zinc Oxide).webp",
       safetyRating: "very high",
       rating: 5.0,
       concentration: "10‑25%",
@@ -612,9 +612,9 @@ const IngredientEducationHub = () => {
       scientificName: "Titanium Dioxide",
       description: "Another physical sunscreen ingredient that reflects UV rays and protects skin from UV damage.",
       detailedDescription: `Titanium Dioxide is used in sunscreens because it reflects or scatters UV light and protects the skin surface. It's particularly effective at UVB and short UVA wavelengths.
-  
-  Like zinc oxide, it is often used in mineral or hybrid sunscreens. It is generally safe and well tolerated, though formulations with very fine particles may have special processing to avoid inhalation risk (in sprays) and minimize visible cast.`,
-      image: "https://images.unsplash.com/photo‑1496616219141‑42974003c66a?w=400&h=300&fit=crop",
+    
+    Like zinc oxide, it is often used in mineral or hybrid sunscreens. It is generally safe and well tolerated, though formulations with very fine particles may have special processing to avoid inhalation risk (in sprays) and minimize visible cast.`,
+      image: "/SPF Titanium Dioxide.webp",
       safetyRating: "very high",
       rating: 4.9,
       concentration: "5‑25%",
@@ -652,9 +652,9 @@ const IngredientEducationHub = () => {
       scientificName: "Gluconolactone / Lactobionic Acid etc.",
       description: "Gentler exfoliants which work more slowly and less irritatingly than AHAs/BHAs; suitable for sensitive skin.",
       detailedDescription: `Polyhydroxy Acids (PHAs) like gluconolactone and lactobionic acid have larger molecular sizes, leading to slower penetration and milder exfoliation.
-  
-  They offer benefits of surface exfoliation, hydration, and antioxidant protection. Because of their gentle nature, they are well suited for people who find stronger acids irritating, or as a bridge toward more active exfoliation.`,
-      image: "https://images.unsplash.com/photo‑1587300005711‑e0466f0c8f21?w=400&h=300&fit=crop",
+    
+    They offer benefits of surface exfoliation, hydration, and antioxidant protection. Because of their gentle nature, they are well suited for people who find stronger acids irritating, or as a bridge toward more active exfoliation.`,
+      image: "/Polyhydroxy Acids (PHAs).webp",
       safetyRating: "high",
       rating: 4.3,
       concentration: "5‑10%",
@@ -697,9 +697,9 @@ const IngredientEducationHub = () => {
       scientificName: "Rosa Canina Seed Oil",
       description: "A rich source of essential fatty acids and antioxidants; helps with nourishment, healing, and brightening.",
       detailedDescription: `Rosehip Oil is cold‑pressed from rosehip fruit; it's rich in linoleic acid, linolenic acid, and vitamin A precursors. These help nourish dry or mature skin, improve elasticity, and reduce appearance of scars.
-  
-  Also contains antioxidants that protect against environmental damage. Light oils such as rosehip are often absorbed quite well and leave skin soft. Useful in PM routines as part of facial oils or blends.`,
-      image: "https://images.unsplash.com/photo‑1506801310323‑534be5e7d396?w=400&h=300&fit=crop",
+    
+    Also contains antioxidants that protect against environmental damage. Light oils such as rosehip are often absorbed quite well and leave skin soft. Useful in PM routines as part of facial oils or blends.`,
+      image: "/Rosehip Oil.webp",
       safetyRating: "good",
       rating: 4.4,
       concentration: "5‑15%",
@@ -741,9 +741,9 @@ const IngredientEducationHub = () => {
       scientificName: "Psoralea Corylifolia Extract",
       description: "A plant‑based alternative to retinol, offering similar benefits with lower irritation risk.",
       detailedDescription: `Bakuchiol is an extract from the seeds and leaves of the Psoralea Corylifolia plant. It has been shown in studies to provide retinol‑like effects on skin, promoting collagen production, reducing fine lines, and improving skin texture, without many of the side effects (peeling, irritation) associated with retinol.
-  
-  Because it is gentler, it's a good option for those who want anti‑aging benefits but have sensitive skin or cannot tolerate retinoids. It can also be used during pregnancy (though always advisable to consult care professionals).`,
-      image: "https://images.unsplash.com/photo‑1518733057094‑95b47a2e1e31?w=400&h=300&fit=crop",
+    
+    Because it is gentler, it's a good option for those who want anti‑aging benefits but have sensitive skin or cannot tolerate retinoids. It can also be used during pregnancy (though always advisable to consult care professionals).`,
+      image: "/Bakuchiol.webp",
       safetyRating: "good",
       rating: 4.3,
       concentration: "0.5‑1%",
@@ -783,9 +783,9 @@ const IngredientEducationHub = () => {
       scientificName: "Centella Asiatica Extract / Madecassoside",
       description: "A soothing botanical that calms inflammation, supports healing, and improves barrier function.",
       detailedDescription: `Centella Asiatica is a plant used traditionally for wound healing and skin soothing. The component madecassoside has anti‑inflammatory, antioxidant, and collagen‑stimulating effects.
-  
-  It helps reduce redness, accelerate healing, and is often included in products targeted at sensitive, irritated, or compromised skin. Also helps with moisture retention and strengthening barrier integrity.`,
-      image: "https://images.unsplash.com/photo‑1552180752‑9a0c3a64e8ea?w=400&h=300&fit=crop",
+    
+    It helps reduce redness, accelerate healing, and is often included in products targeted at sensitive, irritated, or compromised skin. Also helps with moisture retention and strengthening barrier integrity.`,
+      image: "/Centella Asiatica (Madecassoside).webp",
       safetyRating: "very high",
       rating: 4.7,
       concentration: "0.5‑2%",
@@ -824,9 +824,9 @@ const IngredientEducationHub = () => {
       scientificName: "Camellia Sinensis Leaf Extract",
       description: "An antioxidant and anti‑inflammatory botanical that protects skin from environmental damage and calms irritation.",
       detailedDescription: `Green Tea Extract contains polyphenols such as EGCG which act as powerful antioxidants. They neutralize free radicals, reduce oxidative stress, and help prevent collagen breakdown.
-  
-  It has anti‑inflammatory effects, useful for calming redness, sensitivity, or acne. Also helps with UV protection (as supplementary protection) and soothes irritated skin.`,
-      image: "https://images.unsplash.com/photo‑1589927986089‑35812388d1b4?w=400&h=300&fit=crop",
+    
+    It has anti‑inflammatory effects, useful for calming redness, sensitivity, or acne. Also helps with UV protection (as supplementary protection) and soothes irritated skin.`,
+      image: "/Green Tea Extract.webp",
       safetyRating: "very high",
       rating: 4.6,
       concentration: "1‑5%",
@@ -864,9 +864,9 @@ const IngredientEducationHub = () => {
       scientificName: "Butyrospermum Parkii Butter",
       description: "A rich emollient that deeply moisturizes, softens skin, and supports the lipid barrier.",
       detailedDescription: `Shea Butter is extracted from the nuts of the shea tree and is rich in fatty acids (oleic, stearic, linoleic acids) and vitamins. It forms a protective layer on the skin surface, locking in moisture and preventing dryness.
-  
-  Because of its richness, it is especially beneficial for dry or cracked skin. However, for oily or acne‑prone skin, lighter moisturizers are often preferred or shea butter used sparingly.`,
-      image: "https://images.unsplash.com/photo‑1491594649892‑4e87f1334a56?w=400&h=300&fit=crop",
+    
+    Because of its richness, it is especially beneficial for dry or cracked skin. However, for oily or acne‑prone skin, lighter moisturizers are often preferred or shea butter used sparingly.`,
+      image: "/Shea Butter.webp",
       safetyRating: "high",
       rating: 4.5,
       concentration: "5‑20%",
@@ -906,9 +906,9 @@ const IngredientEducationHub = () => {
       scientificName: "Pantothenic Acid / Panthenol",
       description: "A humectant and soothing agent that helps retain moisture and aid in skin repair.",
       detailedDescription: `Panthenol (or Provitamin B5) is converted in skin to pantothenic acid. It attracts and retains moisture, helps improve barrier function, and accelerates healing of minor irritations or wounds.
-  
-  It also has mild anti‑inflammatory effects, reducing itchiness and redness. Useful in moisturizers, toners, serums, especially for sensitive, dry, or compromised skin.`,
-      image: "https://images.unsplash.com/photo‑1587833342998‑2f6ff57d21b2?w=400&h=300&fit=crop",
+    
+    It also has mild anti‑inflammatory effects, reducing itchiness and redness. Useful in moisturizers, toners, serums, especially for sensitive, dry, or compromised skin.`,
+      image: "/Panthenol (Provitamin B5).webp",
       safetyRating: "very high",
       rating: 4.8,
       concentration: "0.5‑5%",
@@ -947,9 +947,9 @@ const IngredientEducationHub = () => {
       scientificName: "Glycyrrhiza Glabra Root Extract",
       description: "A botanical brightening and soothing ingredient helpful for pigmentation and irritation.",
       detailedDescription: `Licorice Root Extract contains glabridin, which inhibits tyrosinase without acting as a skin irritant. It also has anti‑inflammatory properties helpful in calming redness and irritation.
-  
-  Often used in formulations targeting dark spots, uneven tone, and sensitive skin. Can help reduce visible irritation after sun exposure or harsh treatments.`,
-      image: "https://images.unsplash.com/photo‑1518976024611‑488b74c5a504?w=400&h=300&fit=crop",
+    
+    Often used in formulations targeting dark spots, uneven tone, and sensitive skin. Can help reduce visible irritation after sun exposure or harsh treatments.`,
+      image: "/Licorice Root Extract.webp",
       safetyRating: "good",
       rating: 4.4,
       concentration: "0.5‑2%",
@@ -987,9 +987,9 @@ const IngredientEducationHub = () => {
       scientificName: "Ubiquinone",
       description: "A powerful antioxidant that protects skin from oxidative stress and supports energy production in skin cells.",
       detailedDescription: `Coenzyme Q10, or ubiquinone, is naturally present in skin mitochondria and plays a role in energy generation. Topically, it helps neutralize free radicals, reduce oxidative damage, and protect lipids and proteins in skin cells.
-  
-  It may help reduce appearance of wrinkles and sagging, as oxidative stress is a major contributor to skin aging. Also often formulated with other antioxidants to bolster protection.`,
-      image: "https://images.unsplash.com/photo‑1572276596232‑252fbc922cff?w=400&h=300&fit=crop",
+    
+    It may help reduce appearance of wrinkles and sagging, as oxidative stress is a major contributor to skin aging. Also often formulated with other antioxidants to bolster protection.`,
+      image: "/Coenzyme Q10 (Ubiquinone).webp",
       safetyRating: "good",
       rating: 4.3,
       concentration: "0.5‑1%",
@@ -1027,9 +1027,9 @@ const IngredientEducationHub = () => {
       scientificName: "Kaolin Clay",
       description: "A gentle absorbent clay that helps draw out impurities and excess oil without overly drying the skin.",
       detailedDescription: `Kaolin is a mild clay used in face masks and cleansers. It absorbs oil, dirt, and sebum from pores while being less abrasive or drying than some stronger clays.
-  
-  Useful for oily or combination skin types, when used occasionally to detox or clarify. Also helps in refining texture when skin feels congested.`,
-      image: "https://images.unsplash.com/photo‑1506784983877‑45594efa4cbe?w=400&h=300&fit=crop",
+    
+    Useful for oily or combination skin types, when used occasionally to detox or clarify. Also helps in refining texture when skin feels congested.`,
+      image: "/Clay (Kaolin).webp",
       safetyRating: "high",
       rating: 4.2,
       concentration: "10‑30%",
@@ -1069,9 +1069,9 @@ const IngredientEducationHub = () => {
       scientificName: "Melaleuca Alternifolia Oil",
       description: "A botanical with strong antimicrobial and anti‑inflammatory properties useful for acne‑prone skin.",
       detailedDescription: `Tea Tree Oil contains terpinen‑4‑ol among its active components, which have proven antimicrobial and anti‑inflammatory activity. It helps kill acne bacteria (Propionibacterium acnes), reduce swelling, and soothe inflamed acne lesions.
-  
-  Used in spot treatments or diluted in carrier oils; pure oil can cause irritation and allergic reactions if overused or applied undiluted.`,
-      image: "https://images.unsplash.com/photo‑1511988617509‑2475d6fbbf02?w=400&h=300&fit=crop",
+    
+    Used in spot treatments or diluted in carrier oils; pure oil can cause irritation and allergic reactions if overused or applied undiluted.`,
+      image: "/Tea Tree Oil.webp",
       safetyRating: "moderate",
       rating: 4.1,
       concentration: "0.5‑5% (for skin use)",
@@ -1111,9 +1111,9 @@ const IngredientEducationHub = () => {
       scientificName: "Niacin / Nicotinic Acid",
       description: "Different from niacinamide; helps improve circulation and brightens skin when used appropriately.",
       detailedDescription: `Niacin (nicotinic acid) when applied topically can improve microcirculation in skin, leading to a flushed glow initially, and over time brighter, more even skin tone. It is more irritating than niacinamide, so used in lower doses.
-  
-  Helpful in addressing dullness, mild discoloration, and overall radiance. Often found in formulations targeting tone and radiance rather than strong actives.`,
-      image: "https://images.unsplash.com/photo‑1473773508845‑188df298d2d1?w=400&h=300&fit=crop",
+    
+    Helpful in addressing dullness, mild discoloration, and overall radiance. Often found in formulations targeting tone and radiance rather than strong actives.`,
+      image: "/Niacin.webp",
       safetyRating: "low to moderate",
       rating: 3.8,
       concentration: "0.1‑1%",
@@ -1151,9 +1151,9 @@ const IngredientEducationHub = () => {
       scientificName: "Ferulic Acid",
       description: "A plant‑based antioxidant that stabilizes other antioxidants and enhances their effects, especially vitamin C and E.",
       detailedDescription: `Ferulic Acid is found in plant cell walls, notably in oats, rice bran, and certain fruits. It not only neutralizes free radicals itself but also stabilizes other antioxidants like vitamins C and E, boosting their efficacy.
-  
-  When combined (e.g., in serums) it increases photoprotection and reduces photoaging. It also helps fade dark spots and supports skin that has been exposed to UV or environmental stressors.`,
-      image: "https://images.unsplash.com/photo‑1492149699518‑9c99b80b7ec1?w=400&h=300&fit=crop",
+    
+    When combined (e.g., in serums) it increases photoprotection and reduces photoaging. It also helps fade dark spots and supports skin that has been exposed to UV or environmental stressors.`,
+      image: "/Ferulic Acid.webp",
       safetyRating: "good",
       rating: 4.5,
       concentration: "0.5‑1%",
@@ -1191,9 +1191,9 @@ const IngredientEducationHub = () => {
       scientificName: "Asiatic Acid",
       description: "A triterpenoid from Centella that encourages collagen synthesis and improves skin elasticity.",
       detailedDescription: `Asiatic Acid is one of the active constituents of Centella Asiatica. It boosts collagen and glycosaminoglycan production, aiding in wound healing, skin repair, and elasticity improvement.
-  
-  It also has antioxidant effects and helps with inflammation. Useful in aging skincare, especially when the goal is firmness and regenerative support.`,
-      image: "https://images.unsplash.com/photo‑1583566262580‑eacb2c1b2ec5?w=400&h=300&fit=crop",
+    
+    It also has antioxidant effects and helps with inflammation. Useful in aging skincare, especially when the goal is firmness and regenerative support.`,
+      image: "/Centella Asiatica (Asiatic Acid).webp",
       safetyRating: "high",
       rating: 4.4,
       concentration: "0.5‑1%",
@@ -1231,9 +1231,9 @@ const IngredientEducationHub = () => {
       scientificName: "Allantoin",
       description: "A soothing, skin‑repairing ingredient that helps heal and calm irritated skin.",
       detailedDescription: `Allantoin is a compound often derived from the comfrey plant or synthetically produced. It has keratolytic and soothing properties, helping to gently remove dead skin, promote healing, and reduce irritation. It supports the skin’s natural recovery mechanisms.
-  
-  Particularly helpful after retinol, acids, or other irritants, and in products for sensitive skin. Helps leave skin feeling smoother and less inflamed.`,
-      image: "https://images.unsplash.com/photo‑1587740896331‑ecfd0bc5cd45?w=400&h=300&fit=crop",
+    
+    Particularly helpful after retinol, acids, or other irritants, and in products for sensitive skin. Helps leave skin feeling smoother and less inflamed.`,
+      image: "/Allantoin.webp",
       safetyRating: "very high",
       rating: 4.8,
       concentration: "0.5‑2%",
@@ -1272,9 +1272,9 @@ const IngredientEducationHub = () => {
       scientificName: "Alpha Hydroxy Acid (Mandelic Acid)",
       description: "A mild AHA derived from almonds; exfoliates more gently than glycolic acid, good for sensitive or darker skin.",
       detailedDescription: `Mandelic Acid has a larger molecular size than glycolic acid, so it penetrates more slowly and is less likely to irritate. It gently exfoliates the surface, improving tone and texture with a lower risk of photosensitivity or inflammation.
-  
-  It’s particularly suitable for sensitive skin or skin prone to post‑inflammatory hyperpigmentation. Over time it can fade dark spots, improve skin smoothness, and reduce congestion.`,
-      image: "https://images.unsplash.com/photo‑1572448862523‑5e1ccbf5b045?w=400&h=300&fit=crop",
+    
+    It’s particularly suitable for sensitive skin or skin prone to post‑inflammatory hyperpigmentation. Over time it can fade dark spots, improve skin smoothness, and reduce congestion.`,
+      image: "/Mandelic Acid.webp",
       safetyRating: "good",
       rating: 4.3,
       concentration: "5‑10%",
@@ -1310,7 +1310,6 @@ const IngredientEducationHub = () => {
         }
       ]
     }
-      // ... (rest of mock data)
   ];
   
   // Mock search suggestions

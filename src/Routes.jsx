@@ -13,6 +13,7 @@ import SkincareScoreCardResults from './pages/skincare-scorecard-results';
 import AssessmentResults from './pages/assessment-results';
 import SplashScreen from './pages/SplashScreen';
 import HomePage from './pages/HomePage';
+import OptimizeRoutine from './pages/optimize-routine';
 
 const Routes = () => {
   return (
@@ -31,6 +32,7 @@ const Routes = () => {
             <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />
             <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
             <Route path="/assessment-results" element={<AssessmentResults />} />
+            <Route path="/optimize-routine" element={<OptimizeRoutine />} />
           </Route>
           {/* Routes without the layout (e.g., NotFound) can go here */}
           <Route path="*" element={<NotFound />} />

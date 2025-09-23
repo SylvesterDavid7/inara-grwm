@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
+import { useNavigate } from 'react-router-dom';
 
 const ActionSidebar = ({ 
   analysis, 
@@ -16,6 +17,7 @@ const ActionSidebar = ({
     includeScores: true,
     privacy: 'private'
   });
+  const navigate = useNavigate();
 
   const handleSaveScorecard = async () => {
     setIsSaving(true);
@@ -34,6 +36,7 @@ const ActionSidebar = ({
   const handleOptimizeRoutine = () => {
     // Navigate to routine optimization wizard
     console.log('Starting routine optimization...');
+    navigate('/optimize-routine', { state: { analysis } });
   };
 
   const quickActions = [
