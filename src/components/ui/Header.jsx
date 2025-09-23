@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import { Sling as Hamburger } from 'hamburger-react';
 import useClickOutside from '../../utils/useClickOutside';
+import AuthDetails from '../AuthDetails';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -128,6 +129,7 @@ const Header = () => {
                     </div>
                   </div>
                 ))}
+                 <AuthDetails />
               </nav>
 
               {/* Mobile Menu Button */}
@@ -207,6 +209,9 @@ const Header = () => {
                 </div>
               ))}
             </div>
+             <div className="mt-4">
+                <AuthDetails />
+              </div>
           </nav>
         </div>
       </div>
