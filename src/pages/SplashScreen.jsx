@@ -10,7 +10,7 @@ function SplashScreen() {
     setStartAnimation(true);
 
     const timer = setTimeout(() => {
-      navigate('/home');
+      navigate('/gate');
     }, 5000); // 5 seconds delay
 
     return () => clearTimeout(timer); // Cleanup the timer on component unmount
@@ -33,7 +33,7 @@ function SplashScreen() {
           alt="Inara Logo"
           className={`h-10 w-30 object-scale-down scale-130 ${startAnimation ? 'animate-fade-in-up' : 'opacity-0'}`}
           style={{ animationDelay: "0.5s" }}
-          onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/120x40/f1f5f9/334155?text=Logo'; }}
+          onError={(e) => { e.target.onerror = null; e.target.src='https/placehold.co/120x40/f1f5f9/334155?text=Logo'; }}
         />
 
         {/* 2. X */}

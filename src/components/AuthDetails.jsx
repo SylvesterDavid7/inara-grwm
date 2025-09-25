@@ -50,13 +50,13 @@ const AuthDetails = () => {
         <div className="flex items-center space-x-2">
           <Link
             to="/login"
-            className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+            className="px-3 py-2 text-sm font-medium text-slate-800 border border-slate-300 rounded-md hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950 transform hover:scale-105 transition-all duration-300"
           >
             Login
           </Link>
           <Link
             to="/signup"
-            className="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+            className="px-3 py-2 text-sm font-medium text-slate-800 border border-slate-300 rounded-md hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950 transform hover:scale-105 transition-all duration-300"
           >
             Sign Up
           </Link>

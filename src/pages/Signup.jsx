@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import SocialLogins from "../components/SocialLogins";
 import "../styles/form.css";
 import "../styles/glass-card.css";
@@ -9,17 +9,36 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: name });
       navigate("/dashboard");
     } catch (error) {
-      setError(error.message);
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          setError("An account with this email already exists. Please log in or use a different email.");
+          break;
+        case "auth/invalid-email":
+          setError("Please enter a valid email address.");
+          break;
+        case "auth/weak-password":
+          setError("Password should be at least 6 characters long.");
+          break;
+        default:
+          setError("An unexpected error occurred. Please try again.");
+          break;
+      }
     }
   };
 
@@ -28,17 +47,17 @@ const Signup = () => {
       <div className="flex w-full max-w-6xl mx-auto shadow-2xl rounded-3xl overflow-hidden h-[90vh]">
         
         {/* Left side - Form */}
-        <div className="w-full lg:w-1/2 bg-white p-6 sm:p-8 md:p-10 flex flex-col justify-center">
+        <div className="w-full lg:w-1/2 bg-white p-6 sm:p-8 md:p-10 flex flex-col justify-center font-heading">
           <div className="w-full max-w-sm mx-auto space-y-5">
 
             {/* Logo */}
             <div className="flex justify-between items-center">
-              <img className="h-6 w-auto" src="/Inara_Logo.svg" alt="BonSante" />
+              <img className="h-6 w-auto" src="/Inara_Logo.svg" alt="Inara-GRWM" />
             </div>
 
             {/* Headings */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Create an account</h2>
+              <h2 className="text-2xl font-heading text-gray-900">Create an account</h2>
               <p className="text-sm text-gray-500 mt-1">Let's get you started!</p>
             </div>
 
@@ -77,12 +96,26 @@ const Signup = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-2.5 text-sm bg-gray-100 rounded-lg border-0 focus:ring-2 focus:ring-green-500"
                   placeholder="Your password"
+                />
+              </div>
+
+              <div>
+                <input
+                  id="confirm-password"
+                  name="confirm-password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-4 py-2.5 text-sm bg-gray-100 rounded-lg border-0 focus:ring-2 focus:ring-green-500"
+                  placeholder="Confirm your password"
                 />
               </div>
 
@@ -135,8 +168,8 @@ const Signup = () => {
             alt="Inara Lab"
             className="absolute h-full w-full object-cover"
           />
-          <div className="glass-card p-6 h-[70vh] m-6 max-w-md text-white z-10">
-            <h3 className="text-2xl font-bold mb-3">
+          <div className="glass-card2 p-6 h-[70vh] m-6 max-w-md text-white z-10 font-heading">
+            <h3 className="text-2xl font-heading mb-3">
             Advanced Skincare, Powered by Science and Precision
             </h3>
             <p className="text-sm">

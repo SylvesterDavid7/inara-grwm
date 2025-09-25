@@ -287,7 +287,7 @@ img,svg,video,canvas,audio,iframe,embed,object {
 
 img,video {
   max-width: 100%;
-  height: auto
+  height: 100%
 }
 
 [hidden] {
@@ -2995,7 +2995,7 @@ body {
   width: 100%;
   padding: 0;
   border-radius: 1.25rem;
-  background: linear-gradient(135deg,#000000f0,#000c);
+  background: linear-gradient(135deg,#000000,rgba(0, 0, 0, 0.893));
   border: 1px solid rgba(255,255,255,.1);
   box-shadow: 0 8px 32px #0000004d;
   backdrop-filter: blur(12px);
