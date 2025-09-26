@@ -22,7 +22,7 @@ const Header = () => {
     {
       label: 'Results',
       items: [
-        { label: 'Scorecard', path: '/skincare-scorecard-results', icon: 'BarChart3' },
+        { label: 'Scorecard', path: '/skincare-scorecard-results', icon: 'LayoutDashboard' },
         { label: 'Recommendations', path: '/product-recommendations', icon: 'Star' }
       ]
     },
@@ -35,7 +35,8 @@ const Header = () => {
     {
       label: 'Learn',
       items: [
-        { label: 'Ingredients', path: '/ingredient-education-hub', icon: 'BookOpen' }
+        { label: 'Ingredients', path: '/ingredient-education-hub', icon: 'BookOpen' },
+        { label: 'Skincare 101', path: '/skincare-101', icon: 'Grid3X3' }
       ]
     }
   ];
@@ -166,7 +167,7 @@ const Header = () => {
           </div>
   
           {/* Menu Content */}
-          <nav className="flex-1 overflow-y-auto p-4">
+          <nav className="flex-1 overflow-y-auto p-4" onClick={closeMobileMenu}>
             <div className="space-y-4">
               {navigationItems.map((section) => (
                 <div key={section.label}>
@@ -178,7 +179,6 @@ const Header = () => {
                       <Link
                         key={item.path}
                         to={item.path}
-                        onClick={closeMobileMenu}
                         className={`group flex items-center space-x-3 p-3 rounded-clinical-md text-base transition-colors ${
                           isActivePath(item.path)
                             ? 'bg-secondary'
@@ -210,7 +210,7 @@ const Header = () => {
               ))}
             </div>
              <div className="mt-4">
-                <AuthDetails />
+                <AuthDetails layout="vertical" />
               </div>
           </nav>
         </div>

@@ -25,6 +25,7 @@ import GateRoute from './components/GateRoute';
 import GetCode from './pages/GetCode';
 import UserInfo from './pages/UserInfo';
 import ChangePassword from './pages/ChangePassword';
+import Skincare101 from './pages/skincare-101';
 
 const Routes = () => {
   return (
@@ -43,6 +44,7 @@ const Routes = () => {
               <Route path="/home" element={<HomePage />} />
               <Route path="/product-recommendations" element={<ProductRecommendations />} />
               <Route path="/ingredient-education-hub" element={<IngredientEducationHub />} />
+              <Route path="/skincare-101" element={<Skincare101 />} />
               <Route path="/skincare-routine-input" element={<SkincareRoutineInput />} />
               <Route path="/progress-tracking-dashboard" element={<ProgressTrackingDashboard />} />
               <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />

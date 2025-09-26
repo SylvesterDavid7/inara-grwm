@@ -64,14 +64,14 @@ const HomePage = () => {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                       {features.map((feature) => (
-                          <Link to={feature.link} key={feature.title} className="glass-card-container no-underline">
-                              <div className="glass-card relative">
+                          <Link to={feature.link} key={feature.title} className="glass-card-container no-underline flex">
+                              <div className="glass-card relative flex flex-col w-full">
                                   <img
                                       src={feature.cardImage}
                                       alt=""
                                       className="absolute w-[200px] h-[200px] object-contain rotate-[-15deg] right-[-20px] bottom-[-30px] opacity-5 invert"
                                   />
-                                  <div className="relative z-10">
+                                  <div className="relative z-10 flex flex-col flex-grow justify-between">
                                       <div>
                                           <h3 className="text-xl sm:text-2xl font-heading font-semibold text-white">{feature.title}</h3>
                                           <p className="mt-2 text-sm sm:text-base text-slate-300">{feature.description}</p>

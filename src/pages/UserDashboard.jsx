@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useUserDataContext } from '../contexts/UserDataContext';
 import { Bell, Clock, CheckCircle, XCircle } from 'lucide-react';
@@ -7,6 +7,7 @@ const UserDashboard = () => {
   const { user, userData, updateUserData } = useUserDataContext();
   const [reminders, setReminders] = useState(userData?.reminders || { AM: false, PM: false });
   const [progress, setProgress] = useState(userData?.progress || {});
+  const weekContainerRef = useRef(null);
 
   useEffect(() => {
     if (userData?.reminders) {
@@ -74,6 +75,22 @@ const UserDashboard = () => {
     setWeek(getWeekData(selectedDate));
   }, [selectedDate]);
 
+  useEffect(() => {
+    if (weekContainerRef.current) {
+      const selectedDateIndex = week.findIndex(date => formatDate(date) === formatDate(selectedDate));
+      if (selectedDateIndex !== -1) {
+        const selectedDateElement = weekContainerRef.current.children[selectedDateIndex];
+        if (selectedDateElement) {
+          selectedDateElement.scrollIntoView({
+            behavior: 'smooth',
+            inline: 'center',
+            block: 'nearest'
+          });
+        }
+      }
+    }
+  }, [selectedDate, week]);
+
   const userName = user?.displayName || user?.email?.split('@')[0] || 'Guest';
   const avatarUrl = user?.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=f1f5f9&color=334155`;
 
@@ -96,17 +113,22 @@ const UserDashboard = () => {
 
     return (
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-            <div className='flex items-center'>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div className="flex items-baseline mb-2 sm:mb-0">
                 <h3 className="font-heading text-lg font-bold text-gray-800 mr-2">{title}</h3>
                 <span className={`font-heading px-2 py-0.5 text-xs font-semibold rounded-full ${time === 'AM' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}`}>
                     {time}
                 </span>
             </div>
-            <div className="flex items-center space-x-2">
-                <Clock size={16} className='text-gray-500' />
-                <span className="font-heading text-sm text-gray-500">{time === 'AM' ? '8:00-9:00 AM' : '9:00-10:00 PM'}</span>
-                <Bell size={16} className={`cursor-pointer ${reminders[time] ? 'text-indigo-600' : 'text-gray-400'}`} onClick={() => handleReminderToggle(time)} />
+            <div className="flex items-center justify-between w-full sm:w-auto">
+                <div className="flex items-center space-x-2">
+                    <Clock size={18} className='text-gray-500' />
+                    <span className="font-heading text-sm text-gray-500">{time === 'AM' ? '8:00-9:00 AM' : '9:00-10:00 PM'}</span>
+                </div>
+                <button onClick={() => handleReminderToggle(time)} className={`flex items-center space-x-2 p-2 rounded-lg transition-colors ${reminders[time] ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:bg-gray-100'}`}>
+                    <Bell size={22} />
+                    <span className="hidden sm:inline text-sm font-medium">Set Reminder</span>
+                </button>
             </div>
         </div>
         <div className="grid grid-cols-1 gap-4">
@@ -154,19 +176,21 @@ const UserDashboard = () => {
               <p className="font-heading text-gray-500">Let's take care of your skin!</p>
             </div>
             <Link to="/profile">
-              <img src={avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full" />
+                <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
+                    <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                </div>
             </Link>
           </div>
 
           {assessmentCompleted ? (
             <>
               <div className="mb-8">
-                <div className="flex space-x-4 overflow-x-auto pb-4">
+                <div ref={weekContainerRef} className="flex space-x-4 overflow-x-auto pb-4">
                   {week.map((date, index) => (
                     <div
                       key={index}
                       onClick={() => setSelectedDate(date)}
-                      className={`flex-shrink-0 w-20 text-center p-2 rounded-lg cursor-pointer ${formatDate(selectedDate) === formatDate(date) ? 'bg-indigo-600 text-white' : 'bg-white'}`}>
+                      className={`flex-shrink-0 w-20 text-center p-2 rounded-lg cursor-pointer ${formatDate(selectedDate) === formatDate(date) ? 'bg-green-600 text-white' : 'bg-white'}`}>
                       <p className="font-heading text-sm font-medium">{date.toLocaleDateString('en-US', { weekday: 'short' })}</p>
                       <p className="font-heading text-lg font-bold">{date.getDate()}</p>
                     </div>
@@ -178,7 +202,7 @@ const UserDashboard = () => {
               {renderRoutineSection('Evening Routine', 'PM', eveningRoutine)}
 
               <div className="mt-8">
-                <Link to="/progress-tracking-dashboard" className="font-heading w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                <Link to="/progress-tracking-dashboard" className="font-heading w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
                     View My Progress
                 </Link>
               </div>
@@ -187,7 +211,7 @@ const UserDashboard = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm text-center">
               <h2 className="font-heading text-xl font-bold text-gray-900 mb-2">Welcome to your personalized dashboard!</h2>
               <p className="font-heading text-gray-600 mb-4">To get started, please take our skin assessment. This will help us create a tailored skincare routine just for you.</p>
-              <Link to="/skin-assessment-questionnaire" className="font-heading inline-block bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
+              <Link to="/skin-assessment-questionnaire" className="font-heading inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
                 Take Assessment
               </Link>
             </div>
