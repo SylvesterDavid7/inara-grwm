@@ -16,6 +16,10 @@ const ProgressTrackingDashboard = () => {
   const [dateRange, setDateRange] = useState('30days');
   const [viewMode, setViewMode] = useState('overview');
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [photos, setPhotos] = useState({
+    before: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop",
+    after: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop&brightness=1.1&contrast=1.1"
+  });
 
   // Mock data for progress metrics
   const progressMetrics = [
@@ -195,6 +199,13 @@ const ProgressTrackingDashboard = () => {
     }
   ];
 
+  const handlePhotoUpload = (newPhoto) => {
+    setPhotos(prevPhotos => ({
+      before: prevPhotos.after,
+      after: newPhoto
+    }));
+  };
+
   const dateRangeOptions = [
     { value: '7days', label: 'Last 7 days' },
     { value: '30days', label: 'Last 30 days' },
@@ -277,10 +288,11 @@ const ProgressTrackingDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <PhotoComparison
-                  beforePhoto="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop"
-                  afterPhoto="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop&brightness=1.1&contrast=1.1"
+                  beforePhoto={photos.before}
+                  afterPhoto={photos.after}
                   date="March 5, 2025"
                   notes="Significant improvement in skin texture and reduced redness. The new retinol serum is showing excellent results after 8 weeks of consistent use."
+                  onPhotoUpload={handlePhotoUpload}
                 />
               </div>
               <div>

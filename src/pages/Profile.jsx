@@ -123,7 +123,7 @@ const Profile = () => {
                     </button>
                 </div>
               <div className="ml-5">
-                <h2 className="text-xl font-semibold text-gray-800">{user?.displayName}</h2>
+                <h2 className="font-heading text-xl font-semibold text-gray-800">{user?.displayName}</h2>
                 <p className="text-sm text-gray-600">{user?.email}</p>
                 {isUploading && <p className='text-sm text-gray-500 mt-2'>Uploading...</p>}
                 {successMessage && (
@@ -150,7 +150,7 @@ const Profile = () => {
                   <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full mb-4">
                     <Icon name={link.icon} size={20} className="text-gray-500" />
                   </div>
-                  <h3 className="text-md font-semibold text-gray-700">{link.title}</h3>
+                  <h3 className="font-heading text-md font-semibold text-gray-700">{link.title}</h3>
                   <p className="text-xs text-gray-500">Navigate to {link.title}</p>
                 </Link>
               ))}

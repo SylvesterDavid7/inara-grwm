@@ -6,8 +6,18 @@ const HeroSection = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
+  const [videoSrc, setVideoSrc] = useState(window.innerWidth < 768 ? '/INARA HERO Mobile 1.mp4' : '/INARA HERO.mp4');
 
   const toRotate = ["Skincare, Simplified", "Your Perfect Routine", "Get Results With Metrics"];
+
+  useEffect(() => {
+    const handleResize = () => {
+      setVideoSrc(window.innerWidth < 768 ? '/INARA HERO Mobile 1.mp4' : '/INARA HERO.mp4');
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleType = () => {
@@ -40,13 +50,14 @@ const HeroSection = () => {
   return (
     <div className="hero-container font-heading">
       <video
+        key={videoSrc} // This is the new line
         autoPlay
         loop
         muted
         playsInline
-        className="hero-video z-index-1000 opacity-100"
+        className={`hero-video z-index-1000 opacity-100 ${window.innerWidth < 768 ? 'mobile-video' : ''}`}
       >
-        <source src="/INARA HERO 2.mp4" type="video/mp4" />
+        <source src={videoSrc} type="video/mp4" />
       </video>
       <div className="hero-content font-heading">
         <h1 className='font-heading'>{text}</h1>

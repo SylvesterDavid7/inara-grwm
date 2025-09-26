@@ -36,9 +36,9 @@ const IngredientCard = ({
   if (viewMode === 'list') {
     return (
       <div className="bg-card border border-border rounded-clinical p-4 hover:shadow-clinical transition-clinical">
-        <div className="flex items-start space-x-4">
-          <div className="flex-shrink-0">
-            <div className="w-16 h-16 bg-muted rounded-clinical overflow-hidden">
+        <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="flex-shrink-0 w-full sm:w-auto">
+            <div className="w-full sm:w-16 h-16 bg-muted rounded-clinical overflow-hidden">
               <Image
                 src={ingredient?.image}
                 alt={ingredient?.name}
@@ -58,7 +58,7 @@ const IngredientCard = ({
                 </p>
               </div>
               
-              <div className="flex items-center space-x-2 ml-4">
+              <div className="flex items-center space-x-2 ml-4 flex-shrink-0">
                 <div className={`px-2 py-1 rounded-clinical-sm text-xs font-body font-body-medium ${getSafetyColor(ingredient?.safetyRating)}`}>
                   {ingredient?.safetyRating}
                 </div>
@@ -66,10 +66,10 @@ const IngredientCard = ({
                   variant="ghost"
                   size="icon"
                   onClick={() => onBookmark(ingredient?.id)}
-                  iconName={isBookmarked ? "Bookmark" : "BookmarkPlus"}
+                  iconName={isBookmarked ? "BookmarkCheck" : "BookmarkPlus"}
                   iconSize={20}
                   aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-                  className="text-gray-400"
+                  className={isBookmarked ? "text-accent" : "text-gray-400"}
                 />
               </div>
             </div>
@@ -78,7 +78,7 @@ const IngredientCard = ({
               {ingredient?.description}
             </p>
             
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="flex flex-wrap gap-2 mb-4">
               {ingredient?.skinConcerns?.slice(0, 3)?.map((concern, index) => (
                 <span
                   key={index}
@@ -94,8 +94,8 @@ const IngredientCard = ({
               )}
             </div>
             
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+              <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3 sm:mb-0">
                 <div className="flex items-center space-x-1">
                   <Icon name="Beaker" size={14} />
                   <span className="font-data font-data-normal">{ingredient?.concentration}</span>
@@ -106,7 +106,7 @@ const IngredientCard = ({
                 </div>
               </div>
               
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <Button
                   variant="outline"
                   size="sm"
@@ -114,6 +114,7 @@ const IngredientCard = ({
                   iconName="GitCompare"
                   iconPosition="left"
                   iconSize={14}
+                  className="flex-1 sm:flex-none"
                 >
                   Check
                 </Button>
@@ -121,6 +122,7 @@ const IngredientCard = ({
                   variant="default"
                   size="sm"
                   onClick={() => onViewDetails(ingredient)}
+                  className="flex-1 sm:flex-none"
                 >
                   Learn More
                 </Button>
@@ -151,10 +153,10 @@ const IngredientCard = ({
             variant="ghost"
             size="icon"
             onClick={() => onBookmark(ingredient?.id)}
-            iconName={isBookmarked ? "Bookmark" : "BookmarkPlus"}
+            iconName={isBookmarked ? "BookmarkCheck" : "BookmarkPlus"}
             iconSize={20}
             aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-            className="bg-background/80 backdrop-blur-sm hover:bg-black text-gray-400"
+            className={`bg-background/80 backdrop-blur-sm hover:bg-black ${isBookmarked ? "text-accent" : "text-gray-400"}`}
           />
         </div>
       </div>

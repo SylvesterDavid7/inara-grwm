@@ -119,9 +119,9 @@ const RoutineAdherenceCalendar = ({ adherenceData, currentMonth, onMonthChange, 
                     ? 'ring-2 ring-primary ring-offset-1' :'hover:ring-1 hover:ring-border'
                 } ${getAdherenceColor(adherenceLevel)}`}
               >
-                <span className={`${
+                <span className={`${`
                   adherenceLevel === 'none' ? 'text-muted-foreground' : 'text-white'
-                }`}>
+                `}`}>
                   {date}
                 </span>
                 {isToday && (

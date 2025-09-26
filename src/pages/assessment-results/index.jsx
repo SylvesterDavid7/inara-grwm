@@ -99,7 +99,7 @@ const AssessmentResults = () => {
         </div>
 
         {/* Action Buttons */}
-        <ActionButtons />
+        <ActionButtons analysis={analysis} />
       </div>
     </div>
   );

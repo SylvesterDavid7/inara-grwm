@@ -1,27 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useUserDataContext } from '../contexts/UserDataContext';
+import { Bell, Clock, CheckCircle, XCircle } from 'lucide-react';
 
 const UserDashboard = () => {
-  const { user, userData } = useUserDataContext();
+  const { user, userData, updateUserData } = useUserDataContext();
+  const [reminders, setReminders] = useState(userData?.reminders || { AM: false, PM: false });
+  const [progress, setProgress] = useState(userData?.progress || {});
+
+  useEffect(() => {
+    if (userData?.reminders) {
+      setReminders(userData.reminders);
+    }
+    if (userData?.progress) {
+      setProgress(userData.progress);
+    }
+  }, [userData]);
+
+  const handleReminderToggle = async (time) => {
+    const newReminders = { ...reminders, [time]: !reminders[time] };
+    setReminders(newReminders);
+    await updateUserData({ reminders: newReminders });
+
+    if (newReminders[time] && Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+  };
+
+  const handleProgressUpdate = async (productName, time, status) => {
+    const dateKey = formatDate(selectedDate);
+    const newProgress = { ...progress };
+    if (!newProgress[dateKey]) {
+      newProgress[dateKey] = {};
+    }
+    if (!newProgress[dateKey][time]) {
+        newProgress[dateKey][time] = {};
+    }
+
+    // Toggle status: if current status is clicked again, reset it
+    if (newProgress[dateKey][time][productName] === status) {
+        delete newProgress[dateKey][time][productName];
+    } else {
+        newProgress[dateKey][time][productName] = status;
+    }
+
+    setProgress(newProgress);
+    await updateUserData({ progress: newProgress });
+  };
 
   const getWeekData = (startDate) => {
     const week = [];
     const today = new Date(startDate);
     const dayOfWeek = today.getDay();
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Start week on Monday
+    startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
 
     for (let i = 0; i < 7; i++) {
-        const currentDate = new Date(startOfWeek);
-        currentDate.setDate(startOfWeek.getDate() + i);
-        week.push(currentDate);
+      const currentDate = new Date(startOfWeek);
+      currentDate.setDate(startOfWeek.getDate() + i);
+      week.push(currentDate);
     }
     return week;
   };
 
   const formatDate = (date) => {
-    return date.toISOString().split('T')[0]; // YYYY-MM-DD
+    return date.toISOString().split('T')[0];
   };
 
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -34,38 +77,72 @@ const UserDashboard = () => {
   const userName = user?.displayName || user?.email?.split('@')[0] || 'Guest';
   const avatarUrl = user?.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=f1f5f9&color=334155`;
 
-  // This structure assumes routine is stored in userData.routine
-  // with keys like 'AM' or 'PM' and contains a products array.
   const getRoutineForSelectedDate = () => {
-    if (!userData || !userData.routine) return [];
-
-    const dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' }); // e.g., "Monday"
+    if (!userData || !userData.routine) return { AM: [], PM: [] };
+    const dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
     const routineForDay = userData.routine[dayOfWeek];
-
-    if (!routineForDay) return [];
-
-    // Combine AM and PM products or just use what's available
-    const products = [];
-    if (routineForDay.AM) products.push(...routineForDay.AM.map(p => ({ ...p, time: 'AM' })));
-    if (routineForDay.PM) products.push(...routineForDay.PM.map(p => ({ ...p, time: 'PM' })));
-    
-    return products;
+    return {
+      AM: routineForDay?.AM?.sort((a, b) => a.step - b.step) || [],
+      PM: routineForDay?.PM?.sort((a, b) => a.step - b.step) || [],
+    };
   };
 
-  const selectedDateRoutine = getRoutineForSelectedDate();
+  const { AM: morningRoutine, PM: eveningRoutine } = getRoutineForSelectedDate();
+  const assessmentCompleted = userData && userData.assessmentCompleted;
 
-  const forYou = [
-    {
-      title: '5 advices for your skincare routine',
-      duration: '3 min',
-      image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=500&h=500&fit=crop'
-    },
-    {
-      title: 'The best ingredients for your skin type',
-      duration: '5 min',
-      image: 'https://images.unsplash.com/photo-1552664730-d3077884b2de?w=500&h=500&fit=crop'
-    },
-  ];
+  const renderRoutineSection = (title, time, routine) => {
+    const dateKey = formatDate(selectedDate);
+    const dayProgress = progress[dateKey]?.[time] || {};
+
+    return (
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+            <div className='flex items-center'>
+                <h3 className="font-heading text-lg font-bold text-gray-800 mr-2">{title}</h3>
+                <span className={`font-heading px-2 py-0.5 text-xs font-semibold rounded-full ${time === 'AM' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}`}>
+                    {time}
+                </span>
+            </div>
+            <div className="flex items-center space-x-2">
+                <Clock size={16} className='text-gray-500' />
+                <span className="font-heading text-sm text-gray-500">{time === 'AM' ? '8:00-9:00 AM' : '9:00-10:00 PM'}</span>
+                <Bell size={16} className={`cursor-pointer ${reminders[time] ? 'text-indigo-600' : 'text-gray-400'}`} onClick={() => handleReminderToggle(time)} />
+            </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          {routine.length > 0 ? (
+            routine.map((product, index) => {
+              const status = dayProgress[product.name];
+              return (
+                <div key={index} className={`bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 transition-opacity ${status ? 'opacity-50' : 'opacity-100'}`}>
+                  <div className="font-heading text-2xl font-bold text-gray-300 w-12 text-center pt-1">{index + 1}</div>
+                  <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <img src={product.image || 'https://placehold.co/100x100/f1f5f9/334155?text=Product'} alt={product.name} className="w-16 h-16 object-contain" />
+                  </div>
+                  <div className="flex-grow">
+                    <p className="font-bold text-gray-900">{product.name}</p>
+                    <p className="text-gray-500 text-sm">{product.category}</p>
+                  </div>
+                  <div className="flex flex-col items-center space-y-2">
+                    <button onClick={() => handleProgressUpdate(product.name, time, 'completed')} className={`p-1 rounded-full ${status === 'completed' ? 'bg-green-100 text-green-600' : 'text-gray-400 hover:text-green-500'}`}>
+                        <CheckCircle size={20} />
+                    </button>
+                    <button onClick={() => handleProgressUpdate(product.name, time, 'skipped')} className={`p-1 rounded-full ${status === 'skipped' ? 'bg-yellow-100 text-yellow-600' : 'text-gray-400 hover:text-yellow-500'}`}>
+                        <XCircle size={20} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="bg-white p-6 rounded-lg shadow-sm text-center">
+              <p className="font-heading text-gray-500">No products for this time.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,85 +150,48 @@ const UserDashboard = () => {
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Hello, {userName}</h1>
-              <p className="text-gray-500">Let's take care of your skin!</p>
+              <h1 className="font-heading text-3xl font-bold text-gray-900">Hello, {userName}</h1>
+              <p className="font-heading text-gray-500">Let's take care of your skin!</p>
             </div>
-            <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-500">2648 points</span>
-                <Link to="/profile">
-                    <img src={avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full" />
+            <Link to="/profile">
+              <img src={avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full" />
+            </Link>
+          </div>
+
+          {assessmentCompleted ? (
+            <>
+              <div className="mb-8">
+                <div className="flex space-x-4 overflow-x-auto pb-4">
+                  {week.map((date, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setSelectedDate(date)}
+                      className={`flex-shrink-0 w-20 text-center p-2 rounded-lg cursor-pointer ${formatDate(selectedDate) === formatDate(date) ? 'bg-indigo-600 text-white' : 'bg-white'}`}>
+                      <p className="font-heading text-sm font-medium">{date.toLocaleDateString('en-US', { weekday: 'short' })}</p>
+                      <p className="font-heading text-lg font-bold">{date.getDate()}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {renderRoutineSection('Morning Routine', 'AM', morningRoutine)}
+              {renderRoutineSection('Evening Routine', 'PM', eveningRoutine)}
+
+              <div className="mt-8">
+                <Link to="/progress-tracking-dashboard" className="font-heading w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    View My Progress
                 </Link>
+              </div>
+            </>
+          ) : (
+            <div className="bg-white p-6 rounded-lg shadow-sm text-center">
+              <h2 className="font-heading text-xl font-bold text-gray-900 mb-2">Welcome to your personalized dashboard!</h2>
+              <p className="font-heading text-gray-600 mb-4">To get started, please take our skin assessment. This will help us create a tailored skincare routine just for you.</p>
+              <Link to="/skin-assessment-questionnaire" className="font-heading inline-block bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
+                Take Assessment
+              </Link>
             </div>
-          </div>
-
-          {/* Daily Routine */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Daily Routine</h2>
-            </div>
-            <div className="flex space-x-4 overflow-x-auto pb-4">
-              {week.map((date, index) => (
-                <div 
-                    key={index} 
-                    onClick={() => setSelectedDate(date)}
-                    className={`flex-shrink-0 w-20 text-center p-2 rounded-lg cursor-pointer ${formatDate(selectedDate) === formatDate(date) ? 'bg-indigo-600 text-white' : 'bg-white'}`}>
-                  <p className="text-sm font-medium">{date.toLocaleDateString('en-US', { weekday: 'short' })}</p>
-                  <p className="text-lg font-bold">{date.getDate()}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Products for Selected Date */}
-          <div className="mb-8">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">
-                Your Routine for: {selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
-            </h3>
-            <div className="grid grid-cols-1 gap-4">
-                {selectedDateRoutine.length > 0 ? (
-                    selectedDateRoutine.map((product, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg shadow-sm flex items-center space-x-4">
-                            <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <img src={product.image || 'https://placehold.co/100x100/f1f5f9/334155?text=Product'} alt={product.name} className="w-16 h-16 object-contain" />
-                            </div>
-                            <div>
-                                <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${product.time === 'AM' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}`}>
-                                    {product.time}
-                                </span>
-                                <p className="font-bold text-gray-900 mt-1">{product.name}</p>
-                                {product.step && <p className="text-gray-500 text-sm">Step {product.step}</p>}
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <div className="bg-white p-6 rounded-lg shadow-sm text-center">
-                        <p className="text-gray-500">You have no products scheduled for this day.</p>
-                        <Link to="/skincare-routine-input" className="mt-2 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                            Build Your Routine
-                        </Link>
-                    </div>
-                )}
-            </div>
-          </div>
-
-          {/* For You */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Discover More</h2>
-              <Link to="/ingredient-education-hub" className="text-sm font-medium text-indigo-600">View more</Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {forYou.map((item, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <img src={item.image} alt={item.title} className="w-full h-32 object-cover" />
-                    <div className="p-4">
-                        <p className="font-bold text-gray-900">{item.title}</p>
-                        <p className="text-gray-500 text-sm mb-1">{item.duration}</p>
-                    </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
       </main>
     </div>

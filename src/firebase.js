@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth"; // Import getAuth
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaV3Provider, onTokenChanged } from "firebase/app-check";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,10 +19,28 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app); // Initialize Auth
 
-// Initialize App Check
-const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider('6Ld0....'), // TODO: Replace with your reCAPTCHA v3 site key
-  isTokenAutoRefreshEnabled: true
+let appCheck;
+if (process.env.NODE_ENV !== 'production') {
+  // Use a debug token for development
+  self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6Ld0....'), // TODO: Replace with your reCAPTCHA v3 site key
+    isTokenAutoRefreshEnabled: true
+  });
+} else {
+  // Use reCAPTCHA for production
+  appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6Ld0....'), // TODO: Replace with your reCAPTCHA v3 site key
+    isTokenAutoRefreshEnabled: true
+  });
+}
+
+onTokenChanged(appCheck, (token) => {
+  if (token) {
+    console.log("App Check token:", token);
+  } else {
+    console.log("App Check token not available.");
+  }
 });
 
 export { db, app, appCheck, auth }; // Export auth

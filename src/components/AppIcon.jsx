@@ -1,27 +1,50 @@
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
-import { HelpCircle } from 'lucide-react';
+import { TrendingUp, Calendar, Sparkles, Star, Eye, Share2, Bell, Award, Plus, ClipboardList, BookOpen, BookmarkCheck, BookmarkPlus, GitCompare, Grid3X3, List, Search, Beaker, X, RefreshCw, ChevronLeft, ChevronRight, HelpCircle, ArrowRight, Check, Download, LayoutDashboard, User, Smile, AlertCircle, Thermometer, Cloud, DollarSign, Box, Sun, Moon, Wallet } from 'lucide-react';
 
-function Icon({
-    name,
-    size = 24,
-    color = "currentColor",
-    className = "",
-    strokeWidth = 2,
-    ...props
-}) {
-    const IconComponent = LucideIcons?.[name];
+const AppIcon = ({ name, ...props }) => {
+  const icons = {
+    TrendingUp,
+    Calendar,
+    Sparkles,
+    Star,
+    Eye,
+    Share2,
+    Bell,
+    Award,
+    Plus,
+    ClipboardList,
+    BookOpen,
+    BookmarkCheck,
+    BookmarkPlus,
+    GitCompare,
+    Grid3X3,
+    List,
+    Search,
+    Beaker,
+    X,
+    RefreshCw,
+    ChevronLeft,
+    ChevronRight,
+    HelpCircle,
+    ArrowRight,
+    Check,
+    Download,
+    LayoutDashboard,
+    User,
+    Smile,
+    AlertCircle,
+    Thermometer,
+    Cloud,
+    DollarSign,
+    Box,
+    Sun,
+    Moon,
+    Wallet
+  };
 
-    if (!IconComponent) {
-        return <HelpCircle size={size} color="gray" strokeWidth={strokeWidth} className={className} {...props} />;
-    }
+  const Icon = icons[name];
 
-    return <IconComponent
-        size={size}
-        color={color}
-        strokeWidth={strokeWidth}
-        className={className}
-        {...props}
-    />;
-}
-export default Icon;
+  return Icon ? <Icon {...props} /> : null;
+};
+
+export default AppIcon;

@@ -9,9 +9,11 @@ import AssessmentSummary from './components/AssessmentSummary';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
 import { fetchGeminiAnalysisFromAssessment } from '../../utils/gemini';
+import { useUserDataContext } from '../../contexts/UserDataContext';
 
 const SkinAssessmentQuestionnaire = () => {
   const navigate = useNavigate();
+  const { updateUserData } = useUserDataContext();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showSummary, setShowSummary] = useState(false);
@@ -355,6 +357,8 @@ const SkinAssessmentQuestionnaire = () => {
     try {
       const analysis = await fetchGeminiAnalysisFromAssessment(answers, questions);
       
+      await updateUserData({ assessmentCompleted: true });
+
       const assessmentData = {
         answers,
         questions,

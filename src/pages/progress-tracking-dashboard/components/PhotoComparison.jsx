@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
 
-const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" }) => {
+const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "", onPhotoUpload }) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleSliderChange = (e) => {
     const rect = e?.currentTarget?.getBoundingClientRect();
@@ -28,6 +29,17 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
     }
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && onPhotoUpload) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onPhotoUpload(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className={`bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical ${className}`}>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4">
@@ -38,7 +50,14 @@ const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "" 
           <span className="font-caption font-caption-normal text-sm text-muted-foreground">
             {date}
           </span>
-          <Button variant="outline" size="sm" iconName="Upload" iconSize={16}>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            className="hidden"
+            accept="image/*"
+          />
+          <Button variant="outline" size="sm" iconName="Upload" iconSize={16} onClick={() => fileInputRef.current.click()}>
             Upload New
           </Button>
         </div>

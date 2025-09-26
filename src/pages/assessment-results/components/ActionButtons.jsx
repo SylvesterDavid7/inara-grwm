@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import ShareModal from './ShareModal'; // Make sure this path is correct
+import { useUserDataContext } from '../../../contexts/UserDataContext'; // Import the hook
 
-const ActionButtons = () => {
+const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
   const [isShareModalOpen, setShareModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { updateUserData } = useUserDataContext(); // Get the update function
 
   const handlePurchase = () => {
     window.open('https://inaragroups.com', '_blank', 'noopener,noreferrer');
@@ -16,8 +18,47 @@ const ActionButtons = () => {
     navigate('/product-recommendations');
   };
 
-  const handleTrack = () => {
-    navigate('/progress-tracking-dashboard');
+  const transformRoutine = (analysis) => {
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const routine = {};
+
+    const amProducts = analysis.morningRoutine.products.map((p, index) => ({ ...p, step: index + 1 }));
+    const pmProducts = analysis.eveningRoutine.products.map((p, index) => ({ ...p, step: index + 1 }));
+
+    days.forEach(day => {
+        routine[day] = {
+            AM: [...amProducts],
+            PM: [...pmProducts]
+        };
+    });
+
+    if (analysis.weeklyRoutine && analysis.weeklyRoutine.products) {
+        const weeklyDays = ['Wednesday', 'Sunday']; // Default days for weekly treatments
+        analysis.weeklyRoutine.products.forEach(product => {
+            weeklyDays.forEach(day => {
+                if (routine[day] && routine[day].PM) {
+                    const nextStep = routine[day].PM.length > 0 ? Math.max(...routine[day].PM.map(p => p.step)) + 1 : 1;
+                    routine[day].PM.push({ ...product, step: nextStep });
+                }
+            });
+        });
+    }
+
+    return routine;
+  };
+
+
+  const handleTrack = async () => {
+    if (analysis) {
+      try {
+        const transformedRoutine = transformRoutine(analysis);
+        await updateUserData({ routine: transformedRoutine, assessmentCompleted: true }); // Save the transformed routine
+        navigate('/progress-tracking-dashboard');
+      } catch (error) {
+        console.error("Error saving routine:", error);
+        // Optionally, show an error message to the user
+      }
+    }
   };
 
   const handleShare = () => {
