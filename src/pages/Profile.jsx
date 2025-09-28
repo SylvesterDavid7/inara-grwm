@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useUserData } from '../contexts/UserDataContext';
+import { useUserDataContext } from '../contexts/UserDataContext.jsx';
 import { getAuth, signOut, updateProfile } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../components/AppIcon';
@@ -9,7 +9,7 @@ import StatsSection from './profile/StatsSection';
 import TasksSection from './profile/TasksSection';
 
 const Profile = () => {
-  const { user, userData, updateUserData } = useUserData();
+  const { user, userData, updateUserData } = useUserDataContext();
   const auth = getAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);

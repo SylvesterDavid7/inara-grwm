@@ -1,6 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import HeroSection from '../components/ui/HeroSection';
-import FeatureCard from '../components/FeatureCard'; // Import the new component
 import '../styles/glass-card.css';
 
 const HomePage = () => {
@@ -10,48 +10,42 @@ const HomePage = () => {
       description: 'Get an AI-powered analysis of your current skincare routine.',
       link: '/skincare-routine-input',
       cta: 'Analyze Now',
-      cardImage: '/HP1.svg',
-      requiresAuth: true, // Requires login
+      cardImage: '/HP1.svg'
     },
     {
       title: 'For Beginners',
       description: 'New to skincare? Start here to build a foundational routine.',
       link: '/skin-assessment-questionnaire',
       cta: 'Start Assessment',
-      cardImage: '/HP2.svg',
-      requiresAuth: true, // Requires login
+      cardImage: '/HP2.svg'
     },
     {
       title: 'My Dashboard',
       description: 'Track your progress, view your routine, and see personalized insights.',
-      link: '/dashboard',
+      link: '/progress-tracking-dashboard',
       cta: 'View Dashboard',
-      cardImage: '/HP3.svg',
-      requiresAuth: true, // Requires login
+      cardImage: '/HP3.svg'
     },
     {
       title: 'Product Recommendations',
       description: 'Discover products tailored to your skin goals and routine analysis.',
       link: '/product-recommendations',
       cta: 'Browse Products',
-      cardImage: '/HP4.svg',
-      requiresAuth: true, // Requires login
+      cardImage: '/HP4.svg'
     },
     {
         title: 'Ingredient Hub',
         description: 'Learn about skincare ingredients and check for compatibility.',
         link: '/ingredient-education-hub',
         cta: 'Explore Ingredients',
-        cardImage: '/HP5.svg',
-        requiresAuth: false, // Does not require login
+        cardImage: '/HP5.svg'
     },
     {
         title: 'Skincare 101',
         description: 'Your guide to the fundamentals of skincare.',
         link: '/skincare-101',
         cta: 'Learn the Basics',
-        cardImage: '/HP6.svg',
-        requiresAuth: false, // Does not require login
+        cardImage: '/HP6.svg'
     }
   ];
 
@@ -70,7 +64,26 @@ const HomePage = () => {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                       {features.map((feature) => (
-                          <FeatureCard key={feature.title} feature={feature} requiresAuth={feature.requiresAuth} />
+                          <Link to={feature.link} key={feature.title} className="glass-card-container no-underline flex">
+                              <div className="glass-card relative flex flex-col w-full">
+                                  <img
+                                      src={feature.cardImage}
+                                      alt=""
+                                      className="absolute w-[200px] h-[200px] object-contain rotate-[-15deg] right-[-20px] bottom-[-30px] opacity-5 invert"
+                                  />
+                                  <div className="relative z-10 flex flex-col flex-grow justify-between">
+                                      <div>
+                                          <h3 className="text-xl sm:text-2xl font-heading font-semibold text-white">{feature.title}</h3>
+                                          <p className="mt-2 text-sm sm:text-base text-slate-300">{feature.description}</p>
+                                      </div>
+                                      <div className="mt-6">
+                                          <span className="text-slate-50 font-semibold text-sm sm:text-base">
+                                              {feature.cta} &rarr;
+                                          </span>
+                                      </div>
+                                  </div>
+                              </div>
+                          </Link>
                       ))}
                   </div>
               </div>

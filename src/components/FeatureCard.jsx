@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserData } from '../contexts/UserDataContext';
+import { useUserDataContext } from '../contexts/UserDataContext.jsx';
 
 const FeatureCard = ({ title, description, path, requiresAuth, cta, icon: Icon, comingSoon }) => {
   const navigate = useNavigate();
-  const { user } = useUserData();
+  const { user } = useUserDataContext();
 
   const handleNavigation = () => {
     if (comingSoon) return;

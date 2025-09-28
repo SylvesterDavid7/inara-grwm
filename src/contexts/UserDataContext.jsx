@@ -3,9 +3,14 @@ import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
-export const UserDataContext = createContext();
+export const UserDataContext = createContext({
+  user: null,
+  userData: null,
+  loading: true,
+  updateUserData: async () => ({ success: false, error: 'Not initialized' }),
+});
 
-export const useUserData = () => useContext(UserDataContext);
+export const useUserDataContext = () => useContext(UserDataContext);
 
 export const UserDataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -14,8 +19,8 @@ export const UserDataProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setLoading(true);
       if (currentUser) {
-        setUser(currentUser);
         const userRef = doc(db, 'users', currentUser.uid);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
@@ -34,6 +39,7 @@ export const UserDataProvider = ({ children }) => {
           await setDoc(userRef, newUser);
           setUserData(newUser);
         }
+        setUser(currentUser);
       } else {
         setUser(null);
         setUserData(null);
@@ -68,7 +74,7 @@ export const UserDataProvider = ({ children }) => {
 
   return (
     <UserDataContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </UserDataContext.Provider>
   );
 };
