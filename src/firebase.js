@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth"; // Import getAuth
-import { initializeAppCheck, ReCaptchaV3Provider, onTokenChanged } from "firebase/app-check";
+// import { initializeAppCheck, ReCaptchaV3Provider, onTokenChanged } from "firebase/app-check";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,6 +19,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app); // Initialize Auth
 
+/*
 let appCheck;
 if (process.env.NODE_ENV !== 'production') {
   // Use a debug token for development
@@ -42,5 +43,9 @@ onTokenChanged(appCheck, (token) => {
     console.log("App Check token not available.");
   }
 });
+*/
+
+// Temporarily exporting null for appCheck
+const appCheck = null;
 
 export { db, app, appCheck, auth }; // Export auth

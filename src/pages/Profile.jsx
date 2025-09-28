@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useUserDataContext } from '../contexts/UserDataContext';
+import { useUserData } from '../contexts/UserDataContext';
 import { getAuth, signOut, updateProfile } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../components/AppIcon';
 import ScoreSection from './profile/ScoreSection';
 import BadgesSection from './profile/BadgesSection';
 import StatsSection from './profile/StatsSection';
+import TasksSection from './profile/TasksSection';
 
 const Profile = () => {
-  const { user } = useUserDataContext();
+  const { user, userData, updateUserData } = useUserData();
   const auth = getAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -82,6 +83,7 @@ const Profile = () => {
       const downloadURL = data.secure_url;
 
       await updateProfile(auth.currentUser, { photoURL: downloadURL });
+      await updateUserData({ photoURL: downloadURL });
 
       setIsUploading(false);
       setSuccessMessage('Profile picture updated successfully!');
@@ -110,15 +112,17 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+          
+          {/* Left Column */}
+          <div className="md:col-span-1 space-y-8 order-1">
+            <div className="bg-card rounded-2xl shadow-lg p-6 text-center">
                 <div className="relative w-32 h-32 mx-auto">
                     <img
-                        className="h-full w-full rounded-full object-cover ring-4 ring-white"
-                        src={user?.photoURL || '/placeholder-user.png'}
+                        className="h-full w-full rounded-full object-cover ring-4 ring-card"
+                        src={userData?.photoURL || '/placeholder-user.png'}
                         alt="User"
                     />
                     <input 
@@ -130,17 +134,17 @@ const Profile = () => {
                     />
                     <button 
                         onClick={() => fileInputRef.current.click()}
-                        className="absolute bottom-1 right-1 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-full p-2 shadow-md hover:from-blue-600 hover:to-cyan-500 transition-all"
+                        className="absolute bottom-1 right-1 bg-primary text-white rounded-full p-2 shadow-md hover:bg-primary/90 transition-all"
                         aria-label="Change profile picture"
                         disabled={isUploading}
                     >
-                        <Icon name="Camera" size={18} className="text-white"/>
+                        <Icon name="Camera" size={18} />
                     </button>
                 </div>
               <div className="mt-4">
-                <h2 className="font-heading text-2xl font-bold text-gray-800">{user?.displayName}</h2>
-                <p className="text-sm text-gray-600">{user?.email}</p>
-                {isUploading && <p className='text-sm text-gray-500 mt-2'>Uploading...</p>}
+                <h2 className="font-heading text-2xl font-bold text-foreground">{userData?.displayName}</h2>
+                <p className="text-sm text-muted-foreground">{user?.email}</p>
+                {isUploading && <p className='text-sm text-muted-foreground mt-2'>Uploading...</p>}
                 {successMessage && (
                     <div className="mt-2 rounded-md bg-green-100 p-3">
                         <p className="text-xs font-medium text-green-800">{successMessage}</p>
@@ -155,36 +159,47 @@ const Profile = () => {
               <div className="mt-6">
                 <button
                     onClick={handleLogout}
-                    className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    className="w-full flex justify-center items-center py-2.5 px-4 border border-border rounded-lg shadow-sm text-sm font-medium text-foreground bg-card hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
                 >
                     <Icon name="LogOut" size={16} className="mr-2" />
                     Logout
                 </button>
               </div>
             </div>
+            {/* Tasks for Desktop */}
+            <div className="hidden md:block">
+              <TasksSection />
+            </div>
           </div>
 
-          <div className="md:col-span-2">
+          {/* Right Column */}
+          <div className="md:col-span-2 space-y-8 order-2">
             <ScoreSection {...mockScore} />
             <StatsSection stats={mockStats} />
             <BadgesSection badges={mockBadges} />
           </div>
+
+          {/* Tasks for Mobile */}
+          <div className="md:hidden order-3">
+            <TasksSection />
+          </div>
+
         </div>
 
         <div className="mt-12">
-            <h3 className="font-heading text-xl font-bold text-gray-800 mb-4">Quick Actions</h3>
+            <h3 className="font-heading text-xl font-bold text-foreground mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {profileLinks.map((link, index) => (
                 <Link
                   key={index}
                   to={link.path}
-                  className="group bg-white rounded-xl p-5 shadow-md hover:shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300 border"
+                  className="group bg-card rounded-xl p-5 shadow-md hover:shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300 border border-border"
                   >
-                  <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full mb-4">
+                  <div className="flex items-center justify-center w-12 h-12 bg-muted rounded-full mb-4">
                     <Icon name={link.icon} size={24} className="text-green-600" />
                   </div>
-                  <h3 className="font-heading text-md font-semibold text-gray-700">{link.title}</h3>
-                  <p className="text-xs text-gray-500">Go to {link.title}</p>
+                  <h3 className="font-heading text-md font-semibold text-foreground">{link.title}</h3>
+                  <p className="text-xs text-muted-foreground">Go to {link.title}</p>
                 </Link>
               ))}
             </div>

@@ -1,0 +1,15 @@
+import React from 'react';
+import Routes from './Routes';
+import { UserDataProvider } from './contexts/UserDataContext';
+
+function App() {
+  return (
+    <UserDataProvider>
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white font-sans animate-fade-in">
+        <Routes />
+      </div>
+    </UserDataProvider>
+  );
+}
+
+export default App;

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { db } from "../firebase";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import SocialLogins from "../components/SocialLogins";
 import "../styles/form.css";
 import "../styles/glass-card.css";
@@ -22,7 +24,20 @@ const Signup = () => {
     }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, { displayName: name });
+      const user = userCredential.user;
+
+      // Update the profile in Firebase Authentication
+      await updateProfile(user, { displayName: name });
+
+      // Save user data to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        displayName: name,
+        email: user.email,
+        createdAt: Timestamp.fromDate(new Date()),
+        photoURL: null, // Initially no photo
+      });
+
       navigate("/dashboard");
     } catch (error) {
       switch (error.code) {

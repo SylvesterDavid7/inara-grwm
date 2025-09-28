@@ -1,11 +1,11 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUserDataContext } from '../contexts/UserDataContext';
+import { useUserData } from '../contexts/UserDataContext';
 
 const PrivateRoute = () => {
-  const { userData } = useUserDataContext();
+  const { userData } = useUserData();
 
-  return userData ? <Outlet /> : <Navigate to="/home" />;
+  return userData ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;

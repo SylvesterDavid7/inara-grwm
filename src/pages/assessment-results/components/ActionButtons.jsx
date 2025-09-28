@@ -1,96 +1,52 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../../components/ui/Button';
-import ShareModal from './ShareModal'; // Make sure this path is correct
-import { useUserDataContext } from '../../../contexts/UserDataContext'; // Import the hook
+import { jsPDF } from 'jspdf';
+import { useUserData } from '../../../contexts/UserDataContext';
 
-const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
-  const [isShareModalOpen, setShareModalOpen] = useState(false);
-  const navigate = useNavigate();
-  const { updateUserData } = useUserDataContext(); // Get the update function
+const ActionButtons = ({ results }) => {
+    const navigate = useNavigate();
+    const { updateUserData, userData } = useUserData();
 
-  const handlePurchase = () => {
-    window.open('https://inaragroups.com', '_blank', 'noopener,noreferrer');
-  };
+    const saveResults = async () => {
+        try {
+            // Create a copy of the existing assessments array and add the new one
+            const newAssessments = [...(userData.assessments || []), { ...results, date: new Date().toISOString() }];
+            await updateUserData({ assessments: newAssessments });
+            alert('Results saved successfully!');
+        } catch (error) {
+            console.error('Error saving results: ', error);
+            alert('Failed to save results.');
+        }
+    };
 
-  const handleSamples = () => {
-    navigate('/product-recommendations');
-  };
-
-  const transformRoutine = (analysis) => {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const routine = {};
-
-    const amProducts = analysis.morningRoutine.products.map((p, index) => ({ ...p, step: index + 1 }));
-    const pmProducts = analysis.eveningRoutine.products.map((p, index) => ({ ...p, step: index + 1 }));
-
-    days.forEach(day => {
-        routine[day] = {
-            AM: [...amProducts],
-            PM: [...pmProducts]
-        };
-    });
-
-    if (analysis.weeklyRoutine && analysis.weeklyRoutine.products) {
-        const weeklyDays = ['Wednesday', 'Sunday']; // Default days for weekly treatments
-        analysis.weeklyRoutine.products.forEach(product => {
-            weeklyDays.forEach(day => {
-                if (routine[day] && routine[day].PM) {
-                    const nextStep = routine[day].PM.length > 0 ? Math.max(...routine[day].PM.map(p => p.step)) + 1 : 1;
-                    routine[day].PM.push({ ...product, step: nextStep });
-                }
-            });
+    const downloadPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Skincare Assessment Results", 20, 20);
+        let y = 30;
+        Object.entries(results).forEach(([key, value]) => {
+            doc.text(`${key}: ${Array.isArray(value) ? value.join(', ') : value}`, 20, y);
+            y += 10;
         });
-    }
+        doc.save("skincare-assessment-results.pdf");
+    };
 
-    return routine;
-  };
+    const startNewAssessment = () => {
+        navigate('/skin-assessment');
+    };
 
-
-  const handleTrack = async () => {
-    if (analysis) {
-      try {
-        const transformedRoutine = transformRoutine(analysis);
-        await updateUserData({ routine: transformedRoutine, assessmentCompleted: true }); // Save the transformed routine
-        navigate('/progress-tracking-dashboard');
-      } catch (error) {
-        console.error("Error saving routine:", error);
-        // Optionally, show an error message to the user
-      }
-    }
-  };
-
-  const handleShare = () => {
-    setShareModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setShareModalOpen(false);
-  };
-
-  return (
-    <>
-      <div className="my-12">
-        <h2 className="text-2xl font-heading font-heading-semibold text-foreground mb-6 text-center">Ready to Start?</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-          <Button onClick={handlePurchase} variant="default" size="lg" iconName="ShoppingCart" iconPosition="left">
-            Purchase Routine
-          </Button>
-          <Button onClick={handleSamples} variant="secondary" size="lg" iconName="FlaskConical" iconPosition="left">
-            Try Samples
-          </Button>
-          <Button onClick={handleTrack} variant="secondary" size="lg" iconName="Activity" iconPosition="left">
-            Track My Routine
-          </Button>
-          <Button onClick={handleShare} variant="outline" size="lg" iconName="Share2" iconPosition="left" className="border border-border">
-            Share My Plan
-          </Button>
+    return (
+        <div className="flex justify-center mt-8 space-x-4">
+            <button onClick={saveResults} className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Save Results
+            </button>
+            <button onClick={downloadPDF} className="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Download as PDF
+            </button>
+            <button onClick={startNewAssessment} className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Start New Assessment
+            </button>
         </div>
-      </div>
-      <ShareModal isOpen={isShareModalOpen} onClose={handleCloseModal} />
-    </>
-  );
+    );
 };
 
 export default ActionButtons;

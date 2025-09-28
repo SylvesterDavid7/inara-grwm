@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -21,8 +21,18 @@ export const UserDataProvider = ({ children }) => {
         if (userSnap.exists()) {
           setUserData(userSnap.data());
         } else {
-          await setDoc(userRef, { email: currentUser.email, uid: currentUser.uid });
-          setUserData({ email: currentUser.email, uid: currentUser.uid });
+          const newUser = {
+            email: currentUser.email,
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+            createdAt: serverTimestamp(),
+            assessments: [],
+            outputs: [],
+            scorecards: [],
+          };
+          await setDoc(userRef, newUser);
+          setUserData(newUser);
         }
       } else {
         setUser(null);
@@ -42,7 +52,7 @@ export const UserDataProvider = ({ children }) => {
         setUserData(prevData => ({ ...prevData, ...newData }));
         return { success: true };
       } catch (error) {
-        console.error("Error updating user data:", error);
+        console.error('Error updating user data:', error);
         return { success: false, error };
       }
     }

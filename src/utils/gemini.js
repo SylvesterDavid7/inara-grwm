@@ -4,6 +4,66 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
 
+/**
+ * A dedicated function to check the compatibility between two skincare ingredients.
+ * @param {string} ing1Name - The name of the first ingredient.
+ * @param {string} ing2Name - The name of the second ingredient.
+ * @returns {Promise<object>} A promise that resolves to the compatibility analysis object.
+ */
+export const fetchIngredientCompatibility = async (ing1Name, ing2Name) => {
+  const prompt = `
+    As an expert dermatologist, analyze the compatibility between **${ing1Name}** and **${ing2Name}**.
+    Provide a concise, valid JSON object with the following structure. Do not include any markdown formatting or other text outside of the JSON object.
+    {
+      "compatibility": "excellent" | "good" | "caution" | "avoid" | "unknown",
+      "message": "A one-sentence explanation of the compatibility level.",
+      "recommendations": ["Up to 3-4 key recommendations for usage as strings. If there are no specific recommendations, return an empty array."]
+    }
+  `;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          "response_mime_type": "application/json",
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      console.error("Gemini API Error:", errorBody);
+      throw new Error(`API request failed with status ${response.status}: ${errorBody.error.message}`);
+    }
+
+    const data = await response.json();
+    
+    // With JSON mode, the response text should be a clean JSON string.
+    const jsonString = data.candidates[0].content.parts[0].text;
+    const result = JSON.parse(jsonString);
+
+    // --- Data Normalization ---
+    // Ensure the final object has a consistent structure.
+    return {
+      compatibility: result.compatibility || 'unknown',
+      message: result.message || 'No analysis message was provided.',
+      recommendations: Array.isArray(result.recommendations) ? result.recommendations : []
+    };
+
+  } catch (error) {
+    console.error("Error during ingredient compatibility check:", error);
+    // Re-throw a more specific error to be handled by the component
+    throw new Error(`Failed to get compatibility analysis from AI. Details: ${error.message}`);
+  }
+};
+
+
+
 // This function calls the Gemini API directly to get a real analysis.
 export const fetchGeminiAnalysis = async (routine) => {
 
