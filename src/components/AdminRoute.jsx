@@ -9,7 +9,7 @@ const AdminRoute = () => {
     return <div>Loading...</div>; 
   }
 
-  return user && isAdmin ? <Outlet /> : <Navigate to="/" />;
+  return user && isAdmin ? <Outlet /> : <Navigate to="/access-restricted" />;
 };
 
 export default AdminRoute;

@@ -2,10 +2,12 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { adminEmails } from '../data/admins';
 
 export const UserDataContext = createContext({
   user: null,
   userData: null,
+  isAdmin: false,
   loading: true,
   updateUserData: async () => ({ success: false, error: 'Not initialized' }),
 });
@@ -15,6 +17,7 @@ export const useUserDataContext = () => useContext(UserDataContext);
 export const UserDataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,6 +26,13 @@ export const UserDataProvider = ({ children }) => {
       if (currentUser) {
         const userRef = doc(db, 'users', currentUser.uid);
         const userSnap = await getDoc(userRef);
+        
+        if (adminEmails.includes(currentUser.email)) {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+
         if (userSnap.exists()) {
           setUserData(userSnap.data());
         } else {
@@ -37,12 +47,13 @@ export const UserDataProvider = ({ children }) => {
             scorecards: [],
           };
           await setDoc(userRef, newUser);
-          setUserData(newUser);
+setUserData(newUser);
         }
         setUser(currentUser);
       } else {
         setUser(null);
         setUserData(null);
+        setIsAdmin(false);
       }
       setLoading(false);
     });
@@ -68,6 +79,7 @@ export const UserDataProvider = ({ children }) => {
   const value = {
     user,
     userData,
+    isAdmin,
     loading,
     updateUserData,
   };

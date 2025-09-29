@@ -31,6 +31,7 @@ import AdminRoute from './components/AdminRoute';
 import AdminUsers from './pages/AdminUsers'; // Import the new page
 import AdminAnalytics from './pages/AdminAnalytics'; // Import the new page
 import AdminSettings from './pages/AdminSettings'; // Import the new page
+import AccessRestricted from './pages/AccessRestricted';
 
 const Routes = () => {
   return (
@@ -44,6 +45,8 @@ const Routes = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/access-restricted" element={<AccessRestricted />} />
+
           
           {/* Main App Layout */}
           <Route element={<Layout />}>

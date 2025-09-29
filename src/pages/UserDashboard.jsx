@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useUserDataContext } from '../contexts/UserDataContext.jsx';
 import { Bell, Clock, CheckCircle, XCircle } from 'lucide-react';
+import ProductDetailModal from './UserDashboard/components/ProductDetailModal.jsx';
 
 const UserDashboard = () => {
   const { user, userData, updateUserData, loading } = useUserDataContext();
   const [reminders, setReminders] = useState({ AM: false, PM: false });
   const [progress, setProgress] = useState({});
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const weekContainerRef = useRef(null);
 
   useEffect(() => {
@@ -126,7 +128,7 @@ const UserDashboard = () => {
           {routine.length > 0 ? routine.map((product, index) => {
               const status = dayProgress[product.name];
               return (
-                <div key={index} className={`bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 transition-opacity ${status ? 'opacity-50' : 'opacity-100'}`}>
+                <div key={index} onClick={() => setSelectedProduct(product)} className={`bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 transition-opacity cursor-pointer ${status ? 'opacity-50' : 'opacity-100'}`}>
                   <div className="font-heading text-2xl font-bold text-gray-300 w-12 text-center pt-1">{index + 1}</div>
                   <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
                     <img src={product.image || 'https://placehold.co/100x100/f1f5f9/334155?text=Product'} alt={product.name} className="w-16 h-16 object-contain" />
@@ -136,8 +138,8 @@ const UserDashboard = () => {
                     <p className="text-gray-500 text-sm">{product.category}</p>
                   </div>
                   <div className="flex flex-col items-center space-y-2">
-                    <button onClick={() => handleProgressUpdate(product.name, time, 'completed')} className={`p-1 rounded-full ${status === 'completed' ? 'bg-green-100 text-green-600' : 'text-gray-400 hover:text-green-500'}`}><CheckCircle size={20} /></button>
-                    <button onClick={() => handleProgressUpdate(product.name, time, 'skipped')} className={`p-1 rounded-full ${status === 'skipped' ? 'bg-yellow-100 text-yellow-600' : 'text-gray-400 hover:text-yellow-500'}`}><XCircle size={20} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); handleProgressUpdate(product.name, time, 'completed'); }} className={`p-1 rounded-full ${status === 'completed' ? 'bg-green-100 text-green-600' : 'text-gray-400 hover:text-green-500'}`}><CheckCircle size={20} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); handleProgressUpdate(product.name, time, 'skipped'); }} className={`p-1 rounded-full ${status === 'skipped' ? 'bg-yellow-100 text-yellow-600' : 'text-gray-400 hover:text-yellow-500'}`}><XCircle size={20} /></button>
                   </div>
                 </div>
               );
@@ -197,6 +199,7 @@ const UserDashboard = () => {
           )}
         </div>
       </main>
+      <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
     </div>
   );
 };

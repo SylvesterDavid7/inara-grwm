@@ -47,12 +47,12 @@ const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
   };
 
 
-  const handleTrack = async () => {
+  const handleSaveAndNavigate = async () => {
     if (analysis) {
       try {
         const transformedRoutine = transformRoutine(analysis);
         await updateUserData({ routine: transformedRoutine, assessmentCompleted: true }); // Save the transformed routine
-        navigate('/progress-tracking-dashboard');
+        navigate('/dashboard');
       } catch (error) {
         console.error("Error saving routine:", error);
         // Optionally, show an error message to the user
@@ -79,8 +79,8 @@ const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
           <Button onClick={handleSamples} variant="secondary" size="lg" iconName="FlaskConical" iconPosition="left">
             Try Samples
           </Button>
-          <Button onClick={handleTrack} variant="secondary" size="lg" iconName="Activity" iconPosition="left">
-            Track My Routine
+          <Button onClick={handleSaveAndNavigate} variant="secondary" size="lg" iconName="Activity" iconPosition="left">
+            Save & View Dashboard
           </Button>
           <Button onClick={handleShare} variant="outline" size="lg" iconName="Share2" iconPosition="left" className="border border-border">
             Share My Plan

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db, auth } from '../../firebase';
+import { useUserDataContext } from '../../contexts/UserDataContext.jsx';
 import StepNavigation from './components/StepNavigation';
 import RoutineStepContent from './components/RoutineStepContent';
 import RoutinePreviewPanel from './components/RoutinePreviewPanel';
@@ -10,15 +9,13 @@ import { fetchGeminiAnalysis } from '../../utils/gemini';
 
 const SkincareRoutineInput = () => {
   const navigate = useNavigate();
+  const { user, userData, updateUserData } = useUserDataContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [morningProducts, setMorningProducts] = useState([]);
   const [eveningProducts, setEveningProducts] = useState([]);
   const [weeklyTreatments, setWeeklyTreatments] = useState([]);
   const [lastSaved, setLastSaved] = useState(null);
-  
-  const [user, setUser] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // --- Dummy Data for Testing ---
@@ -38,53 +35,37 @@ const SkincareRoutineInput = () => {
   ];
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(currentUser => {
-      setUser(currentUser);
-      setAuthChecked(true);
-    });
-    return () => unsubscribe();
-  }, []);
+    const loadRoutine = () => {
+      setIsLoading(true);
+      if (userData && userData.routine) {
+        const { routine } = userData;
+        const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+        
+        setMorningProducts(routine[today]?.AM || []);
+        setEveningProducts(routine[today]?.PM || []);
+        setWeeklyTreatments(routine.Weekly || []);
+        setLastSaved(userData.routine.lastSaved ? new Date(userData.routine.lastSaved) : null);
 
-  useEffect(() => {
-    const loadRoutine = async () => {
-      if (!authChecked) return;
-
-      if (user) {
-        setIsLoading(true);
-        const docRef = doc(db, "routines", user.uid);
-        try {
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists() && docSnap.data().morningProducts?.length > 0) {
-            const data = docSnap.data();
-            setMorningProducts(data.morningProducts || []);
-            setEveningProducts(data.eveningProducts || []);
-            setWeeklyTreatments(data.weeklyTreatments || []);
-            setLastSaved(data.timestamp ? new Date(data.timestamp) : null);
-          } else {
-            // No routine in Firestore, pre-fill with dummy data
-            setMorningProducts(dummyMorningProducts);
-            setEveningProducts(dummyEveningProducts);
-            setWeeklyTreatments(dummyWeeklyTreatments);
-          }
-        } catch (error) {
-          console.error("Error loading routine from Firestore:", error);
-          // Fallback to dummy data on error
-          setMorningProducts(dummyMorningProducts);
-          setEveningProducts(dummyEveningProducts);
-          setWeeklyTreatments(dummyWeeklyTreatments);
-        }
-        setIsLoading(false);
       } else {
-        // No user, pre-fill with dummy data
+        // No routine in user data, pre-fill with dummy data
         setMorningProducts(dummyMorningProducts);
         setEveningProducts(dummyEveningProducts);
         setWeeklyTreatments(dummyWeeklyTreatments);
-        setLastSaved(null);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
-    loadRoutine();
-  }, [user, authChecked]);
+
+    if (user) {
+      loadRoutine();
+    } else {
+      // No user, pre-fill with dummy data
+      setMorningProducts(dummyMorningProducts);
+      setEveningProducts(dummyEveningProducts);
+      setWeeklyTreatments(dummyWeeklyTreatments);
+      setLastSaved(null);
+      setIsLoading(false);
+    }
+  }, [user, userData]);
 
   const handleAnalyze = async () => {
     const routine = { morningProducts, eveningProducts, weeklyTreatments };
@@ -112,12 +93,26 @@ const SkincareRoutineInput = () => {
       alert("Please sign in to save your routine.");
       return;
     }
-    const routineData = { morningProducts, eveningProducts, weeklyTreatments, timestamp: new Date().toISOString() };
+    
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const routine = daysOfWeek.reduce((acc, day) => {
+        acc[day] = { 
+            AM: morningProducts.map((p, i) => ({ ...p, step: i + 1 })),
+            PM: eveningProducts.map((p, i) => ({ ...p, step: i + 1 }))
+        };
+        return acc;
+    }, {});
+    
+    routine.Weekly = weeklyTreatments;
+    routine.lastSaved = new Date().toISOString();
+
     try {
-      await setDoc(doc(db, "routines", user.uid), routineData);
+      await updateUserData({ routine });
       setLastSaved(new Date());
+      alert("Routine saved successfully!");
     } catch (error) {
-      console.error("Error saving routine to Firestore:", error);
+      console.error("Error saving routine:", error);
+      alert(`There was an error saving your routine: ${error.message}`);
     }
   };
 
@@ -139,7 +134,7 @@ const SkincareRoutineInput = () => {
     else setWeeklyTreatments(products);
   };
 
-  if (isLoading || !authChecked) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
