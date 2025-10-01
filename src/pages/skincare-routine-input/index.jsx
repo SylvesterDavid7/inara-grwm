@@ -31,7 +31,8 @@ const SkincareRoutineInput = () => {
     { id: 'e3', name: 'Night Cream', category: 'moisturizer', ingredients: ['Shea Butter', 'Ceramides', 'Hyaluronic Acid'] },
   ];
   const dummyWeeklyTreatments = [
-      { id: 'w1', name: 'AHA/BHA Exfoliating Peel', category: 'treatment', ingredients: ['Glycolic Acid', 'Salicylic Acid'] }
+      { id: 'w1', name: 'AHA/BHA Exfoliating Peel', category: 'treatment', ingredients: ['Glycolic Acid', 'Salicylic Acid'] },
+      { id: 'w2', name: 'Hydrating Face Mask', category: 'treatment', ingredients: ['Glycerin', 'Aloe Vera'] }
   ];
 
   useEffect(() => {
@@ -43,7 +44,8 @@ const SkincareRoutineInput = () => {
         
         setMorningProducts(routine[today]?.AM || []);
         setEveningProducts(routine[today]?.PM || []);
-        setWeeklyTreatments(routine.Weekly || []);
+        const weeklyData = routine.Weekly || routine.weekly || [];
+        setWeeklyTreatments(Array.isArray(weeklyData) ? weeklyData : weeklyData.products || []);
         setLastSaved(userData.routine.lastSaved ? new Date(userData.routine.lastSaved) : null);
 
       } else {
@@ -116,6 +118,12 @@ const SkincareRoutineInput = () => {
     }
   };
 
+  const handleClearAll = () => {
+    setMorningProducts([]);
+    setEveningProducts([]);
+    setWeeklyTreatments([]);
+  };
+
   const steps = [
     { title: 'Morning Routine', description: 'Products you use in the morning', icon: 'Sun' },
     { title: 'Evening Routine', description: 'Products you use at night', icon: 'Moon' },
@@ -175,6 +183,7 @@ const SkincareRoutineInput = () => {
               weeklyTreatments={weeklyTreatments}
               onAnalyze={handleAnalyze}
               onSave={handleSaveDraft}
+              onClearAll={handleClearAll}
               isAnalyzing={isAnalyzing}
             />
           </div>

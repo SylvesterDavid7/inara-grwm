@@ -31,6 +31,7 @@ import AdminRoute from './components/AdminRoute';
 import AdminUsers from './pages/AdminUsers'; // Import the new page
 import AdminAnalytics from './pages/AdminAnalytics'; // Import the new page
 import AdminSettings from './pages/AdminSettings'; // Import the new page
+import AdminArticles from './pages/AdminArticles'; // Import the new page
 import AccessRestricted from './pages/AccessRestricted';
 
 const Routes = () => {
@@ -75,6 +76,7 @@ const Routes = () => {
               <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/analytics" element={<AdminAnalytics />} />
               <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="/admin/articles" element={<AdminArticles />} />
             </Route>
           </Route>
 

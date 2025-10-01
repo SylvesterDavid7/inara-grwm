@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Home, Users, BarChart, Settings, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { Home, Users, BarChart, Settings, ChevronsLeft, ChevronsRight, FileText } from 'lucide-react';
 import Header from './ui/Header';
 import Footer from './ui/Footer';
 
@@ -40,6 +40,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => (
       <nav className="flex-1 px-2 py-6 space-y-2">
         <SidebarLink icon={<Home size={20} />} to="/admin" text="Dashboard" isSidebarOpen={isSidebarOpen} />
         <SidebarLink icon={<Users size={20} />} to="/admin/users" text="Users" isSidebarOpen={isSidebarOpen} />
+        <SidebarLink icon={<FileText size={20} />} to="/admin/articles" text="Articles" isSidebarOpen={isSidebarOpen} />
         <SidebarLink icon={<BarChart size={20} />} to="/admin/analytics" text="Analytics" isSidebarOpen={isSidebarOpen} />
         <SidebarLink icon={<Settings size={20} />} to="/admin/settings" text="Settings" isSidebarOpen={isSidebarOpen} />
       </nav>

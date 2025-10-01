@@ -96,14 +96,73 @@ const Profile = () => {
       setTimeout(() => setErrorMessage(''), 5000);
     }
   };
+
+  const calculateBadges = (userData) => {
+    if (!userData) return [];
+
+    const allBadges = [
+      { id: 'starter', icon: 'Star', title: 'Skincare Starter', description: 'Completed your first skin assessment.', earned: false },
+      { id: 'builder', icon: 'ShieldCheck', title: 'Routine Builder', description: 'Added your first full skincare routine.', earned: false },
+      { id: 'consistency', icon: 'Zap', title: 'Consistency King', description: 'Tracked your routine for 7 days straight.', earned: false },
+      { id: 'guru', icon: 'BookOpen', title: 'Ingredient Guru', description: 'Viewed 10 ingredient details.', earned: false },
+    ];
+
+    const earnedBadges = allBadges.map(badge => {
+      let earned = false;
+      switch (badge.id) {
+        case 'starter':
+          if (userData.assessmentCompleted) {
+            earned = true;
+          }
+          break;
+        case 'builder':
+          if (userData.routine) {
+            const hasProducts = Object.values(userData.routine).some(day => {
+                const amProducts = day.AM || [];
+                const pmProducts = day.PM || [];
+                return amProducts.length > 0 || pmProducts.length > 0;
+            });
+            if (hasProducts) {
+                earned = true;
+            }
+          }
+          break;
+        case 'consistency':
+          if (userData.progress) {
+            const today = new Date();
+            let consecutiveDays = 0;
+            for (let i = 0; i < 7; i++) {
+              const date = new Date(today);
+              date.setDate(today.getDate() - i);
+              const dateKey = date.toISOString().split('T')[0];
+              if (userData.progress[dateKey] && Object.keys(userData.progress[dateKey]).length > 0) {
+                consecutiveDays++;
+              } else {
+                break; // Streak broken
+              }
+            }
+            if (consecutiveDays >= 7) {
+              earned = true;
+            }
+          }
+          break;
+        case 'guru':
+          if (userData.viewedIngredients && userData.viewedIngredients.length >= 10) {
+            earned = true;
+          }
+          break;
+        default:
+          break;
+      }
+      return { ...badge, earned };
+    });
+
+    return earnedBadges;
+  };
+
+  const userBadges = calculateBadges(userData);
   
   const mockScore = { score: 85, level: 'Pro', progress: 85 };
-  const mockBadges = [
-    { icon: 'Star', title: 'Skincare Starter', description: 'Completed your first skin assessment.', earned: true },
-    { icon: 'ShieldCheck', title: 'Routine Builder', description: 'Added your first full skincare routine.', earned: true },
-    { icon: 'Zap', title: 'Consistency King', description: 'Tracked your routine for 7 days straight.', earned: false },
-    { icon: 'BookOpen', title: 'Ingredient Guru', description: 'Viewed 10 ingredient details.', earned: true },
-  ];
   const mockStats = {
     highestScore: 1250,
     winStreak: 5,
@@ -176,7 +235,7 @@ const Profile = () => {
           <div className="md:col-span-2 space-y-8 order-2">
             <ScoreSection {...mockScore} />
             <StatsSection stats={mockStats} />
-            <BadgesSection badges={mockBadges} />
+            <BadgesSection badges={userBadges} />
           </div>
 
           {/* Tasks for Mobile */}

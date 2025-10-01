@@ -90,16 +90,19 @@ const UserDashboard = () => {
   const avatarUrl = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=f1f5f9&color=334155`;
 
   const getRoutineForSelectedDate = () => {
-    if (!userData.routine) return { AM: [], PM: [] };
+    if (!userData.routine) return { AM: [], PM: [], Weekly: [] };
     const dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
     const routineForDay = userData.routine[dayOfWeek];
+    const weeklyRoutine = userData.routine.Weekly || userData.routine.weekly || [];
+
     return {
       AM: routineForDay?.AM?.sort((a, b) => a.step - b.step) || [],
       PM: routineForDay?.PM?.sort((a, b) => a.step - b.step) || [],
+      Weekly: Array.isArray(weeklyRoutine) ? weeklyRoutine : weeklyRoutine.products || [],
     };
   };
 
-  const { AM: morningRoutine, PM: eveningRoutine } = getRoutineForSelectedDate();
+  const { AM: morningRoutine, PM: eveningRoutine, Weekly: weeklyRoutine } = getRoutineForSelectedDate();
   const assessmentCompleted = userData.assessmentCompleted;
 
   const renderRoutineSection = (title, time, routine) => {
@@ -153,6 +156,47 @@ const UserDashboard = () => {
     );
   };
 
+  const renderWeeklyRitualSection = (title, routine) => {
+    const time = 'Weekly'; // for progress tracking
+    const dateKey = formatDate(selectedDate);
+    const dayProgress = progress[dateKey]?.[time] || {};
+
+    return (
+      <div className="mb-8">
+        <div className="flex items-baseline mb-4">
+          <h3 className="font-heading text-lg font-bold text-gray-800 mr-2">{title}</h3>
+          <span className="font-heading px-2 py-0.5 text-xs font-semibold rounded-full bg-pink-100 text-pink-800">Weekly</span>
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          {routine.length > 0 ? routine.map((product, index) => {
+            const status = dayProgress[product.name];
+            return (
+              <div key={index} onClick={() => setSelectedProduct(product)} className={`bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4 transition-opacity cursor-pointer ${status ? 'opacity-50' : 'opacity-100'}`}>
+                <div className="font-heading text-2xl font-bold text-gray-300 w-12 text-center pt-1">{index + 1}</div>
+                <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <img src={product.image || 'https://placehold.co/100x100/f1f5f9/334155?text=Product'} alt={product.name} className="w-16 h-16 object-contain" />
+                </div>
+                <div className="flex-grow">
+                  <p className="font-bold text-gray-900">{product.name}</p>
+                  <p className="text-gray-500 text-sm">{product.category}</p>
+                </div>
+                <div className="flex flex-col items-center space-y-2">
+                  <button onClick={(e) => { e.stopPropagation(); handleProgressUpdate(product.name, time, 'completed'); }} className={`p-1 rounded-full ${status === 'completed' ? 'bg-green-100 text-green-600' : 'text-gray-400 hover:text-green-500'}`}><CheckCircle size={20} /></button>
+                  <button onClick={(e) => { e.stopPropagation(); handleProgressUpdate(product.name, time, 'skipped'); }} className={`p-1 rounded-full ${status === 'skipped' ? 'bg-yellow-100 text-yellow-600' : 'text-gray-400 hover:text-yellow-500'}`}><XCircle size={20} /></button>
+                </div>
+              </div>
+            );
+          }) : (
+            <div className="bg-white p-6 rounded-lg shadow-sm text-center">
+              <p className="font-heading text-gray-500">No weekly treatments planned for this day.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="py-10 px-4 sm:px-6 lg:px-8">
@@ -186,6 +230,7 @@ const UserDashboard = () => {
               </div>
               {renderRoutineSection('Morning Routine', 'AM', morningRoutine)}
               {renderRoutineSection('Evening Routine', 'PM', eveningRoutine)}
+              {renderWeeklyRitualSection('Weekly Ritual', weeklyRoutine)}
               <div className="mt-8">
                 <Link to="/progress-tracking-dashboard" className="font-heading w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">View My Progress</Link>
               </div>

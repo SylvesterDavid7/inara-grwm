@@ -1,0 +1,25 @@
+
+{
+  "articles": [
+    {
+      "id": 1,
+      "title": "The Importance of Sunscreen",
+      "category": "Sun Care",
+      "readTime": "5 min read",
+      "image": "/images/sunscreen.jpg",
+      "color": "#FFDAB9",
+      "isLarge": true,
+      "content": "Sunscreen is the most important step in any skincare routine..."
+    },
+    {
+      "id": 2,
+      "title": "Understanding Your Skin Type",
+      "category": "Basics",
+      "readTime": "7 min read",
+      "image": "/images/skin-types.jpg",
+      "color": "#E6E6FA",
+      "isLarge": false,
+      "content": "Knowing your skin type is the foundation for building an effective routine..."
+    }
+  ]
+}

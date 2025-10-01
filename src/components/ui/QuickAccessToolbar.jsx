@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
 import Input from './Input';
 import Select from './Select';
 
-const QuickAccessToolbar = ({ onSearch, className = "" }) => {
+const QuickAccessToolbar = ({
+  onSearch,
+  className = "",
+  onToggleLibraryView,
+  isLibraryView,
+  bookmarkedCount = 0
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -13,7 +19,7 @@ const QuickAccessToolbar = ({ onSearch, className = "" }) => {
 
   const getToolbarConfig = () => {
     const path = location?.pathname;
-    
+
     switch (path) {
       case '/progress-tracking-dashboard':
         return {
@@ -28,42 +34,43 @@ const QuickAccessToolbar = ({ onSearch, className = "" }) => {
             { value: 'year', label: 'This Year' }
           ],
           actions: [
-            { 
-              label: 'Add Entry', 
-              icon: 'Plus', 
+            {
+              label: 'Add Entry',
+              icon: 'Plus',
               variant: 'default',
               action: () => console.log('Add Entry')
             },
-            { 
-              label: 'View Calendar', 
-              icon: 'Calendar', 
+            {
+              label: 'View Calendar',
+              icon: 'Calendar',
               variant: 'outline',
               action: () => console.log('View Calendar')
             }
           ]
         };
-      
+
       case '/ingredient-education-hub':
+        const libraryAction = isLibraryView
+          ? {
+              label: 'All Ingredients',
+              icon: 'BookOpen',
+              variant: 'default',
+              action: () => { onToggleLibraryView(); },
+            }
+          : {
+              label: `My Library (${bookmarkedCount})`,
+              icon: 'Library',
+              variant: 'outline',
+              action: () => { onToggleLibraryView(); },
+            };
+
         return {
-          showSearch: true,
+          showSearch: !isLibraryView,
           showFilters: false,
           searchPlaceholder: 'Search ingredients, articles...',
-          actions: [
-            { 
-              label: 'Bookmark', 
-              icon: 'Bookmark', 
-              variant: 'outline',
-              action: () => console.log('Bookmark')
-            },
-            { 
-              label: 'My Library', 
-              icon: 'Library', 
-              variant: 'outline',
-              action: () => console.log('My Library')
-            }
-          ]
+          actions: [libraryAction]
         };
-      
+
       default:
         return null;
     }
@@ -81,14 +88,12 @@ const QuickAccessToolbar = ({ onSearch, className = "" }) => {
 
   const handleFilterChange = (value) => {
     setSelectedFilter(value);
-    // Implement filter logic here
     console.log('Filter changed to:', value);
   };
 
   const toggleSearchExpanded = () => {
     setIsSearchExpanded(!isSearchExpanded);
     if (!isSearchExpanded) {
-      // Focus search input when expanded
       setTimeout(() => {
         const searchInput = document.querySelector('[data-search-input]');
         if (searchInput) searchInput.focus();
@@ -101,86 +106,82 @@ const QuickAccessToolbar = ({ onSearch, className = "" }) => {
   }
 
   return (
-    <div className={`sticky top-16 z-20 bg-background border-b border-border ${className}`}>
+    <div className={`sticky top-16 z-30 bg-background border-b border-border ${className}`}>
       <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-3">
-            <div className="flex items-center justify-between space-x-4">
-            {/* Search and Filters */}
+          <div className="flex items-center justify-between space-x-4">
             <div className="flex items-center space-x-4 flex-1">
-                {config?.showSearch && (
+              {config?.showSearch && (
                 <div className="relative flex-1 max-w-md">
-                    {/* Desktop Search */}
-                    <div className="hidden md:block">
+                  <div className="hidden md:block">
                     <Input
-                        type="search"
-                        placeholder={config?.searchPlaceholder}
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        className="pl-10 border border-border"
-                        data-search-input
+                      type="search"
+                      placeholder={config?.searchPlaceholder}
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      className="pl-10 border border-border"
+                      data-search-input
                     />
-                    <Icon 
-                        name="Search" 
-                        size={16} 
-                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none" 
+                    <Icon
+                      name="Search"
+                      size={16}
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
                     />
-                    </div>
-
-                    {/* Mobile Search */}
-                    <div className="md:hidden">
+                  </div>
+                  <div className="md:hidden">
                     {isSearchExpanded ? (
-                        <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2">
                         <Input
-                            type="search"
-                            placeholder={config?.searchPlaceholder}
-                            value={searchQuery}
-                            onChange={handleSearch}
-                            className="flex-1 border border-border"
-                            data-search-input
+                          type="search"
+                          placeholder={config?.searchPlaceholder}
+                          value={searchQuery}
+                          onChange={handleSearch}
+                          className="flex-1 border border-border"
+                          data-search-input
                         />
                         <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={toggleSearchExpanded}
-                            iconName="X"
-                            iconSize={16}
+                          variant="ghost"
+                          size="sm"
+                          onClick={toggleSearchExpanded}
+                          iconName="X"
+                          iconSize={16}
                         >
-                            <span className="sr-only">Close search</span>
+                          <span className="sr-only">Close search</span>
                         </Button>
-                        </div>
+                      </div>
                     ) : (
-                        <Button
+                      <Button
                         variant="outline"
                         size="sm"
                         onClick={toggleSearchExpanded}
                         iconName="Search"
                         iconSize={16}
-                        >
+                      >
                         Search
-                        </Button>
+                      </Button>
                     )}
-                    </div>
+                  </div>
                 </div>
-                )}
+              )}
 
-                {config?.showFilters && !isSearchExpanded && (
+              {config?.showFilters && !isSearchExpanded && (
                 <div className="flex items-center space-x-3">
-                    <Select
+                  <Select
                     options={config?.filters}
                     value={selectedFilter}
                     onChange={handleFilterChange}
                     placeholder="Filter"
                     className="w-40"
-                    />
+                  />
                 </div>
-                )}
+              )}
             </div>
 
-            {/* Action Buttons */}
             {!isSearchExpanded && (
-                <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
+                {/* Desktop Buttons */}
                 {config?.actions?.map((action, index) => (
-                    <Button
+                  <Button
                     key={index}
                     variant={action?.variant}
                     size="sm"
@@ -189,38 +190,41 @@ const QuickAccessToolbar = ({ onSearch, className = "" }) => {
                     iconPosition="left"
                     iconSize={16}
                     className="hidden sm:flex"
-                    >
+                  >
                     {action?.label}
-                    </Button>
+                  </Button>
                 ))}
-                
-                {/* Mobile Action Menu */}
-                <div className="sm:hidden">
-                    <Button
-                    variant="outline"
-                    size="sm"
-                    iconName="MoreHorizontal"
-                    iconSize={16}
-                    >
-                    <span className="sr-only">More actions</span>
-                    </Button>
-                </div>
-                </div>
-            )}
-            </div>
 
-            {/* Mobile Filters (when search is not expanded) */}
-            {config?.showFilters && !isSearchExpanded && (
+                {/* Mobile: Single Action Button */}
+                {config?.actions?.[0] && (
+                  <Button
+                    variant={config.actions[0].variant}
+                    size="sm"
+                    onClick={config.actions[0].action}
+                    iconName={config.actions[0].icon}
+                    iconPosition="left"
+                    iconSize={16}
+                    className="sm:hidden"
+                  >
+                    {config.actions[0].label}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile filters */}
+          {config?.showFilters && !isSearchExpanded && (
             <div className="md:hidden mt-3">
-                <Select
+              <Select
                 options={config?.filters}
                 value={selectedFilter}
                 onChange={handleFilterChange}
                 placeholder="Filter results"
                 className="w-full"
-                />
+              />
             </div>
-            )}
+          )}
         </div>
       </div>
     </div>

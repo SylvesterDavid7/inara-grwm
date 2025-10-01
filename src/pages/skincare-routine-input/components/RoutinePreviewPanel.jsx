@@ -11,6 +11,7 @@ const RoutinePreviewPanel = ({
   onToggleCollapse,
   onSave,
   onAnalyze,
+  onClearAll,
   isAnalyzing
 }) => {
   const totalProducts = morningProducts.length + eveningProducts.length + weeklyTreatments.length;
@@ -58,6 +59,16 @@ const RoutinePreviewPanel = ({
                 iconPosition="left"
             >
                 Save Routine to Cloud
+            </Button>
+            <Button
+                variant="ghost"
+                onClick={onClearAll}
+                disabled={totalProducts === 0}
+                className="w-full text-destructive"
+                iconName="Trash2"
+                iconPosition="left"
+            >
+                Clear All Products
             </Button>
           </div>
         </div>

@@ -234,9 +234,9 @@ const IngredientDetailModal = ({ ingredient, isOpen, onClose, onBookmark, isBook
   return (
     <div className="fixed inset-0 z-modal bg-background/80 backdrop-blur-sm">
       <div className="flex items-center justify-center min-h-screen p-4">
-        <div className="bg-card border border-border rounded-clinical shadow-clinical-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        <div className="relative bg-card border border-border rounded-clinical shadow-clinical-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border">
+          <div className="flex flex-wrap items-start sm:items-center justify-between gap-4 p-6 pr-16 border-b border-border">
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 bg-muted rounded-clinical overflow-hidden">
                 <Image
@@ -277,17 +277,12 @@ const IngredientDetailModal = ({ ingredient, isOpen, onClose, onBookmark, isBook
               >
                 {isBookmarked ? 'Bookmarked' : 'Bookmark'}
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onClose}
-                iconName="X"
-                iconSize={20}
-              >
-                <span className="sr-only">Close</span>
-              </Button>
             </div>
           </div>
+
+          <Button variant="ghost" size="icon" onClick={onClose} iconName="X" iconSize={20} className="absolute top-4 right-4">
+            <span className="sr-only">Close</span>
+          </Button>
           
           {/* Skin Concerns */}
           <div className="px-6 py-4 border-b border-border">
