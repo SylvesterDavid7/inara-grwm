@@ -11,7 +11,7 @@ const useClickOutside = (ref, callback, isOpen) => {
     if (!isOpen) return;
 
     const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (ref.current && typeof ref.current.contains === 'function' && !ref.current.contains(event.target)) {
         callback();
       }
     };

@@ -5,7 +5,7 @@ import MetricsDashboard from './MetricsDashboard';
 import RoutineScoreSection from './RoutineScoreSection';
 
 const ReportTemplate = ({ analysis }) => {
-    const { metrics, morningRoutine, eveningRoutine, overallScore } = analysis;
+    const { metrics, morningRoutine, eveningRoutine, weeklyRoutine, overallScore } = analysis;
 
     const styles = {
         page: {
@@ -75,6 +75,19 @@ const ReportTemplate = ({ analysis }) => {
                             </div>
                         )}
                     </div>
+
+                    {weeklyRoutine && (
+                        <div style={{ marginTop: '24px' }}>
+                            <RoutineScoreSection
+                                title="Weekly Routine Analysis"
+                                score={weeklyRoutine.score}
+                                products={weeklyRoutine.products}
+                                insights={weeklyRoutine.insights}
+                                timeOfDay="weekly"
+                                isPdfMode={true}
+                            />
+                        </div>
+                    )}
                 </main>
             </div>
             <ReportFooter />

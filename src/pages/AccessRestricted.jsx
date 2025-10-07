@@ -5,8 +5,9 @@ const AccessRestricted = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-white">
       <div className="text-center">
-        <h1 className="text-6xl font-heading font-extrabold text-red-500">Access Restricted</h1>
-        <p className="mt-4 text-lg text-gray-700">You do not have permission to view this page.</p>
+        <h1 className="text-6xl font-heading font-extrabold text-blue-500">Coming Soon!</h1>
+        <p className="mt-4 text-lg text-gray-700">This feature is currently under development and will be available to users soon.</p>
+        <p className="mt-2 text-md text-gray-500">Only admins can access this page for now.</p>
         <div className="mt-8">
           <Link
             to="/home"

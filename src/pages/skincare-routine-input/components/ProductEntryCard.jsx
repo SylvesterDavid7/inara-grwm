@@ -4,6 +4,8 @@ import Image from '../../../components/AppImage';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
+import { analyzeProductImage } from '../../../utils/gemini';
+import { cn } from '../../../utils/cn';
 
 const ProductEntryCard = ({ 
   product = {}, 
@@ -17,13 +19,14 @@ const ProductEntryCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [imagePreview, setImagePreview] = useState(product?.image || '');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef(null);
 
   const productSuggestions = [
     "CeraVe Hydrating Cleanser",
     "The Ordinary Niacinamide 10% + Zinc 1%",
     "Neutrogena Ultra Sheer Dry-Touch Sunscreen SPF 100+",
-    "Paula\'s Choice Skin Perfecting 2% BHA Liquid Exfoliant",
+    "Paula's Choice Skin Perfecting 2% BHA Liquid Exfoliant",
     "Olay Regenerist Micro-Sculpting Cream",
     "La Roche-Posay Toleriane Double Repair Face Moisturizer",
     "Cetaphil Daily Facial Cleanser",
@@ -51,16 +54,72 @@ const ProductEntryCard = ({
     { value: 'eye-cream', label: 'Eye Cream' }
   ];
 
-  const handleImageUpload = (event) => {
-    const file = event?.target?.files?.[0];
-    if (file) {
+  const getCategoryFromAnalysis = (details) => {
+    const text = `${details.name} ${details.category} ${details.brand}`.toLowerCase();
+    
+    if (text.includes('spf') || text.includes('sunscreen') || text.includes('sun block')) {
+      return 'sunscreen';
+    }
+
+    const categoryMap = {
+      cleanser: 'cleanser',
+      toner: 'toner',
+      serum: 'serum',
+      moisturizer: 'moisturizer',
+      lotion: 'moisturizer',
+      cream: 'moisturizer',
+      treatment: 'treatment',
+      exfoliant: 'exfoliant',
+      peel: 'exfoliant',
+      scrub: 'exfoliant',
+      mask: 'mask',
+      oil: 'oil',
+      'face oil': 'oil',
+      'eye cream': 'eye-cream',
+    };
+
+    const receivedCategory = details.category?.toLowerCase().trim() || '';
+    const matchedKey = Object.keys(categoryMap).find(key => receivedCategory.includes(key));
+    
+    return matchedKey ? categoryMap[matchedKey] : '';
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setIsAnalyzing(true);
+    const imagePreviewUrl = URL.createObjectURL(file);
+    setImagePreview(imagePreviewUrl);
+
+    try {
+      const productDetails = await analyzeProductImage(file);
+      const categoryValue = getCategoryFromAnalysis(productDetails);
+
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e?.target?.result;
-        setImagePreview(imageUrl);
-        onUpdate({ ...product, image: imageUrl });
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const imageUrl = reader.result;
+        onUpdate({
+          ...product,
+          ...productDetails,
+          category: categoryValue,
+          image: imageUrl,
+          ingredients: Array.isArray(productDetails.ingredients) 
+            ? productDetails.ingredients.join(', ') 
+            : productDetails.ingredients
+        });
+        setIsAnalyzing(false);
       };
-      reader?.readAsDataURL(file);
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+        setIsAnalyzing(false);
+      };
+    } catch (error) {
+      console.error("Error analyzing product image:", error);
+      URL.revokeObjectURL(imagePreviewUrl);
+      setImagePreview('');
+      setIsAnalyzing(false);
     }
   };
 
@@ -75,13 +134,7 @@ const ProductEntryCard = ({
   };
 
   const handleBarcodeScanner = () => {
-    // Mock barcode scanning functionality
-    const mockProducts = [
-      { name: "CeraVe Hydrating Cleanser", brand: "CeraVe", category: "cleanser" },
-      { name: "The Ordinary Niacinamide", brand: "The Ordinary", category: "serum" }
-    ];
-    const randomProduct = mockProducts?.[Math.floor(Math.random() * mockProducts?.length)];
-    onUpdate({ ...product, ...randomProduct });
+    fileInputRef?.current?.click();
   };
 
   const filteredSuggestions = productSuggestions?.filter(suggestion =>
@@ -92,7 +145,6 @@ const ProductEntryCard = ({
     <div className={`bg-card border rounded-clinical shadow-clinical transition-clinical ${
       showConflictWarning ? 'border-warning' : 'border-border hover:shadow-clinical-lg'
     }`}>
-      {/* Conflict Warning Banner */}
       {showConflictWarning && (
         <div className="bg-warning/10 border-b border-warning/20 px-4 py-3">
           <div className="flex items-start space-x-3">
@@ -108,7 +160,6 @@ const ProductEntryCard = ({
           </div>
         </div>
       )}
-      {/* Card Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -134,6 +185,7 @@ const ProductEntryCard = ({
               onClick={() => setIsExpanded(!isExpanded)}
               iconName={isExpanded ? "ChevronUp" : "ChevronDown"}
               iconSize={16}
+              className="hover:bg-black hover:text-white"
             >
               {isExpanded ? 'Collapse' : 'Expand'}
             </Button>
@@ -144,28 +196,33 @@ const ProductEntryCard = ({
               iconName="Trash2"
               iconSize={16}
               className="text-destructive hover:text-destructive"
-            >
-              <span className="sr-only">Remove product</span>
-            </Button>
+            />
           </div>
         </div>
       </div>
-      {/* Card Content */}
       <div className={`transition-clinical ${isExpanded ? 'block' : 'hidden'}`}>
         <div className="p-4 space-y-6">
-          {/* Product Image and Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Image Upload */}
             <div className="space-y-3">
               <label className="font-body font-body-medium text-sm text-foreground">
                 Product Image
               </label>
               <div className="relative">
                 <div 
-                  className="w-full h-32 bg-muted border-2 border-dashed border-border rounded-clinical flex items-center justify-center cursor-pointer hover:bg-secondary/50 transition-clinical"
-                  onClick={() => fileInputRef?.current?.click()}
+                  className={cn(
+                    "w-full h-32 bg-muted border-2 border-dashed border-border rounded-clinical flex items-center justify-center cursor-pointer hover:bg-secondary/50 transition-clinical",
+                    { "opacity-50 pointer-events-none": isAnalyzing }
+                  )}
+                  onClick={() => !isAnalyzing && fileInputRef?.current?.click()}
                 >
-                  {imagePreview ? (
+                  {isAnalyzing ? (
+                    <div className="text-center">
+                        <Icon name="Loader" size={24} className="text-muted-foreground animate-spin mx-auto mb-2" />
+                        <div className="font-caption font-caption-normal text-xs text-muted-foreground">
+                            Analyzing Image...
+                        </div>
+                    </div>
+                  ) : imagePreview ? (
                     <Image
                       src={imagePreview}
                       alt="Product preview"
@@ -186,6 +243,7 @@ const ProductEntryCard = ({
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
+                  disabled={isAnalyzing}
                 />
                 <Button
                   variant="outline"
@@ -194,15 +252,14 @@ const ProductEntryCard = ({
                   iconName="Scan"
                   iconSize={14}
                   className="absolute top-2 right-2"
+                  disabled={isAnalyzing}
                 >
                   Scan
                 </Button>
               </div>
             </div>
 
-            {/* Product Details */}
             <div className="md:col-span-2 space-y-4">
-              {/* Product Name with Autocomplete */}
               <div className="relative">
                 <Input
                   label="Product Name"
@@ -213,7 +270,6 @@ const ProductEntryCard = ({
                   required
                 />
                 
-                {/* Suggestions Dropdown */}
                 {showSuggestions && filteredSuggestions?.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-clinical shadow-clinical-lg z-50 max-h-48 overflow-y-auto">
                     {filteredSuggestions?.slice(0, 5)?.map((suggestion, idx) => (
@@ -249,7 +305,6 @@ const ProductEntryCard = ({
             </div>
           </div>
 
-          {/* Usage Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
               label="Usage Frequency"
@@ -270,14 +325,13 @@ const ProductEntryCard = ({
             />
           </div>
 
-          {/* Additional Details */}
           <div className="space-y-4">
             <Input
               label="Key Ingredients (Optional)"
               type="text"
               placeholder="e.g., Niacinamide, Hyaluronic Acid, Retinol..."
-              value={product?.ingredients || ''}
-              onChange={(e) => onUpdate({ ...product, ingredients: e?.target?.value })}
+              value={product.ingredients || ''}
+              onChange={(e) => onUpdate({ ...product, ingredients: e.target.value })}
               description="Separate multiple ingredients with commas"
             />
 
@@ -290,7 +344,6 @@ const ProductEntryCard = ({
             />
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center justify-between pt-4 border-t border-border">
             <Button
               variant="outline"
@@ -315,10 +368,9 @@ const ProductEntryCard = ({
           </div>
         </div>
       </div>
-      {/* Collapsed Preview */}
       {!isExpanded && (
         <div className="p-4">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-start space-x-4">
             {imagePreview && (
               <div className="w-12 h-12 rounded-clinical overflow-hidden flex-shrink-0">
                 <Image
@@ -329,21 +381,26 @@ const ProductEntryCard = ({
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 flex-wrap">
                 {product?.category && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-clinical-sm bg-secondary text-secondary-foreground font-caption font-caption-normal text-xs">
+                  <span className="inline-flex items-center px-2 py-1 mb-1 rounded-clinical-sm bg-secondary text-secondary-foreground font-caption font-caption-normal text-xs">
                     {categoryOptions?.find(opt => opt?.value === product?.category)?.label}
                   </span>
                 )}
                 {product?.frequency && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-clinical-sm bg-accent/10 text-accent font-caption font-caption-normal text-xs">
+                  <span className="inline-flex items-center px-2 py-1 mb-1 rounded-clinical-sm bg-accent/10 text-accent font-caption font-caption-normal text-xs">
                     {frequencyOptions?.find(opt => opt?.value === product?.frequency)?.label}
                   </span>
                 )}
               </div>
-              {product?.ingredients && (
-                <div className="font-caption font-caption-normal text-xs text-muted-foreground mt-1 truncate">
-                  {product?.ingredients}
+              {(product?.ingredients || product?.notes) && (
+                <div className="font-caption font-caption-normal text-xs text-muted-foreground mt-2 space-y-1">
+                    {product?.ingredients && (
+                        <p className="whitespace-normal"><strong>Ingredients:</strong> {Array.isArray(product.ingredients) ? product.ingredients.join(', ') : product.ingredients}</p>
+                    )}
+                    {product?.notes && (
+                        <p className="whitespace-normal"><strong>Instructions:</strong> {product.notes}</p>
+                    )}
                 </div>
               )}
             </div>

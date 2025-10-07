@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 
 // PDF-specific renderer for Routine Sections
-const PdfRoutineSection = ({ title, score, products, insights, timeOfDay }) => {
+const PdfRoutineSection = ({ title, score, products, insights }) => {
   // Reverting to a simpler flexbox-based layout for readability, as it wasn't the root cause.
   const styles = {
     container: {
@@ -96,11 +96,11 @@ const PdfRoutineSection = ({ title, score, products, insights, timeOfDay }) => {
 };
 
 // Original component using Tailwind CSS for the web UI
-const RoutineScoreSection = ({ title, score, products, timeOfDay, insights, isExpanded: initialExpanded = false, isPdfMode = false }) => {
+const RoutineScoreSection = ({ title, score, products, icon, insights, isExpanded: initialExpanded = false, isPdfMode = false }) => {
   const [isExpanded, setIsExpanded] = useState(initialExpanded);
 
   if (isPdfMode) {
-    return <PdfRoutineSection {...{ title, score, products, insights, timeOfDay }} />;
+    return <PdfRoutineSection {...{ title, score, products, insights }} />;
   }
 
   const getScoreBadgeColor = (s) => {
@@ -137,7 +137,7 @@ const RoutineScoreSection = ({ title, score, products, timeOfDay, insights, isEx
       >
         <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
           <Icon
-            name={timeOfDay === 'morning' ? 'Sun' : 'Moon'}
+            name={icon || 'HelpCircle'}
             size={24}
             className="text-primary flex-shrink-0"
           />

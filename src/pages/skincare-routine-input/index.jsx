@@ -20,19 +20,19 @@ const SkincareRoutineInput = () => {
 
   // --- Dummy Data for Testing ---
   const dummyMorningProducts = [
-    { id: 'm1', name: 'Gentle Hydrating Cleanser', category: 'cleanser', ingredients: ['Ceramides', 'Glycerin', 'Hyaluronic Acid'] },
-    { id: 'm2', name: 'Vitamin C Brightening Serum', category: 'serum', ingredients: ['Vitamin C', 'Hyaluronic Acid'] },
-    { id: 'm3', name: 'Daily Moisturizing Lotion', category: 'moisturizer', ingredients: ['Glycerin', 'Niacinamide', 'Ceramides'] },
-    { id: 'm4', name: 'Mineral Sunscreen SPF 30', category: 'sunscreen', ingredients: ['Zinc Oxide', 'Titanium Dioxide'] },
+    { id: 'm1', name: 'Gentle Hydrating Cleanser', category: 'cleanser', ingredients: ['Ceramides', 'Glycerin', 'Hyaluronic Acid'], frequency: 'daily', notes: 'Apply a small amount to damp skin, massage gently, and rinse.' },
+    { id: 'm2', name: 'Vitamin C Brightening Serum', category: 'serum', ingredients: ['Vitamin C', 'Hyaluronic Acid', 'Ferulic Acid'], frequency: 'daily', notes: 'Apply a few drops to a clean, dry face in the morning before moisturizing.' },
+    { id: 'm3', name: 'Daily Moisturizing Lotion', category: 'moisturizer', ingredients: ['Glycerin', 'Niacinamide', 'Ceramides'], frequency: 'daily', notes: 'Apply to face and neck after serums.' },
+    { id: 'm4', name: 'Mineral Sunscreen SPF 50', category: 'sunscreen', ingredients: ['Zinc Oxide', 'Titanium Dioxide', 'Niacinamide'], frequency: 'daily', notes: 'Apply liberally 15 minutes before sun exposure. Reapply every 2 hours.' },
   ];
   const dummyEveningProducts = [
-    { id: 'e1', name: 'Gentle Hydrating Cleanser', category: 'cleanser', ingredients: ['Ceramides', 'Glycerin', 'Hyaluronic Acid'] },
-    { id: 'e2', name: 'Retinol Renewal Serum', category: 'serum', ingredients: ['Retinol', 'Niacinamide'] },
-    { id: 'e3', name: 'Night Cream', category: 'moisturizer', ingredients: ['Shea Butter', 'Ceramides', 'Hyaluronic Acid'] },
+    { id: 'e1', name: 'Gentle Hydrating Cleanser', category: 'cleanser', ingredients: ['Ceramides', 'Glycerin', 'Hyaluronic Acid'], frequency: 'daily', notes: 'Apply a small amount to damp skin, massage gently to remove makeup and impurities, and rinse.' },
+    { id: 'e2', name: 'Retinol Renewal Serum', category: 'serum', ingredients: ['Retinol', 'Niacinamide', 'Peptides'], frequency: 'every-other-day', notes: 'Apply a pea-sized amount to clean, dry skin at night. Start with 2-3 times a week.' },
+    { id: 'e3', name: 'Night Cream', category: 'moisturizer', ingredients: ['Shea Butter', 'Ceramides', 'Hyaluronic Acid'], frequency: 'daily', notes: 'Apply as the last step in your evening routine to lock in moisture.' },
   ];
   const dummyWeeklyTreatments = [
-      { id: 'w1', name: 'AHA/BHA Exfoliating Peel', category: 'treatment', ingredients: ['Glycolic Acid', 'Salicylic Acid'] },
-      { id: 'w2', name: 'Hydrating Face Mask', category: 'treatment', ingredients: ['Glycerin', 'Aloe Vera'] }
+      { id: 'w1', name: 'AHA/BHA Exfoliating Peel', category: 'exfoliant', ingredients: ['Glycolic Acid', 'Salicylic Acid', 'Lactic Acid'], frequency: 'weekly', notes: 'Apply to clean, dry skin. Leave on for 10 minutes, then rinse thoroughly. Use only at night.' },
+      { id: 'w2', name: 'Hydrating Face Mask', category: 'mask', ingredients: ['Glycerin', 'Aloe Vera', 'Sodium Hyaluronate'], frequency: '2-3-times-week', notes: 'Apply a generous layer to clean skin. Leave on for 15-20 minutes, then rinse or wipe off.' }
   ];
 
   useEffect(() => {

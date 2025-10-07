@@ -16,7 +16,8 @@ const Header = () => {
       label: 'Analyze',
       items: [
         { label: 'Routine Input', path: '/skincare-routine-input', icon: 'Plus' },
-        { label: 'Skin Assessment', path: '/skin-assessment-questionnaire', icon: 'ClipboardList' }
+        { label: 'Skin Assessment', path: '/skin-assessment-questionnaire', icon: 'ClipboardList' },
+        { label: 'Derma Scan', path: '/derma-scan', icon: 'Scan' }
       ]
     },
     {

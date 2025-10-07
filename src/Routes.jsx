@@ -33,6 +33,7 @@ import AdminAnalytics from './pages/AdminAnalytics'; // Import the new page
 import AdminSettings from './pages/AdminSettings'; // Import the new page
 import AdminArticles from './pages/AdminArticles'; // Import the new page
 import AccessRestricted from './pages/AccessRestricted';
+import DermaScanPage from './pages/derma-scan';
 
 const Routes = () => {
   return (
@@ -52,7 +53,9 @@ const Routes = () => {
           {/* Main App Layout */}
           <Route element={<Layout />}>
             <Route path="/home" element={<HomePage />} />
-            <Route path="/product-recommendations" element={<ProductRecommendations />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/product-recommendations" element={<ProductRecommendations />} />
+            </Route>
             <Route path="/ingredient-education-hub" element={<IngredientEducationHub />} />
             <Route path="/skincare-101" element={<Skincare101 />} />
             <Route path="/skincare-routine-input" element={<SkincareRoutineInput />} />
@@ -61,6 +64,7 @@ const Routes = () => {
             <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
             <Route path="/assessment-results" element={<AssessmentResults />} />
             <Route path="/optimize-routine" element={<OptimizeRoutine />} />
+            <Route path="/derma-scan" element={<DermaScanPage />} />
             <Route element={<PrivateRoute />}>
               <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<UserDashboard />} />

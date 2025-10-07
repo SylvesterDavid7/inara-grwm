@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { X } from 'lucide-react';
 
@@ -26,14 +25,14 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4"
+      className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex justify-center items-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
       onClick={onClose}
     >
       <div
-        className="bg-white text-foreground rounded-xl shadow-lg w-full max-w-lg overflow-hidden"
+        className="bg-card text-foreground rounded-xl shadow-lg w-full max-w-lg overflow-hidden border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center p-6 border-b border-border">
