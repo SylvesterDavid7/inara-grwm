@@ -41,7 +41,7 @@ const Gate = () => {
     const enteredCode = code.join("");
     const validCodes = ["396000", "123456", "789012"]; // Valid passcodes
     if (validCodes.includes(enteredCode)) {
-      sessionStorage.setItem("is-authenticated", "true");
+      sessionStorage.setItem("hasGateAccess", "true");
       navigate("/home");
     } else {
       setError("Invalid verification code. Please try again.");

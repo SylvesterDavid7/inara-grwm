@@ -34,6 +34,7 @@ import AdminSettings from './pages/AdminSettings'; // Import the new page
 import AdminArticles from './pages/AdminArticles'; // Import the new page
 import AccessRestricted from './pages/AccessRestricted';
 import DermaScanPage from './pages/derma-scan';
+import GateRoute from './components/GateRoute';
 
 const Routes = () => {
   return (
@@ -49,38 +50,39 @@ const Routes = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/access-restricted" element={<AccessRestricted />} />
 
-          
-          {/* Main App Layout */}
-          <Route element={<Layout />}>
-            <Route path="/home" element={<HomePage />} />
-            <Route element={<AdminRoute />}>
-              <Route path="/product-recommendations" element={<ProductRecommendations />} />
+          <Route element={<GateRoute />}>
+            {/* Main App Layout */}
+            <Route element={<Layout />}>
+              <Route path="/home" element={<HomePage />} />
+              <Route element={<AdminRoute />}>
+                <Route path="/product-recommendations" element={<ProductRecommendations />} />
+              </Route>
+              <Route path="/ingredient-education-hub" element={<IngredientEducationHub />} />
+              <Route path="/skincare-101" element={<Skincare101 />} />
+              <Route path="/skincare-routine-input" element={<SkincareRoutineInput />} />
+              <Route path="/progress-tracking-dashboard" element={<ProgressTrackingDashboard />} />
+              <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />
+              <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
+              <Route path="/assessment-results" element={<AssessmentResults />} />
+              <Route path="/optimize-routine" element={<OptimizeRoutine />} />
+              <Route path="/derma-scan" element={<DermaScanPage />} />
+              <Route element={<PrivateRoute />}>
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/dashboard" element={<UserDashboard />} />
+                <Route path="/user-info" element={<UserInfo />} />
+                <Route path="/change-password" element={<ChangePassword />} />
+              </Route>
             </Route>
-            <Route path="/ingredient-education-hub" element={<IngredientEducationHub />} />
-            <Route path="/skincare-101" element={<Skincare101 />} />
-            <Route path="/skincare-routine-input" element={<SkincareRoutineInput />} />
-            <Route path="/progress-tracking-dashboard" element={<ProgressTrackingDashboard />} />
-            <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />
-            <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
-            <Route path="/assessment-results" element={<AssessmentResults />} />
-            <Route path="/optimize-routine" element={<OptimizeRoutine />} />
-            <Route path="/derma-scan" element={<DermaScanPage />} />
-            <Route element={<PrivateRoute />}>
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/dashboard" element={<UserDashboard />} />
-              <Route path="/user-info" element={<UserInfo />} />
-              <Route path="/change-password" element={<ChangePassword />} />
-            </Route>
-          </Route>
 
-          {/* Admin Section */}
-          <Route element={<AdminRoute />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/analytics" element={<AdminAnalytics />} />
-              <Route path="/admin/settings" element={<AdminSettings />} />
-              <Route path="/admin/articles" element={<AdminArticles />} />
+            {/* Admin Section */}
+            <Route element={<AdminRoute />}>
+              <Route element={<AdminLayout />}>
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/users" element={<AdminUsers />} />
+                <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                <Route path="/admin/settings" element={<AdminSettings />} />
+                <Route path="/admin/articles" element={<AdminArticles />} />
+              </Route>
             </Route>
           </Route>
 

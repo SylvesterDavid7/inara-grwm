@@ -128,32 +128,32 @@ const SkinAssessmentQuestionnaire = () => {
         { 
           value: 'fair', 
           label: 'Fair', 
-          image: 'https://images.unsplash.com/photo-1494790108755-2616c0763c65?w=150&h=150&fit=crop&crop=face'
+          image: '/Fair.png'
         },
         { 
           value: 'light', 
           label: 'Light', 
-          image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
+          image: 'Light.png'
         },
         { 
           value: 'medium', 
           label: 'Medium', 
-          image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&h=150&fit=crop&crop=face'
+          image: 'Medium.png'
         },
         { 
           value: 'olive', 
           label: 'Olive', 
-          image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
+          image: 'Olive.png'
         },
         { 
           value: 'tan', 
           label: 'Tan', 
-          image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face'
+          image: 'Tan.png'
         },
         { 
           value: 'deep', 
           label: 'Deep', 
-          image: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=150&h=150&fit=crop&crop=face'
+          image: 'Deep.png'
         }
       ]
     },

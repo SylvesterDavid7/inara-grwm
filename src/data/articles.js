@@ -51,7 +51,7 @@ export const articles = [
     title: "Niacinamide: The Multitasking Wonder Ingredient",
     category: "Vitamins",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1581464647110-26e7348039a3?w=800&h=600&fit=crop",
+    image: "/6.1.webp",
     color: "#d34a54",
     isLarge: true,
     content: `Niacinamide, or Vitamin B3, is a true skincare superstar. This versatile ingredient is well-tolerated by almost all skin types and addresses a huge range of concerns.\n\n**Its benefits include:**\n- **Minimizing pores:** It helps to regulate oil production, which can reduce pore congestion and appearance.\n- **Improving skin tone:** It reduces redness and hyperpigmentation.\n- **Strengthening the skin barrier:** It boosts ceramide production, improving hydration and resilience.\n- **Reducing fine lines:** It supports collagen production over time.\n\nYou can find it in serums, moisturizers, and cleansers, and it pairs well with most other skincare ingredients.`
@@ -61,7 +61,7 @@ export const articles = [
     title: "Fact: You Still Need Sunscreen Indoors",
     category: "Facts",
     readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1562322140-54a7c1a89c38?w=500&h=600&fit=crop",
+    image: "/7.1.webp",
     color: "#8dbf91",
     content: `Most windows block UVB rays but not UVA rays, which are responsible for premature aging. If you sit near a window at home or in the office, you are still being exposed to UVA radiation. Therefore, it's a good practice to wear a broad-spectrum sunscreen even on days you don't plan to go outside to protect your skin from the cumulative effects of incidental sun exposure.`
   },
@@ -70,7 +70,7 @@ export const articles = [
     title: "The Science of Vitamin C: A Brightening Antioxidant",
     category: "Science-Backed",
     readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1580854215888-2c26c141c2c4?w=500&h=600&fit=crop",
+    image: "/8.1.webp",
     color: "#f7a03b",
     content: `Vitamin C is a potent antioxidant that protects the skin from free radical damage caused by UV exposure and pollution. It also plays a key role in collagen synthesis and inhibiting melanin production, which helps to brighten the skin and reduce hyperpigmentation.\n\nLook for Vitamin C serums with L-Ascorbic Acid, the most potent form, at a concentration of 10-20%. Because it's notoriously unstable, store it in a cool, dark place and look for opaque, airtight packaging.`
   },
@@ -79,7 +79,7 @@ export const articles = [
     title: "Do You Really Need a Toner?",
     category: "Basics",
     readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1552509336-ea364bbf4514?w=500&h=600&fit=crop",
+    image: "/9.1.webp",
     color: "#7b9eae",
     content: `Toners have evolved. They used to be harsh, alcohol-based liquids designed to strip oil from the skin. Today's toners are formulated to address a variety of skin concerns.\n\nDepending on the ingredients, a toner can help to: remove the last traces of cleanser, balance the skin's pH, provide a layer of hydration, or deliver active ingredients. While not an essential step for everyone, the right toner can be a valuable addition to your routine, especially for those with oily or dry skin.`
   },
@@ -88,7 +88,7 @@ export const articles = [
     title: "Myth: Oily Skin Doesn't Need Moisturizer",
     category: "Myths",
     readTime: "2 min read",
-    image: "https://images.unsplash.com/photo-1621784564114-6eea05b89863?w=500&h=600&fit=crop",
+    image: "/10.1.webp",
     color: "#b8a4c4",
     content: `This is a persistent myth that often leads to more skin problems. Oily skin produces excess sebum, but it can still be dehydrated (lacking water). In fact, if you strip your skin of its natural oils with harsh products and skip moisturizer, your skin may overcompensate by producing even more oil.\n\nLook for lightweight, oil-free, non-comedogenic moisturizers that contain humectants like hyaluronic acid and glycerin to keep your skin hydrated and balanced.`
   },
@@ -97,7 +97,7 @@ export const articles = [
     title: "AHAs vs. BHAs: Which Exfoliant is Right for You?",
     category: "Science-Backed",
     readTime: "6 min read",
-    image: "https://images.unsplash.com/photo-1600868297712-429a33b21a3e?w=800&h=600&fit=crop",
+    image: "/11.1.webp",
     color: "#6c8b9a",
     isLarge: true,
     content: `Alpha-hydroxy acids (AHAs) and beta-hydroxy acids (BHAs) are the two main types of chemical exfoliants.\n\n**AHAs**, like glycolic and lactic acid, are water-soluble and work on the surface of the skin. They are excellent for improving skin texture, fading hyperpigmentation, and reducing the appearance of fine lines. They are best suited for normal to dry, sun-damaged skin.\n\n**BHAs**, like salicylic acid, are oil-soluble, which means they can penetrate deeper into the pores to unclog them. This makes them ideal for oily, acne-prone skin and for treating blackheads and whiteheads. BHA also has anti-inflammatory properties, which can help to calm redness.`
@@ -107,7 +107,7 @@ export const articles = [
     title: "Fact: The Skin Around Your Eyes is Different",
     category: "Facts",
     readTime: "2 min read",
-    image: "https://images.unsplash.com/photo-1590432099955-08a2879f8303?w=500&h=600&fit=crop",
+    image: "/12.1.webp",
     color: "#d1a995",
     content: `The skin around your eyes is the thinnest and most delicate on your face. It has fewer oil glands and is more prone to dryness, fine lines, and other signs of aging. This is why a dedicated eye cream is often recommended. Eye creams are formulated to be lighter than facial moisturizers and contain ingredients that target concerns specific to the eye area, like puffiness and dark circles.`
   },
@@ -116,7 +116,7 @@ export const articles = [
     title: "What Are Ceramides and Why Do You Need Them?",
     category: "Hydration",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1621784564114-6eea05b89863?w=500&h=600&fit=crop",
+    image: "/13.2.webp",
     color: "#7a8da1",
     content: `Ceramides are lipids (fats) that are a fundamental component of your skin's barrier. They are essentially the mortar that holds your skin cells (the bricks) together. A healthy skin barrier is crucial for retaining moisture and protecting your skin from environmental irritants.\n\nAs we age, our natural ceramide levels deplete, which can lead to a compromised barrier, resulting in dryness, irritation, and sensitivity. Using moisturizers rich in ceramides helps to replenish this barrier, keeping your skin healthy, hydrated, and resilient.`
   },
@@ -125,7 +125,7 @@ export const articles = [
     title: "Myth: You Can 'Shrink' Your Pores",
     category: "Myths",
     readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=500&h=600&fit=crop",
+    image: "/14.1.webp",
     color: "#f8b8a3",
     content: `Pore size is largely determined by genetics. While you can't permanently shrink your pores, you can make them appear smaller. The appearance of large pores is often due to them being clogged with oil, dead skin cells, and debris. By keeping your pores clean with regular cleansing and exfoliation (using ingredients like BHAs), you can minimize their appearance. Retinoids can also help by promoting cell turnover.`
   },
@@ -134,7 +134,7 @@ export const articles = [
     title: "The Importance of Double Cleansing",
     category: "Routines",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1581464647110-26e7348039a3?w=500&h=600&fit=crop",
+    image: "/15.1.webp",
     color: "#d86a73",
     content: `Double cleansing is a two-step method that is especially beneficial in the evening to thoroughly remove makeup, sunscreen, and impurities.\n\n**Step 1:** Use an oil-based cleanser, balm, or micellar water. Oil-based cleansers are highly effective at dissolving oil-based products like makeup and SPF.\n\n**Step 2:** Follow with a water-based gel or cream cleanser. This step cleanses your skin (rather than just the products on it), removing any remaining residue and cleansing your pores. This ensures your skin is perfectly prepped for the rest of your skincare routine.`
   },
@@ -143,7 +143,7 @@ export const articles = [
     title: "Fact: 'Clean' Beauty Is a Marketing Term",
     category: "Facts",
     readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1562322140-54a7c1a89c38?w=800&h=600&fit=crop",
+    image: "/16.1.webp",
     color: "#8dbf91",
     isLarge: true,
     content: `The terms 'clean,' 'natural,' and 'green' are not regulated in the beauty industry. This means brands can define them however they choose. Just because an ingredient is natural doesn't mean it's better or safer (poison ivy is natural, after all), and not all synthetic ingredients are harmful.\n\nInstead of relying on marketing buzzwords, focus on the ingredient list and the formulation of the product. Many lab-created ingredients are highly effective, stable, and backed by extensive scientific research.`
@@ -153,7 +153,7 @@ export const articles = [
     title: "How to Deal with 'Maskne'",
     category: "Tips",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1590432099955-08a2879f8303?w=500&h=600&fit=crop",
+    image: "/17.1.webp",
     color: "#d1a995",
     content: `Maskne, or acne caused by wearing a face mask, is a common issue. It's a type of acne mechanica, caused by friction, pressure, and a moist environment that traps sweat, oil, and bacteria.\n\n**To combat maskne:**\n- **Cleanse:** Wash your face before and after wearing a mask.\n- **Simplify:** Stick to a gentle, basic routine. Avoid trying too many new, harsh products.\n- **Treat:** Incorporate a BHA (salicylic acid) to keep pores clear.\n- **Wash Your Mask:** If using a reusable mask, wash it daily.`
   },
@@ -162,7 +162,7 @@ export const articles = [
     title: "Antioxidants: Your Skin's Urban Shield",
     category: "Science-Backed",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1600959901374-3d47a5918c26?w=500&h=600&fit=crop",
+    image: "18.1.webp",
     color: "#e47e3a",
     content: `Antioxidants are molecules that neutralize free radicals, which are unstable atoms generated by pollution, UV rays, and other environmental stressors. Free radical damage can lead to premature aging, inflammation, and hyperpigmentation.\n\nIncorporating antioxidants like Vitamin C, Vitamin E, Niacinamide, and Resveratrol into your routine provides a crucial layer of defense against environmental damage, helping to keep your skin healthy and youthful.`
   },
@@ -171,7 +171,7 @@ export const articles = [
     title: "Understanding Your Skin Type",
     category: "Basics",
     readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1552509336-ea364bbf4514?w=500&h=600&fit=crop",
+    image: "19.1.webp",
     color: "#7b9eae",
     content: `Knowing your skin type is the first step to building an effective skincare routine. The main skin types are:\n\n- **Normal:** Well-balanced, not too oily or too dry.\n- **Dry:** Lacks oil, may feel tight, rough, or flaky.\n- **Oily:** Produces excess sebum, appears shiny, prone to enlarged pores and breakouts.\n- **Combination:** Oily in some areas (usually the T-zone) and dry in others.\n- **Sensitive:** Easily irritated, may experience redness, itching, or stinging.\n\nTo determine your type, wash your face with a gentle cleanser, pat it dry, and observe how it looks and feels after about 30 minutes without any products.`
   },
@@ -180,7 +180,7 @@ export const articles = [
     title: "Myth: Expensive Skincare is Always Better",
     category: "Myths",
     readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1615393528-2993d193375c?w=500&h=600&fit=crop",
+    image: "20.1.webp",
     color: "#b8a4c4",
     content: `The price tag of a skincare product does not always correlate with its effectiveness. The cost can be influenced by marketing, packaging, and brand prestige. What truly matters is the formulation, the concentration of active ingredients, and the research behind the product.\n\nThere are many affordable and highly effective skincare products available from reputable drugstore brands. The best approach is to focus on ingredients that are proven to work for your specific skin concerns rather than being swayed by a high price.`
   },
@@ -189,7 +189,7 @@ export const articles = [
     title: "At-Home Peels vs. Professional Chemical Peels",
     category: "Actives",
     readTime: "6 min read",
-    image: "https://images.unsplash.com/photo-1596706013327-0466453ec9c8?w=800&h=600&fit=crop", // Image related to peeling/treatment
+    image: "21.1.webp",
     color: "#83709b",
     isLarge: true,
     content: `Chemical peels can dramatically improve skin texture and tone, but they come in two main forms. **At-home peels** use lower concentrations of acids (like Lactic or Glycolic) and are safe for regular use. They offer gentle exfoliation, brighten skin, and can improve product absorption. **Professional chemical peels** use much higher, clinical-grade concentrations and must be performed by a dermatologist or licensed esthetician. They target deeper concerns like stubborn acne scars, severe sun damage, and deeper wrinkles, but require significant downtime and careful post-procedure care.`
@@ -199,7 +199,7 @@ export const articles = [
     title: "Squalane vs. Squalene: What\'s the Difference?",
     category: "Hydration",
     readTime: "3 min read",
-    image: "https://images.unsplash.com/photo-1606830504107-b3523293e5ac?w=500&h=600&fit=crop", // Image of an oil/dropper bottle
+    image: "22.1.webp", // Image of an oil/dropper bottle
     color: "#4682b4",
     content: `Squalene is a lipid naturally produced by your own skin cells, making up about 10-12% of your skin's sebum. It's a fantastic natural moisturizer, but it's highly unstable and oxidizes quickly when exposed to air, which makes it less suitable for skincare products. **Squalane** is Squalene that has been fully saturated (hydrogenated), making it stable, non-comedogenic, and highly emollient. It’s a dry-skin savior that locks in moisture without feeling heavy or greasy, and is often derived from olives or sugarcane for a sustainable source.`
   },
@@ -208,7 +208,7 @@ export const articles = [
     title: "Why You Should Never Skip a Patch Test",
     category: "Tips",
     readTime: "2 min read",
-    image: "https://images.unsplash.com/photo-1617462370779-114d24177587?w=500&h=600&fit=crop", // Image of someone applying product to a small area
+    image: "23.1.webp", // Image of someone applying product to a small area
     color: "#e6b0aa",
     content: `Introducing new products, especially those with high concentrations of **actives** (like Retinol or strong acids), requires a **patch test**. This simple step can prevent a massive allergic reaction or severe irritation on your face. To perform a patch test, apply a small amount of the product to a discreet area of skin, such as behind your ear or on your inner forearm. Wait 24-48 hours. If you notice any redness, itching, swelling, or burning, do not use the product on your face.`
   },
@@ -217,7 +217,7 @@ export const articles = [
     title: "Slugging: The Petroleum Jelly Night Routine Trend",
     category: "Routines",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1614749216061-6d7c78479354?w=500&h=600&fit=crop", // Image of heavy ointment or balm texture
+    image: "24.1.webp", // Image of heavy ointment or balm texture
     color: "#c2d1c6",
     content: `**Slugging** involves applying a thin layer of a non-comedogenic occlusive product, like petroleum jelly, as the final step of your nighttime skincare routine. The goal is to create a physical barrier to prevent **transepidermal water loss (TEWL)**. This intensely hydrating method is a secret weapon for those with chronically **dry or damaged skin barriers**. However, people with acne-prone or oily skin should use caution, as sealing in sebum or active acne treatments can sometimes exacerbate breakouts.`
   },
@@ -226,7 +226,7 @@ export const articles = [
     title: "CBD in Skincare: Does it Actually Work?",
     category: "Science-Backed",
     readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1599320147926-8219154a1073?w=500&h=600&fit=crop", // Image of plant/CBD oil product
+    image: "25.1.webp", // Image of plant/CBD oil product
     color: "#7da87d",
     content: `Cannabidiol (CBD) is a compound derived from the cannabis plant that has gained popularity in skincare for its purported benefits. Research suggests that pure CBD is a powerful **anti-inflammatory** agent, making it beneficial for calming skin conditions like **acne, eczema, and rosacea**. It also functions as an **antioxidant**. However, ensure the product contains enough high-quality CBD to be effective. Be cautious of "hemp seed oil" products, which are different and do not contain the same CBD benefits.`
   },
