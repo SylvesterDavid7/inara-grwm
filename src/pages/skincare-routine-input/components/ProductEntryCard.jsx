@@ -22,6 +22,9 @@ const ProductEntryCard = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef(null);
 
+  const CLOUDINARY_CLOUD_NAME = 'dg8nuyybc';
+  const CLOUDINARY_UPLOAD_PRESET = 'user_profile_pictures';
+
   const productSuggestions = [
     "CeraVe Hydrating Cleanser",
     "The Ordinary Niacinamide 10% + Zinc 1%",
@@ -93,30 +96,45 @@ const ProductEntryCard = ({
     setImagePreview(imagePreviewUrl);
 
     try {
+      // Step 1: Upload image to Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      formData.append('folder', 'product-images');
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Cloudinary image upload failed');
+      }
+
+      const cloudinaryData = await response.json();
+      const imageUrl = cloudinaryData.secure_url;
+
+      // Step 2: Analyze the product image
       const productDetails = await analyzeProductImage(file);
       const categoryValue = getCategoryFromAnalysis(productDetails);
 
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const imageUrl = reader.result;
-        onUpdate({
-          ...product,
-          ...productDetails,
-          category: categoryValue,
-          image: imageUrl,
-          ingredients: Array.isArray(productDetails.ingredients) 
-            ? productDetails.ingredients.join(', ') 
-            : productDetails.ingredients
-        });
-        setIsAnalyzing(false);
-      };
-      reader.onerror = (error) => {
-        console.error("Error reading file:", error);
-        setIsAnalyzing(false);
-      };
+      // Step 3: Update the state with the Cloudinary URL
+      onUpdate({
+        ...product,
+        ...productDetails,
+        category: categoryValue,
+        image: imageUrl, // Use Cloudinary URL
+        ingredients: Array.isArray(productDetails.ingredients) 
+          ? productDetails.ingredients.join(', ') 
+          : productDetails.ingredients
+      });
+
+      setIsAnalyzing(false);
     } catch (error) {
-      console.error("Error analyzing product image:", error);
+      console.error("Error during image upload and analysis:", error);
       URL.revokeObjectURL(imagePreviewUrl);
       setImagePreview('');
       setIsAnalyzing(false);

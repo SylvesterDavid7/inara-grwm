@@ -217,24 +217,54 @@ const Skincare101 = () => {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [likedArticles, setLikedArticles] = useState({});
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('article');
+    if (articleId) {
+      const article = articles.find(a => a.id.toString() === articleId);
+      if (article) {
+        setSelectedArticle(article);
+      }
+    }
+  }, []);
+
+  const handleArticleSelect = (article) => {
+    setSelectedArticle(article);
+    const url = new URL(window.location);
+    url.searchParams.set('article', article.id);
+    window.history.pushState({}, '', url);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedArticle(null);
+    const url = new URL(window.location);
+    url.searchParams.delete('article');
+    window.history.pushState({}, '', url);
+  };
+
   const handleLike = (articleId) => {
     setLikedArticles(prev => ({ ...prev, [articleId]: !prev[articleId] }));
   };
 
   const handleShare = async (article) => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}?article=${article.id}`;
     if (navigator.share) {
       try {
         await navigator.share({
           title: article.title,
           text: `Check out this skincare article: ${article.title}`,
-          url: window.location.href, // Or a specific URL for the article
+          url: shareUrl,
         });
       } catch (error) {
         console.error('Error sharing:', error);
       }
     } else {
-      // Fallback for browsers that don't support navigator.share
-      alert('Sharing is not supported on this browser.');
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        alert('Link copied to clipboard!');
+      } catch (err) {
+        alert('Sharing is not supported on this browser.');
+      }
     }
   };
 
@@ -262,7 +292,7 @@ const Skincare101 = () => {
                 <ArticleCard
                   key={article.id}
                   article={article}
-                  onArticleSelect={setSelectedArticle}
+                  onArticleSelect={handleArticleSelect}
                   isLiked={!!likedArticles[article.id]}
                   onLike={() => handleLike(article.id)}
                   onShare={() => handleShare(article)}
@@ -274,7 +304,7 @@ const Skincare101 = () => {
         </main>
         <ArticleModal
           article={selectedArticle}
-          onClose={() => setSelectedArticle(null)}
+          onClose={handleCloseModal}
           isLiked={!!selectedArticle && !!likedArticles[selectedArticle.id]}
           onLike={() => selectedArticle && handleLike(selectedArticle.id)}
           onShare={() => selectedArticle && handleShare(selectedArticle)}

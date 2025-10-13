@@ -1,5 +1,4 @@
 // --- CONFIGURATION & UTILITIES ---
-
 // 1. **ACCURACY IMPROVEMENT:** Upgraded from Flash-preview to the latest stable Pro model for maximum reasoning and detail.
 // NOTE: For production, this MUST be moved to a backend environment (like Node.js or Firebase Functions) for security.
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -138,7 +137,11 @@ export const fetchGeminiAnalysis = async (routine) => {
 
     // Prompt is largely kept the same as it's well-structured, but adding the clinical persona
     const prompt = `
-        Act as an **expert cosmetic chemist and board-certified dermatologist**. Analyze the following skincare routine and return a single, valid JSON object. Do not include any text or markdown formatting before or after the JSON object.
+        Act as an **expert cosmetic chemist and board-certified dermatologist**. Analyze the following skincare routine and return a single, valid JSON object.
+
+        **CRITICAL INSTRUCTION: You MUST provide a 'score' from 0-10 for EVERY single product listed in the morning, evening, and weekly routines. This field is MANDATORY and cannot be omitted under any circumstances.**
+
+        Do not include any text or markdown formatting before or after the JSON object.
 
         **User's Routine (Analyze for conflicts, concentration, and goals):**
         - **Morning:** ${JSON.stringify(routine.morningProducts.map(p => ({ id: p.id, name: p.name, category: p.category, ingredients: p.ingredients })))}
@@ -184,7 +187,7 @@ export const fetchGeminiAnalysis = async (routine) => {
             "products": [
                 {
                   "id": "string (The original product ID)",
-                  "score": "number (0-10, score for the individual product)",
+                  "score": "number (0-10, REQUIRED score for the individual product)",
                   "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
                   "issues": ["string (List any specific issues or conflicts with this product in the routine)"]
                 }
@@ -199,7 +202,7 @@ export const fetchGeminiAnalysis = async (routine) => {
             "products": [
                 {
                   "id": "string (The original product ID)",
-                  "score": "number (0-10, score for the individual product)",
+                  "score": "number (0-10, REQUIRED score for the individual product)",
                   "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
                   "issues": ["string (List any specific issues or conflicts with this product in the routine)"]
                 }
@@ -214,7 +217,7 @@ export const fetchGeminiAnalysis = async (routine) => {
             "products": [
                 {
                   "id": "string (The original product ID)",
-                  "score": "number (0-10, score for the individual product)",
+                  "score": "number (0-10, REQUIRED score for the individual product)",
                   "rating": "string (e.g., 'Excellent', 'Good', 'Fair', 'Poor')",
                   "issues": ["string (List any specific issues or conflicts with this product in the routine)"]
                 }
@@ -266,8 +269,12 @@ export const fetchGeminiAnalysis = async (routine) => {
         }
 
         const data = await response.json();
+        // console.log('RAW Gemini response:', JSON.stringify(data, null, 2));
         const jsonString = cleanJsonString(data.candidates[0].content.parts[0].text);
         const analysisResult = JSON.parse(jsonString);
+        // console.log('PARSED analysis result:', analysisResult);
+        // console.log('Morning products from AI:', analysisResult.morningRoutine.products);
+
 
         // --- Data Normalization and Merge (Your existing logic, which is good) --- 
         // ... (Normalization logic omitted for brevity, keeping original for full code) ...
@@ -288,12 +295,22 @@ export const fetchGeminiAnalysis = async (routine) => {
         analysisResult.productRecommendations = analysisResult.productRecommendations || []; 
 
         const mergeProductData = (originalProducts, analyzedProducts) => {
-            if (!analyzedProducts) return originalProducts;
-            return originalProducts.map(origP => {
-                const analyzedP = analyzedProducts.find(p => p.id === origP.id);
-                return { ...origP, ...analyzedP };
+          if (!analyzedProducts) return originalProducts;
+        
+          return originalProducts.map(origP => {
+            const analyzedP = analyzedProducts.find(p => {
+              if (p.id && origP.id) {
+                return p.id.toString() === origP.id.toString();
+              }
+              if (p.name && origP.name) {
+                return p.name.toLowerCase().trim() === origP.name.toLowerCase().trim();
+              }
+              return false;
             });
+            return { ...origP, ...analyzedP };
+          });
         };
+        
 
         analysisResult.morningRoutine.products = mergeProductData(routine.morningProducts, analysisResult.morningRoutine.products);
         analysisResult.eveningRoutine.products = mergeProductData(routine.eveningProducts, analysisResult.eveningRoutine.products);
@@ -309,6 +326,9 @@ export const fetchGeminiAnalysis = async (routine) => {
         throw new Error("Could not get a new analysis from the AI. Please check your API key and network connection.");
     }
 };
+
+
+
 
 /**
  * Creates a recommended routine based on a user assessment (no existing products).

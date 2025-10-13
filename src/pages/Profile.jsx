@@ -7,6 +7,7 @@ import ScoreSection from './profile/ScoreSection';
 import BadgesSection from './profile/BadgesSection';
 import StatsSection from './profile/StatsSection';
 import TasksSection from './profile/TasksSection';
+import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '../config';
 
 const Profile = () => {
   const { user, userData, updateUserData } = useUserDataContext();
@@ -35,9 +36,6 @@ const Profile = () => {
       setProfileLinks(baseLinks);
     }
   }, [user]);
-
-  const CLOUDINARY_CLOUD_NAME = 'dg8nuyybc';
-  const CLOUDINARY_UPLOAD_PRESET = 'user_profile_pictures';
 
   const handleLogout = async () => {
     try {

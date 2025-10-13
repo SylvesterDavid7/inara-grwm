@@ -42,12 +42,9 @@ export const UserDataProvider = ({ children }) => {
             displayName: currentUser.displayName,
             photoURL: currentUser.photoURL,
             createdAt: serverTimestamp(),
-            assessments: [],
-            outputs: [],
-            scorecards: [],
           };
           await setDoc(userRef, newUser);
-setUserData(newUser);
+          setUserData(newUser);
         }
         setUser(currentUser);
       } else {

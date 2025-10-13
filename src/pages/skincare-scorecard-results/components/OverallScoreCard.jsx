@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
 
-const OverallScoreCard = ({ score, rating, improvement, insights, onGenerateCardClick, onExportWithHtml2Canvas, isGenerating, isSharedView }) => {
+const OverallScoreCard = ({ score, rating, improvement, insights, onGenerateCardClick, onExportPDF, onShare, isGeneratingPDF, isSharedView }) => {
   const getScoreColor = (score) => {
     if (score >= 80) return 'text-success';
     if (score >= 60) return 'text-warning';
@@ -55,14 +55,17 @@ const OverallScoreCard = ({ score, rating, improvement, insights, onGenerateCard
         {!isSharedView && (
           <div className="w-full lg:w-auto flex flex-col space-y-2 lg:ml-6">
             <button 
-              onClick={onExportWithHtml2Canvas} 
-              disabled={isGenerating}
+              onClick={onExportPDF} 
+              disabled={isGeneratingPDF}
               className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-clinical hover:bg-primary/90 transition-clinical w-full disabled:opacity-50"
             >
-              {isGenerating ? <Icon name="Loader2" size={16} className="animate-spin" /> : <Icon name="Download" size={16} />}
-              <span className="font-body font-body-medium text-sm">{isGenerating ? 'Exporting...' : 'Export'}</span>
+              {isGeneratingPDF ? <Icon name="Loader2" size={16} className="animate-spin" /> : <Icon name="Download" size={16} />}
+              <span className="font-body font-body-medium text-sm">{isGeneratingPDF ? 'Exporting PDF...' : 'Export PDF'}</span>
             </button>
-            <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-clinical hover:bg-secondary/80 transition-clinical w-full">
+            <button
+              onClick={onShare}
+              className="flex items-center justify-center space-x-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-clinical hover:bg-secondary/80 transition-clinical w-full"
+            >
               <Icon name="Share2" size={16} />
               <span className="font-body font-body-medium text-sm">Share</span>
             </button>

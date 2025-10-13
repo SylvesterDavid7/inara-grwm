@@ -15,6 +15,7 @@ import AssessmentResults from './pages/assessment-results';
 import SplashScreen from './pages/SplashScreen';
 import HomePage from './pages/HomePage';
 import OptimizeRoutine from './pages/optimize-routine';
+import CompareRoutines from './pages/compare-routines';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
@@ -63,8 +64,10 @@ const Routes = () => {
               <Route path="/progress-tracking-dashboard" element={<ProgressTrackingDashboard />} />
               <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />
               <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
+              <Route path="/skincare-scorecard-results/:analysisId" element={<SkincareScoreCardResults />} />
               <Route path="/assessment-results" element={<AssessmentResults />} />
               <Route path="/optimize-routine" element={<OptimizeRoutine />} />
+              <Route path="/compare-routines" element={<CompareRoutines />} />
               <Route path="/derma-scan" element={<DermaScanPage />} />
               <Route element={<PrivateRoute />}>
                 <Route path="/profile" element={<Profile />} />

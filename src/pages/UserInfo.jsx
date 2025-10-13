@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUserDataContext } from '../contexts/UserDataContext.jsx';
-import { getAuth, updateProfile } from 'firebase/auth';
+import { getAuth, updateProfile, sendEmailVerification } from 'firebase/auth';
 
 const UserInfo = () => {
   const { user, userData, updateUserData, loading } = useUserDataContext();
@@ -20,6 +20,10 @@ const UserInfo = () => {
   const [addressType, setAddressType] = useState('home');
   const [addressSuccessMessage, setAddressSuccessMessage] = useState('');
   const [addressErrorMessage, setAddressErrorMessage] = useState('');
+  
+  // State for email verification
+  const [verificationMessage, setVerificationMessage] = useState('');
+  const [isSendingVerification, setIsSendingVerification] = useState(false);
 
   useEffect(() => {
     if (user && userData) {
@@ -81,6 +85,24 @@ const UserInfo = () => {
         setAddressErrorMessage('Failed to save address. Please try again.')
     }
   }
+  
+  const handleSendVerificationEmail = async () => {
+    if (!auth.currentUser) {
+        setVerificationMessage('You must be logged in to send a verification email.');
+        return;
+    }
+    setIsSendingVerification(true);
+    setVerificationMessage('');
+    try {
+        await sendEmailVerification(auth.currentUser);
+        setVerificationMessage('A new verification email has been sent. Please check your inbox.');
+    } catch (error) {
+        setVerificationMessage('Failed to send verification email. Please try again shortly.');
+        console.error("Error sending verification email:", error);
+    } finally {
+        setIsSendingVerification(false);
+    }
+  };
 
   if (loading || !user || !userData) {
     return (
@@ -142,6 +164,18 @@ const UserInfo = () => {
                     {user.emailVerified ? 'Yes' : 'No'}
                   </span>
                 </div>
+                {!user.emailVerified && (
+                  <div className="text-center pt-2">
+                      <button 
+                        onClick={handleSendVerificationEmail}
+                        disabled={isSendingVerification}
+                        className="font-heading w-full text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md py-2 px-4 transition-colors disabled:opacity-50"
+                      >
+                          {isSendingVerification ? 'Sending...' : 'Resend Verification Email'}
+                      </button>
+                      {verificationMessage && <p className="font-heading text-sm text-gray-600 mt-2">{verificationMessage}</p>}
+                  </div>
+                )}
                 <div className="flex items-center justify-between">
                   <p className="font-heading text-sm text-gray-500">Account Created</p>
                   <p className="font-heading text-sm font-medium text-gray-900">{user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString() : 'N/A'}</p>

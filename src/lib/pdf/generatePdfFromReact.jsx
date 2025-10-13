@@ -4,16 +4,16 @@ import PdfDocument from './PdfDocument';
 import generatePdfWithHtml2Canvas from './generatePdfWithHtml2Canvas';
 import ReportTemplate from '../../pages/skincare-scorecard-results/components/ReportTemplate';
 
-const generatePdfFromReact = async (analysis, useHtml2Canvas = false) => {
+const generatePdfFromReact = async (data, useHtml2Canvas = false) => {
   if (useHtml2Canvas) {
-    return generatePdfWithHtml2Canvas(ReportTemplate, analysis);
+    return generatePdfWithHtml2Canvas(ReportTemplate, data);
   }
 
   console.log("Starting PDF generation with @react-pdf/renderer...");
 
   try {
     // Render the React component to a PDF blob
-    const blob = await pdf(<PdfDocument analysis={analysis} />).toBlob();
+    const blob = await pdf(<PdfDocument analysis={data} />).toBlob();
 
     // Convert the blob to a data URI for the preview
     return new Promise((resolve, reject) => {

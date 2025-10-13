@@ -73,7 +73,7 @@ const SummaryCard = ({ icon, title, value, image }) => {
             {(isClimateCard || isBudgetCard || isRoutineStyleCard) && (
                 <Icon name={iconName} size={32} className="text-white/70 mb-1" />
             )}
-            <p className="font-heading font-heading-semibold text-2xl text-white">{value || 'N/A'}</p>
+            <p className="font-heading font-heading-semibold text-xl text-white">{value || 'N/A'}</p>
         </div>
       </div>
       {image && (

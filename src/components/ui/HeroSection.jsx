@@ -6,13 +6,21 @@ const HeroSection = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
-  const [videoSrc, setVideoSrc] = useState(window.innerWidth < 768 ? '/INARA HERO Mobile 1.mp4' : '/INARA HERO.mp4');
+  const [videoSrc, setVideoSrc] = useState(
+    window.innerWidth <= 1024 ? '/INARA HERO Mobile 1.mp4' : '/INARA HERO.mp4'
+  );
 
-  const toRotate = ["Skincare, Simplified", "Your Perfect Routine", "Get Results With Metrics"];
+  const toRotate = [
+    "Skincare, Simplified",
+    "Your Perfect Routine",
+    "Get Results With Metrics"
+  ];
 
   useEffect(() => {
     const handleResize = () => {
-      setVideoSrc(window.innerWidth < 768 ? '/INARA HERO Mobile 1.mp4' : '/INARA HERO.mp4');
+      setVideoSrc(
+        window.innerWidth <= 1024 ? '/INARA HERO Mobile 1.mp4' : '/INARA HERO.mp4'
+      );
     };
 
     window.addEventListener('resize', handleResize);
@@ -24,7 +32,11 @@ const HeroSection = () => {
       const i = loopNum % toRotate.length;
       const fullText = toRotate[i];
 
-      setText(isDeleting ? fullText.substring(0, text.length - 1) : fullText.substring(0, text.length + 1));
+      setText(
+        isDeleting
+          ? fullText.substring(0, text.length - 1)
+          : fullText.substring(0, text.length + 1)
+      );
 
       setTypingSpeed(isDeleting ? 80 : 150);
 
@@ -50,17 +62,17 @@ const HeroSection = () => {
   return (
     <div className="hero-container font-heading">
       <video
-        key={videoSrc} // This is the new line
+        key={videoSrc} // ensures reloading video when src changes
         autoPlay
         loop
         muted
         playsInline
-        className={`hero-video z-index-1000 opacity-100 ${window.innerWidth < 768 ? 'mobile-video' : ''}`}
+        className={`hero-video z-index-1000 opacity-100 ${window.innerWidth <= 1024 ? 'mobile-video' : ''}`}
       >
         <source src={videoSrc} type="video/mp4" />
       </video>
       <div className="hero-content font-heading">
-        <h1 className='font-heading'>{text}</h1>
+        <h1 className="font-heading">{text}</h1>
         <p>Your journey to radiant skin starts here.</p>
         <div className="arrow-container" onClick={handleScroll}>
           <div className="arrow"></div>

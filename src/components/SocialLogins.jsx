@@ -27,9 +27,6 @@ const SocialLogins = () => {
           photoURL: user.photoURL,
           createdAt: serverTimestamp(),
           assessmentCompleted: false,
-          assessments: [],
-          outputs: [],
-          scorecards: [],
         });
         // Redirect to a page to complete their profile
         navigate("/user-info");

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/ui/Header';
 import ProgressIndicator from './components/ProgressIndicator';
@@ -10,18 +11,8 @@ import Icon from '../../components/AppIcon';
 import { fetchGeminiAnalysisFromAssessment } from '../../utils/gemini';
 import { useUserDataContext } from '../../contexts/UserDataContext.jsx';
 
-const SkinAssessmentQuestionnaire = () => {
-  const navigate = useNavigate();
-  const { updateUserData } = useUserDataContext();
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [showSummary, setShowSummary] = useState(false);
-  const [showNavigation, setShowNavigation] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-
-  // Mock questionnaire data
-  const questions = [ 
-    { 
+const getQuestions = (currencySymbol = '₹') => [
+  { 
       id: 'skin-type',
       title: "What's your primary skin type?",
       description: "Choose the option that best describes your skin's natural characteristics.",
@@ -277,31 +268,42 @@ const SkinAssessmentQuestionnaire = () => {
       options: [
         { 
           value: 'under-50', 
-          label: 'Under $50', 
+          label: `Under ${currencySymbol}4000`, 
           description: 'Budget-friendly options', 
-          icon: 'DollarSign' 
+          icon: 'IndianRupee' 
         },
         { 
           value: '50-100', 
-          label: '$50 - $100', 
+          label: `${currencySymbol}4000 - ${currencySymbol}8000`, 
           description: 'Mid-range products', 
-          icon: 'DollarSign' 
+          icon: 'IndianRupee' 
         },
         { 
           value: '100-200', 
-          label: '$100 - $200', 
+          label: `${currencySymbol}8000 - ${currencySymbol}16000`, 
           description: 'Premium products', 
-          icon: 'DollarSign' 
+          icon: 'IndianRupee' 
         },
         { 
           value: 'over-200', 
-          label: 'Over $200', 
+          label: `Over ${currencySymbol}16000`, 
           description: 'Luxury skincare', 
-          icon: 'DollarSign' 
+          icon: 'IndianRupee' 
         }
       ]
     }
-  ];
+];
+
+const SkinAssessmentQuestionnaire = () => {
+  const navigate = useNavigate();
+  const { updateUserData } = useUserDataContext();
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [showSummary, setShowSummary] = useState(false);
+  const [showNavigation, setShowNavigation] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  
+  const questions = useMemo(() => getQuestions(), []);
 
   // Auto-save functionality
   useEffect(() => {

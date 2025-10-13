@@ -1,13 +1,17 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { doc, setDoc, collection } from 'firebase/firestore';
+import { db } from '../../../firebase';
 import Button from '../../../components/ui/Button';
-import ShareModal from './ShareModal'; // Make sure this path is correct
-import { useUserDataContext } from '../../../contexts/UserDataContext.jsx'; // Import the hook
+import ShareModal from './ShareModal';
+import { useUserDataContext } from '../../../contexts/UserDataContext.jsx';
 
-const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
+const ActionButtons = ({ analysis, assessment }) => {
   const [isShareModalOpen, setShareModalOpen] = useState(false);
+  const [shareableLink, setShareableLink] = useState('');
   const navigate = useNavigate();
-  const { updateUserData } = useUserDataContext(); // Get the update function
+  const { updateUserData } = useUserDataContext();
 
   const handlePurchase = () => {
     window.open('https://inaragroups.com', '_blank', 'noopener,noreferrer');
@@ -32,7 +36,7 @@ const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
     });
 
     if (analysis.weeklyRoutine && analysis.weeklyRoutine.products) {
-        const weeklyDays = ['Wednesday', 'Sunday']; // Default days for weekly treatments
+        const weeklyDays = ['Wednesday', 'Sunday'];
         analysis.weeklyRoutine.products.forEach(product => {
             weeklyDays.forEach(day => {
                 if (routine[day] && routine[day].PM) {
@@ -46,26 +50,39 @@ const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
     return routine;
   };
 
-
   const handleSaveAndNavigate = async () => {
     if (analysis) {
       try {
         const transformedRoutine = transformRoutine(analysis);
-        await updateUserData({ routine: transformedRoutine, assessmentCompleted: true }); // Save the transformed routine
+        await updateUserData({ routine: transformedRoutine, assessmentCompleted: true });
         navigate('/dashboard');
       } catch (error) {
         console.error("Error saving routine:", error);
-        // Optionally, show an error message to the user
       }
     }
   };
 
-  const handleShare = () => {
-    setShareModalOpen(true);
+  const handleShare = async () => {
+    if (!analysis || !assessment) return;
+    try {
+      const docRef = doc(collection(db, 'sharedAnalyses'));
+      await setDoc(docRef, {
+        analysis,
+        assessment,
+        createdAt: new Date(),
+      });
+      const link = `${window.location.origin}/assessment-results?sharedId=${docRef.id}`;
+      setShareableLink(link);
+      setShareModalOpen(true);
+    } catch (error) {
+      console.error("Error creating shareable link:", error);
+      alert("There was an error creating the shareable link. Please try again.");
+    }
   };
 
   const handleCloseModal = () => {
     setShareModalOpen(false);
+    setShareableLink('');
   };
 
   return (
@@ -87,7 +104,11 @@ const ActionButtons = ({ analysis }) => { // Accept analysis as a prop
           </Button>
         </div>
       </div>
-      <ShareModal isOpen={isShareModalOpen} onClose={handleCloseModal} />
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={handleCloseModal} 
+        shareableLink={shareableLink} 
+      />
     </>
   );
 };

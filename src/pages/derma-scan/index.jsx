@@ -7,6 +7,7 @@ import { analyzeDermaScanImage } from '../../utils/gemini';
 import { useUserDataContext } from '../../contexts/UserDataContext';
 import { db } from '../../firebase';
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '../../config';
 
 // --- Utility Components ---
 
@@ -197,10 +198,7 @@ const DermaScanPage = () => {
     const [error, setError] = useState(null);
     const [isCapturing, setIsCapturing] = useState(false);
     const webcamRef = useRef(null);
-    const { user } = useUserDataContext();
-
-    const CLOUDINARY_CLOUD_NAME = 'dg8nuyybc';
-    const CLOUDINARY_UPLOAD_PRESET = 'user_profile_pictures';
+    const { user, updateUserData } = useUserDataContext();
 
     const startCapture = () => setIsCapturing(true);
     const cancelCapture = () => setIsCapturing(false);
@@ -248,6 +246,11 @@ const DermaScanPage = () => {
             };
             
             await addDoc(collection(db, user ? 'derma-scans' : 'anonymous-derma-scans'), scanData);
+            
+            if (user) {
+                await updateUserData({ dermaScanCompleted: true });
+            }
+
             setAnalysis(analysisResult);
         } catch (err) {
             console.error("Error during scan process:", err);

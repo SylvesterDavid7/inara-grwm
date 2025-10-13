@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import { useNavigate } from 'react-router-dom';
-import ShareModal from '../../assessment-results/components/ShareModal';
 import { db } from '../../../firebase'; // Ensure you have this import
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -10,12 +9,13 @@ const ActionSidebar = ({
   routine, 
   className = "", 
   onExportPDF, 
-  isGeneratingPDF 
+  isGeneratingPDF,
+  setIsShareModalOpen,
+  setShareableLink,
+  scorecardCount
 }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [shareableLink, setShareableLink] = useState('');
 
   const [shareOptions, setShareOptions] = useState({
     includePhotos: true,
@@ -27,7 +27,6 @@ const ActionSidebar = ({
 
   const handleSaveScorecard = async () => {
     setIsSaving(true);
-    // In a real app, you would save this to a user's profile in the database
     await new Promise(resolve => setTimeout(resolve, 1500));
     console.log('Scorecard saved (simulated).');
     setIsSaving(false);
@@ -36,27 +35,19 @@ const ActionSidebar = ({
   const handleShareScorecard = async () => {
     setIsSharing(true);
     try {
-      // 1. Save the analysis and share options to Firestore
       const docRef = await addDoc(collection(db, "sharedAnalyses"), {
-        analysis,
+        analysis: { ...analysis, routine }, // Combine analysis and routine
         shareOptions,
         createdAt: serverTimestamp(),
       });
-
-      // 2. Create the shareable link
-      const link = `${window.location.origin}/skincare-scorecard-results?id=${docRef.id}`;
+      const link = `${window.location.origin}/skincare-scorecard-results?sharedId=${docRef.id}`;
       setShareableLink(link);
-
-      // 3. Open the modal with the generated link
       setIsShareModalOpen(true);
-
     } catch (error) {
       console.error("Error creating shareable link: ", error);
-      // Handle error state in UI
     }
     setIsSharing(false);
   };
-
 
   const handleOptimizeRoutine = () => {
     console.log('Starting routine optimization...');
@@ -103,15 +94,16 @@ const ActionSidebar = ({
       id: 'modify',
       label: 'Modify Routine',
       icon: 'Edit3',
-      action: () => navigate('/routine-builder', { state: { routine: analysis.routine, source: 'scorecard' } }),
+      action: () => navigate('/skincare-routine-input', { state: { routine: routine, source: 'scorecard' } }),
       description: 'Edit your current skincare routine'
     },
     {
       id: 'compare',
       label: 'Compare Routines',
       icon: 'GitCompare',
-      action: () => console.log('Compare routines'),
-      description: 'Compare with previous assessments'
+      action: () => navigate('/compare-routines', { state: { analysis: { ...analysis, routine } } }),
+      description: 'Compare with previous assessments',
+      disabled: scorecardCount <= 1
     },
     {
       id: 'schedule',
@@ -158,24 +150,33 @@ const ActionSidebar = ({
         <div>
           <h3 className="font-heading font-heading-semibold text-sm text-foreground mb-4">Routine Management</h3>
           <div className="space-y-2">
-            {routineActions?.map((action) => (
-              <button
-                key={action?.id}
-                onClick={action?.action}
-                className="w-full flex items-center space-x-3 p-3 rounded-clinical bg-muted text-muted-foreground hover:bg-secondary hover:text-secondary-foreground transition-clinical text-left group"
-              >
-                <Icon name={action?.icon} size={16} className="group-hover:scale-110 transition-transform" />
-                <div className="flex-1 min-w-0">
-                  <div className="font-body font-body-medium text-sm">{action?.label}</div>
-                  <div className="text-xs opacity-70 mt-0.5">{action?.description}</div>
-                </div>
-              </button>
-            ))}
+            {routineActions?.map((action) => {
+              const isButtonDisabled = action.disabled;
+              const ButtonWrapper = isButtonDisabled ? ({ children }) => <div title="You need at least two scorecards to compare routines.">{children}</div> : ({ children }) => <>{children}</>;
+              return (
+                <ButtonWrapper key={action?.id}>
+                  <button
+                    onClick={action?.action}
+                    disabled={isButtonDisabled}
+                    className={`w-full flex items-center space-x-3 p-3 rounded-clinical bg-muted text-muted-foreground transition-clinical text-left group ${
+                      isButtonDisabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-secondary hover:text-secondary-foreground'
+                    }`}
+                  >
+                    <Icon name={action?.icon} size={16} className={isButtonDisabled ? '' : 'group-hover:scale-110 transition-transform'} />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-body font-body-medium text-sm">{action?.label}</div>
+                      <div className="text-xs opacity-70 mt-0.5">{action?.description}</div>
+                    </div>
+                  </button>
+                </ButtonWrapper>
+              );
+            })}
           </div>
         </div>
 
         <div className="border-t border-border pt-6">
           <h3 className="font-heading font-heading-semibold text-sm text-foreground mb-4">Share Settings</h3>
+          <p className="text-xs text-muted-foreground mb-4">These options configure what will be included when you click 'Share Results'.</p>
           <div className="space-y-3">
             <label className="flex items-center space-x-3 cursor-pointer">
               <input
@@ -219,11 +220,6 @@ const ActionSidebar = ({
           </div>
         </div>
       </div>
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        shareableLink={shareableLink}
-      />
     </>
   );
 };

@@ -7,14 +7,14 @@ const HomePage = () => {
   const features = [
     {
       title: 'Routine Analyser',
-      description: 'Get an AI-powered analysis of your current skincare routine.',
+      description: 'Not sure if your skincare routine is doing its job? We’ll break it down and tell you what actually works!',
       link: '/skincare-routine-input',
       cta: 'Analyze Now',
       cardImage: '/HP1.svg'
     },
     {
       title: 'For Beginners',
-      description: 'New to skincare? Start here to build a foundational routine.',
+      description: 'New to skincare? We’ll help you build a simple, effective routine from the ground up.',
       link: '/skin-assessment-questionnaire',
       cta: 'Start Assessment',
       cardImage: '/HP2.svg'
@@ -42,7 +42,7 @@ const HomePage = () => {
     },
     {
         title: 'Skincare 101',
-        description: 'Your guide to the fundamentals of skincare.',
+        description: 'The ABCs of Skincare. What You Need to Know',
         link: '/skincare-101',
         cta: 'Learn the Basics',
         cardImage: '/HP6.svg'
@@ -57,7 +57,7 @@ const HomePage = () => {
               <div className="text-center max-w-4xl mx-auto px-4 sm:px-6">
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-slate-800">Your Personal Skincare OS</h1>
                   <p className="mt-4 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
-                      Achieve your skin goals with AI-powered analysis, personalized recommendations, and progress tracking.
+                      Achieve your skin goals with Science-backed Routine Analysis, Personalized Recommendations, and Progress Tracking.
                   </p>
               </div>
 

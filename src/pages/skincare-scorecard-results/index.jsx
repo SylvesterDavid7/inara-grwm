@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../firebase'; // Make sure this path is correct
-
+import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { doc, getDoc, setDoc, collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { useUserDataContext } from '../../contexts/UserDataContext.jsx';
+import html2canvas from 'html2canvas';
 import Icon from '../../components/AppIcon';
 import Header from '../../components/ui/Header';
 import OverallScoreCard from './components/OverallScoreCard';
@@ -16,118 +17,214 @@ import ActionSidebar from './components/ActionSidebar';
 import ScoreCardModal from './components/Scorecard/ScoreCardModal';
 import generatePdfFromReact from '../../lib/pdf/generatePdfFromReact.jsx';
 import PdfPreviewModal from './components/PdfPreviewModal';
-
-// Data is now embedded directly to ensure it is available.
-const DUMMY_PROGRESS_DATA = [
-    {
-      id: 1, date: '2024-01-15', overallScore: 7.8, routineConsistency: 85,
-      afterImage: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=400&fit=crop',
-    },
-    {
-      id: 2, date: '2024-02-15', overallScore: 8.2, routineConsistency: 90,
-      afterImage: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=400&fit=crop&brightness=1.05&contrast=1.05',
-    },
-    {
-      id: 3, date: '2024-03-15', overallScore: 8.5, routineConsistency: 92,
-      afterImage: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=400&fit=crop&brightness=1.1&contrast=1.1',
-    },
-];
+import ShareModal from '../assessment-results/components/ShareModal';
 
 const SkincareScoreCardResults = () => {
+  const { analysisId: urlAnalysisId } = useParams();
+  const { user, userData } = useUserDataContext();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const sharedId = searchParams.get('sharedId');
+
   const [analysis, setAnalysis] = useState(null);
+  const [allAnalyses, setAllAnalyses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [isPdfPreviewOpen, setIsPdfPreviewOpen] = useState(false);
   const [pdfPreviewData, setPdfPreviewData] = useState(null);
-  const [isSharedView, setIsSharedView] = useState(false);
-  const [viewOptions, setViewOptions] = useState({
-    includePhotos: true,
-    includeRecommendations: true,
-    includeScores: true,
-  });
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareableLink, setShareableLink] = useState('');
+  const [shareOptions, setShareOptions] = useState({ includePhotos: true, includeRecommendations: true, includeScores: true });
+
+  const [isSharedView, setIsSharedView] = useState(!!sharedId);
+  const [viewOptions, setViewOptions] = useState({ includePhotos: true, includeRecommendations: true, includeScores: true });
+
   const contentRef = useRef(null);
+  const overallScoreCardRef = useRef(null);
+  const analysisId = sharedId || urlAnalysisId;
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const sharedId = params.get('id');
+    const fetchAnalysis = async () => {
+      setIsLoading(true);
+      setError(null);
 
-    const fetchSharedAnalysis = async (id) => {
-      try {
-        const docRef = doc(db, "sharedAnalyses", id);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setAnalysis(data.analysis);
-          setViewOptions(data.shareOptions);
-          setIsSharedView(true);
-
-          if (!data.shareOptions.includeScores) {
-            if (data.shareOptions.includeRecommendations) {
-              setActiveTab('recommendations');
-            } else if (data.shareOptions.includePhotos) {
-              setActiveTab('progress-tracking');
+      if (isSharedView && sharedId) {
+        try {
+          const docRef = doc(db, 'sharedAnalyses', sharedId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const sharedData = docSnap.data();
+            setAnalysis(sharedData.analysis);
+            setViewOptions(sharedData.shareOptions);
+            if (sharedData.analysis && !sharedData.analysis.routine) {
+                 setAnalysis(prev => ({...prev, routine: sharedData.analysis.routine}));
             }
+          } else {
+            setError("Shared analysis not found or has been deleted.");
           }
-        } else {
-          setError("Sorry, the shared scorecard could not be found. It may have been deleted.");
+        } catch (e) {
+          console.error("Error fetching shared analysis:", e);
+          setError("Could not load the shared analysis.");
+        } finally {
+          setIsLoading(false);
         }
+        return;
+      }
+      
+      if (location.state && location.state.analysis) {
+        setAnalysis({ ...location.state.analysis, routine: location.state.routine });
+        if (location.state.focus === 'detailed-analysis') setActiveTab('detailed-analysis');
+        setIsLoading(false);
+        return;
+      }
+
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const analysesQuery = query(
+          collection(db, 'users', user.uid, 'analyses'),
+          orderBy('createdAt', 'desc')
+        );
+        const querySnapshot = await getDocs(analysesQuery);
+        const analyses = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setAllAnalyses(analyses);
+
+        if (analyses.length === 0) {
+          setError("No analyses found for your account.");
+          setIsLoading(false);
+          return;
+        }
+
+        let finalAnalysisId = urlAnalysisId;
+        if (!finalAnalysisId) {
+          finalAnalysisId = analyses[0].id;
+          navigate(`/skincare-scorecard-results/${finalAnalysisId}`, { replace: true });
+          return;
+        }
+
+        const currentAnalysis = analyses.find(a => a.id === finalAnalysisId);
+
+        if (currentAnalysis) {
+          setAnalysis(currentAnalysis);
+        } else {
+          setError("Sorry, we couldn't find the analysis you're looking for.");
+        }
+
       } catch (e) {
-        console.error("Error fetching shared document: ", e);
-        setError("An error occurred while trying to load the scorecard.");
+        console.error("Error fetching analysis documents: ", e);
+        setError("An error occurred while trying to load the analyses.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    if (sharedId) {
-      fetchSharedAnalysis(sharedId);
-    } else if (location.state && location.state.analysis) {
-      setAnalysis({ ...location.state.analysis, routine: location.state.routine });
-      if (location.state.focus === 'detailed-analysis') {
-        setActiveTab('detailed-analysis');
-      }
-    } else {
-        if (process.env.NODE_ENV === 'development') {
-          setAnalysis({ 
-              overallScore: { score: 85, feedback: "A very good score!" },
-              metrics: [],
-              morningRoutine: { products: [] },
-              eveningRoutine: { products: [] },
-              weeklyRoutine: { products: [] },
-              ingredientCompatibility: { compatible: [], incompatible: [] },
-              productRecommendations: [],
-              detailedIngredientAnalysis: [],
-              routine: []
-          });
-      } else {
-          setError("No analysis data found. Please go back and analyze your routine again.");
-        }
-    }
-  }, [location]);
+    fetchAnalysis();
+
+  }, [analysisId, user, navigate, location.state, isSharedView, sharedId, urlAnalysisId]);
 
   const handleExportWithReactPdf = useCallback(async () => {
     if (!analysis) return;
     setIsGeneratingPDF(true);
     try {
-      const dataUri = await generatePdfFromReact(analysis, false);
+      const analysisDataForPdf = isSharedView ? analysis : analysis.analysis;
+      const dataUri = await generatePdfFromReact({ analysis: analysisDataForPdf, routine: analysis.routine, user: userData }, false);
       setPdfPreviewData(dataUri);
       setIsPdfPreviewOpen(true);
     } catch (error) {
       console.error("Error generating PDF:", error);
     }
     setIsGeneratingPDF(false);
-  }, [analysis]);
+  }, [analysis, isSharedView, userData]);
 
+  const handleExportWithHtml2Canvas = useCallback(async () => {
+    if (!overallScoreCardRef.current) return;
+    setIsExporting(true);
+    try {
+      const canvas = await html2canvas(overallScoreCardRef.current, { backgroundColor: null });
+      const image = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = 'skincare-scorecard.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error exporting scorecard:', error);
+    }
+    setIsExporting(false);
+  }, []);
+
+  const handleShare = useCallback(async () => {
+    if (!analysis) return;
+    try {
+      const analysisToShare = { 
+        ...(analysis.analysis || {}), 
+        routine: analysis.routine 
+      };
+  
+      const docRef = doc(collection(db, 'sharedAnalyses'));
+      await setDoc(docRef, {
+        analysis: analysisToShare,
+        shareOptions,
+        createdAt: new Date(),
+      });
+      const link = `${window.location.origin}/skincare-scorecard-results?sharedId=${docRef.id}`;
+      setShareableLink(link);
+      setIsShareModalOpen(true);
+    } catch (error) {
+      console.error("Error creating shareable link:", error);
+    }
+  }, [analysis, shareOptions]);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen bg-background text-foreground p-8 text-center">Loading Scorecard...</div>;
+  }
+  
   if (error) {
+    if (error === "No analyses found for your account.") {
+        return (
+            <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] bg-background text-foreground p-8 text-center">
+                <Icon name="ScanFace" size={48} className="text-muted-foreground mb-4" />
+                <h3 className="text-xl font-heading font-heading-semibold text-foreground mb-2">Track Your Progress</h3>
+                <p className="text-muted-foreground mb-6 max-w-sm">
+                    You don't have any skin scans yet. Use the Derma Scan feature to get your first AI-powered analysis and start tracking your skin's health over time.
+                </p>
+                <button onClick={() => navigate('/derma-scan')} className="bg-primary text-primary-foreground px-6 py-2 rounded-md font-body-medium">
+                    Go to Derma Scan
+                </button>
+            </div>
+        );
+    }
     return <div className="flex items-center justify-center h-screen bg-background text-foreground p-8 text-center">{error}</div>;
   }
   
   if (!analysis) {
-    return <div className="flex items-center justify-center h-screen bg-background text-foreground p-8 text-center">Loading Scorecard...</div>;
+    if (!user && !isSharedView) {
+      return (
+          <div className="flex items-center justify-center h-screen bg-background text-foreground p-8 text-center">
+              <div>
+                  <p className="mb-4">Please log in to view your analyses.</p>
+                  <button onClick={() => navigate('/login')} className="bg-primary text-primary-foreground px-4 py-2 rounded-md">
+                      Go to Login
+                  </button>
+              </div>
+          </div>
+      );
+    }
+    return <div className="flex items-center justify-center h-screen bg-background text-foreground p-8 text-center">No analysis found.</div>;
   }
 
+  const analysisData = isSharedView ? analysis : analysis.analysis;
+  const routine = isSharedView ? analysis.routine : analysis.routine;
+  
   const { 
     overallScore,
     metrics,
@@ -136,9 +233,8 @@ const SkincareScoreCardResults = () => {
     weeklyRoutine,
     ingredientCompatibility,
     productRecommendations,
-    detailedIngredientAnalysis,
-    routine
-  } = analysis;
+    detailedIngredientAnalysis
+  } = analysisData;
 
   const TabButton = ({ tabName, label, isVisible }) => {
     if (!isVisible) return null;
@@ -161,15 +257,15 @@ const SkincareScoreCardResults = () => {
       <h2 className="text-xl font-heading font-heading-semibold text-foreground">Routine Breakdown</h2>
       
       {morningRoutine && morningRoutine.products && morningRoutine.products.length > 0 && (
-        <RoutineScoreSection title="Morning Routine" {...morningRoutine} icon="Sun" isExpanded={true} />
+        <RoutineScoreSection title="Morning Routine" {...morningRoutine} routine={routine} icon="Sun" isExpanded={true} />
       )}
       
       {eveningRoutine && eveningRoutine.products && eveningRoutine.products.length > 0 && (
-        <RoutineScoreSection title="Evening Routine" {...eveningRoutine} icon="Moon" />
+        <RoutineScoreSection title="Evening Routine" {...eveningRoutine} routine={routine} icon="Moon" />
       )}
       
       {weeklyRoutine && weeklyRoutine.products && weeklyRoutine.products.length > 0 && (
-         <RoutineScoreSection title="Weekly Routine" {...weeklyRoutine} icon="Calendar" />
+         <RoutineScoreSection title="Weekly Routine" {...weeklyRoutine} routine={routine} icon="Calendar" />
       )}
     </div>
   );
@@ -200,26 +296,54 @@ const SkincareScoreCardResults = () => {
 
         <main className="max-w-7xl mx-auto px-6 py-8">
           <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-            <div className="lg:col-span-8 space-y-8" ref={contentRef}>
+            <div className={`${isSharedView ? 'lg:col-span-12' : 'lg:col-span-8'} space-y-8`} ref={contentRef}>
                 {activeTab === 'overview' && viewOptions.includeScores && (
                   <div className="space-y-8">
-                    <OverallScoreCard {...overallScore} onGenerateCardClick={() => !isSharedView && setIsModalOpen(true)} isSharedView={isSharedView} />
+                    <div ref={overallScoreCardRef}>
+                      <OverallScoreCard 
+                        {...overallScore} 
+                        onGenerateCardClick={() => !isSharedView && setIsModalOpen(true)} 
+                        onExportPDF={handleExportWithReactPdf}
+                        onShare={handleShare}
+                        isGeneratingPDF={isGeneratingPDF}
+                        isSharedView={isSharedView} />
+                    </div>
                     <MetricsDashboard metrics={metrics} />
                     {renderRoutineAnalysis()}
                   </div>
                 )}
                 {activeTab === 'detailed-analysis' && viewOptions.includeScores && <DetailedAnalysisTab detailedIngredientAnalysis={detailedIngredientAnalysis} ingredientCompatibility={ingredientCompatibility} />}
-                {activeTab === 'recommendations' && viewOptions.includeRecommendations && <RecommendationCards recommendations={productRecommendations} />}
-                {activeTab === 'progress-tracking' && viewOptions.includePhotos && <BeforeAfterComparison progressData={DUMMY_PROGRESS_DATA} isSharedView={isSharedView} />}
+                {activeTab === 'recommendations' && viewOptions.includeRecommendations && (
+                    <div className="bg-card border border-border rounded-clinical p-6 text-center">
+                        <Icon name="WandSparkles" size={48} className="text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-heading font-heading-semibold text-foreground">Coming Soon!</h3>
+                        <p className="text-sm text-muted-foreground mt-2">
+                            Personalized product recommendations are being curated and will be available shortly.
+                        </p>
+                    </div>
+                )}
+                {activeTab === 'progress-tracking' && viewOptions.includePhotos && (
+                    <div className="bg-card border border-border rounded-clinical p-6 text-center">
+                        <Icon name="History" size={48} className="text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-heading font-heading-semibold text-foreground">Coming Soon!</h3>
+                        <p className="text-sm text-muted-foreground mt-2">
+                            The full Progress Tracking dashboard is currently unavailable, but you will have access to it shortly.
+                        </p>
+                    </div>
+                )}
             </div>
             {!isSharedView && (
               <div className="hidden lg:block lg:col-span-4">
                 <div className="sticky top-32 space-y-8">
                   <ActionSidebar 
-                      analysis={analysis} 
-                      routine={routine} 
+                      analysis={analysisData} 
+                      routine={routine}
+                      scorecardCount={allAnalyses.length} 
                       onExportPDF={handleExportWithReactPdf}
                       isGeneratingPDF={isGeneratingPDF}
+                      setIsShareModalOpen={setIsShareModalOpen}
+                      setShareableLink={setShareableLink}
+                      setActiveTab={setActiveTab}
                   />
                 </div>
               </div>
@@ -231,13 +355,22 @@ const SkincareScoreCardResults = () => {
         <ScoreCardModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          analysis={analysis}
+          analysis={analysisData}
         />
       )}
       <PdfPreviewModal 
         isOpen={isPdfPreviewOpen} 
         onClose={() => setIsPdfPreviewOpen(false)} 
         pdfDataUri={pdfPreviewData} 
+      />
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        shareableLink={shareableLink}
+        onCopy={() => { /* Add copy logic if needed */ }}
+        shareOptions={shareOptions}
+        onOptionChange={(newOptions) => setShareOptions(newOptions)}
+        isSharedView={isSharedView}
       />
     </div>
   );

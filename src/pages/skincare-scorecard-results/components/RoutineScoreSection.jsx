@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 
@@ -96,7 +97,7 @@ const PdfRoutineSection = ({ title, score, products, insights }) => {
 };
 
 // Original component using Tailwind CSS for the web UI
-const RoutineScoreSection = ({ title, score, products, icon, insights, isExpanded: initialExpanded = false, isPdfMode = false }) => {
+const RoutineScoreSection = ({ title, score, products, icon, insights, routine, isExpanded: initialExpanded = false, isPdfMode = false }) => {
   const [isExpanded, setIsExpanded] = useState(initialExpanded);
 
   if (isPdfMode) {
@@ -126,6 +127,23 @@ const RoutineScoreSection = ({ title, score, products, icon, insights, isExpande
       default: return 'text-destructive';
     }
   };
+  
+  const getProductImage = (productName) => {
+    if (!routine || !productName) return null;
+
+    const allProducts = [
+      ...(routine.AM || []),
+      ...(routine.PM || []),
+      ...(routine.Weekly || []),
+    ];
+
+    // Enhanced matching logic to be more resilient
+    const product = allProducts.find(p => 
+      p && p.name && p.name.trim().toLowerCase() === productName.trim().toLowerCase()
+    );
+
+    return product?.image;
+  }
 
   const scoreValue = score || 0;
 
@@ -165,13 +183,19 @@ const RoutineScoreSection = ({ title, score, products, icon, insights, isExpande
         <div className="border-t border-border p-4 sm:p-6 space-y-4">
           <div className="space-y-3">
             {products?.map((product, index) => {
+
                 const productRatingValue = product?.rating;
                 const productScoreValue = product?.score;
+                const productImage = getProductImage(product?.name);
                 return (
                     <div key={index} className="flex items-center justify-between p-4 bg-muted rounded-clinical">
                         <div className="flex items-center space-x-3 flex-1 min-w-0">
-                            <div className="w-12 h-12 bg-secondary rounded-clinical flex items-center justify-center flex-shrink-0">
-                                <Icon name="Package" size={20} className="text-secondary-foreground" />
+                            <div className="w-12 h-12 bg-secondary rounded-clinical flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                {productImage ? (
+                                    <img src={productImage} alt={product?.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <Icon name="Package" size={20} className="text-secondary-foreground" />
+                                )}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h4 className="font-body font-body-medium text-sm text-foreground">
@@ -181,24 +205,41 @@ const RoutineScoreSection = ({ title, score, products, icon, insights, isExpande
                                 {product?.category} • {product?.step}
                                 </p>
                                 {product?.issues && product?.issues?.length > 0 && (
-                                <div className="flex items-center space-x-1 mt-1">
-                                    <Icon name="AlertTriangle" size={12} className="text-warning" />
-                                    <span className="text-xs text-warning">
-                                    {product?.issues?.length} issue{product?.issues?.length > 1 ? 's' : ''}
-                                    </span>
-                                </div>
+                                  <div className="relative group">
+                                    <div className="flex items-center space-x-1 mt-1 cursor-pointer">
+                                      <Icon name="AlertTriangle" size={12} className="text-warning" />
+                                      <span className="text-xs text-warning">
+                                        {product?.issues?.length} issue{product?.issues?.length > 1 ? 's' : ''}
+                                      </span>
+                                    </div>
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs hidden group-hover:block bg-card text-card-foreground border border-border p-2 rounded-md shadow-lg z-10 text-left">
+                                      <h5 className="font-heading font-heading-semibold text-sm text-foreground mb-1">Issues Found</h5>
+                                      <ul className="list-disc list-inside space-y-1">
+                                        {product.issues.map((issue, i) => (
+                                            <li key={i} className="font-body font-body-normal text-xs text-muted-foreground">{issue.issue || issue}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  </div>
                                 )}
                             </div>
                         </div>
                         <div className="flex items-center space-x-2 pl-2">
-                            <Icon
-                                name={getProductRatingIcon(productRatingValue)}
-                                size={16}
-                                className={`${getProductRatingColor(productRatingValue)} flex-shrink-0`}
-                            />
-                            <span className={`text-sm font-data font-data-normal ${getProductRatingColor(productRatingValue)}`}>
-                                {productScoreValue}/10
-                            </span>
+                        <Icon
+
+name={getProductRatingIcon(productRatingValue)}
+
+size={16}
+
+className={`${getProductRatingColor(productRatingValue)} flex-shrink-0`}
+
+/>
+
+<span className={`text-sm font-data font-data-normal ${getProductRatingColor(productRatingValue)}`}>
+
+{productScoreValue}/10
+
+</span>
                         </div>
                     </div>
                 )}

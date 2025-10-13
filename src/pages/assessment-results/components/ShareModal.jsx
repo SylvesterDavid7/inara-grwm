@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '../../../components/ui/Modal';
 import Button from '../../../components/ui/Button';
+import { Checkbox } from '../../../components/ui/Checkbox';
+import Icon from '../../../components/AppIcon';
 import { Copy, Facebook, Twitter, Mail, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
 
-const ShareModal = ({ isOpen, onClose, shareableLink }) => {
+const ShareOption = ({ id, label, checked, onChange, icon }) => (
+    <label htmlFor={id} className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg cursor-pointer hover:bg-muted transition-colors">
+      <Icon name={icon} className="h-5 w-5 text-accent" />
+      <span className="flex-grow font-body text-sm text-foreground">{label}</span>
+      <Checkbox id={id} checked={checked} onCheckedChange={onChange} />
+    </label>
+  );
+
+const ShareModal = ({ isOpen, onClose, shareableLink, shareOptions, onOptionChange, isSharedView }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   if (!isOpen) return null;
@@ -12,7 +21,7 @@ const ShareModal = ({ isOpen, onClose, shareableLink }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(shareableLink);
     setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
@@ -20,8 +29,38 @@ const ShareModal = ({ isOpen, onClose, shareableLink }) => {
         <Modal isOpen={isOpen} onClose={onClose} title="Share Your Skincare Scorecard">
         <div>
             <p className="font-body text-muted-foreground mb-4">
-            Your personalized scorecard has been saved. Share the link below with friends, family, or your dermatologist.
+            {isSharedView 
+              ? "Share this personalized scorecard using the link below."
+              : "Your personalized scorecard is ready. Choose what to include and share the link below."
+            }
             </p>
+
+            {!isSharedView && onOptionChange && (
+              <div className="space-y-3 mb-6">
+                <h4 className="font-heading text-sm font-medium text-foreground">Sharing Options</h4>
+                <ShareOption 
+                  id="includeScores"
+                  label="Include Scores & Analysis"
+                  icon="ClipboardList"
+                  checked={shareOptions.includeScores}
+                  onChange={(checked) => onOptionChange({ ...shareOptions, includeScores: checked })}
+                />
+                <ShareOption 
+                  id="includeRecommendations"
+                  label="Include Recommendations"
+                  icon="Star"
+                  checked={shareOptions.includeRecommendations}
+                  onChange={(checked) => onOptionChange({ ...shareOptions, includeRecommendations: checked })}
+                />
+                <ShareOption 
+                  id="includePhotos"
+                  label="Include Progress Photos"
+                  icon="Image"
+                  checked={shareOptions.includePhotos}
+                  onChange={(checked) => onOptionChange({ ...shareOptions, includePhotos: checked })}
+                />
+              </div>
+            )}
             
             <div className="flex items-center space-x-2 mb-6">
             <input 

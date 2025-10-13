@@ -38,20 +38,20 @@ function ScoreCard({ score, verdict, cuteName, cardImage }) {
       </p>
 
       <div className="flex flex-col justify-center items-center gap-3">
-        <div className="text-6xl font-extrabold text-slate-100 leading-tight">
+        <div className="text-5xl font-heading font-extrabold text-slate-100 leading-tight">
           {score}
           <span className="text-3xl opacity-50 font-medium">/100</span>
         </div>
         <div className={`inline-flex items-center px-6 py-2 rounded-full font-semibold uppercase text-lg ${colors.bg} ${colors.text} ${colors.ring}`}>
           <span className="rounded-full bg-current/90" />
-          <span className='font-bold'>{verdict}</span>
+          <span className='font-bold text-sm'>{verdict}</span>
         </div>
       </div>
 
       <div className="mt-8 text-sm text-slate-400">
         Skincare Routine Analysis for:
       </div>
-      <div className="mt-2 text-2xl font-bold text-slate-100">
+      <div className="mt-2 text-2xl font-heading font-bold text-slate-100">
         {cuteName}
       </div>
 
