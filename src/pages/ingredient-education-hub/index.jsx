@@ -9,12 +9,13 @@ import IngredientCard from './components/IngredientCard';
 import IngredientDetailModal from './components/IngredientDetailModal';
 import IngredientFilters from './components/IngredientFilters';
 import CompatibilityChecker from './components/CompatibilityChecker';
-import EducationalContent from './components/EducationalContent';
 import { ingredients as mockIngredients } from '../../data/ingredients';
 import { useUserDataContext } from '../../contexts/UserDataContext.jsx';
+import { useAwardPoints } from '../../hooks/useAwardPoints.js';
 
 const IngredientEducationHub = () => {
   const { userData, updateUserData } = useUserDataContext();
+  const { awardPoints } = useAwardPoints();
   const [viewMode, setViewMode] = useState('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilters, setActiveFilters] = useState({});
@@ -82,6 +83,7 @@ const IngredientEducationHub = () => {
     setIsDetailModalOpen(true);
     const viewed = userData.viewedIngredients || [];
     if (!viewed.includes(ingredient.id)) {
+      awardPoints('ingredient_viewed');
       updateUserData({ viewedIngredients: [...viewed, ingredient.id] });
     }
   };
@@ -215,9 +217,6 @@ const IngredientEducationHub = () => {
 
           {!isLibraryView && (
             <>
-              <div className="mt-16">
-                <EducationalContent />
-              </div>
               <div className="mt-12 bg-card border border-border rounded-clinical p-6">
                 <h2 className="font-heading font-heading-semibold text-xl text-card-foreground mb-4">
                   Quick Actions

@@ -235,10 +235,10 @@ const ProductEntryCard = ({
                 >
                   {isAnalyzing ? (
                     <div className="text-center">
-                        <Icon name="Loader" size={24} className="text-muted-foreground animate-spin mx-auto mb-2" />
-                        <div className="font-caption font-caption-normal text-xs text-muted-foreground">
-                            Analyzing Image...
-                        </div>
+                      <Icon name="Loader" size={24} className="text-muted-foreground animate-spin mx-auto mb-2" />
+                      <div className="font-caption font-caption-normal text-xs text-muted-foreground">
+                        Analyzing Image...
+                      </div>
                     </div>
                   ) : imagePreview ? (
                     <Image
@@ -259,6 +259,7 @@ const ProductEntryCard = ({
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
+                  capture="environment" /* This attribute enables camera capture */
                   onChange={handleImageUpload}
                   className="hidden"
                   disabled={isAnalyzing}

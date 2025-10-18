@@ -8,10 +8,12 @@ import Icon from '../../components/AppIcon';
 import { fetchGeminiAnalysis } from '../../utils/gemini';
 import { collection, addDoc, serverTimestamp, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useAwardPoints } from '../../hooks/useAwardPoints.js';
 
 const SkincareRoutineInput = () => {
   const navigate = useNavigate();
   const { user, userData, updateUserData } = useUserDataContext();
+  const { awardPoints } = useAwardPoints();
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [morningProducts, setMorningProducts] = useState([]);
@@ -57,6 +59,9 @@ const SkincareRoutineInput = () => {
     try {
       const analysis = await fetchGeminiAnalysis({ morningProducts, eveningProducts, weeklyTreatments });
       
+      if (!userData.routine) {
+        awardPoints('routine_added');
+      }
       await updateUserData({ 
         routine, 
         routineAnalysisCompleted: true 

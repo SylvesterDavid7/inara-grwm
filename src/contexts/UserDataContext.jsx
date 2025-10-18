@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { adminEmails } from '../data/admins';
@@ -21,49 +21,68 @@ export const UserDataProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
-      if (currentUser) {
-        const userRef = doc(db, 'users', currentUser.uid);
-        const userSnap = await getDoc(userRef);
+    // onAuthStateChanged returns an unsubscribe function for cleanup
+    const authUnsubscribe = onAuthStateChanged(auth, (authUser) => {
+      if (authUser) {
+        const userRef = doc(db, 'users', authUser.uid);
         
-        if (adminEmails.includes(currentUser.email)) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-
-        if (userSnap.exists()) {
-          setUserData(userSnap.data());
-        } else {
-          const newUser = {
-            email: currentUser.email,
-            uid: currentUser.uid,
-            displayName: currentUser.displayName,
-            photoURL: currentUser.photoURL,
-            createdAt: serverTimestamp(),
+        // Set up a real-time listener for user data
+        const dataUnsubscribe = onSnapshot(userRef, async (docSnap) => {
+          const defaultData = {
+            checkInStreak: 0,
+            totalCheckIns: 0,
+            lastCheckIn: null,
+            points: 0,
           };
-          await setDoc(userRef, newUser);
-          setUserData(newUser);
-        }
-        setUser(currentUser);
+
+          if (docSnap.exists()) {
+            // Merge fetched data with defaults to ensure all fields are present
+            const fetchedData = docSnap.data();
+            const completeUserData = { ...defaultData, ...fetchedData };
+            setUserData(completeUserData);
+            setIsAdmin(adminEmails.includes(completeUserData.email));
+          } else {
+            // If the user document doesn't exist, create it
+            const newUser = {
+              ...defaultData,
+              email: authUser.email,
+              uid: authUser.uid,
+              displayName: authUser.displayName,
+              photoURL: authUser.photoURL,
+              createdAt: serverTimestamp(),
+            };
+            await setDoc(userRef, newUser);
+            // The snapshot listener will automatically update the state with the new user data
+          }
+          // Set the user and indicate that loading is complete
+          setUser(authUser);
+          setLoading(false);
+        }, (error) => {
+          console.error("Error with snapshot listener:", error);
+          setLoading(false);
+        });
+
+        // Return the data listener's unsubscribe function for cleanup
+        return () => dataUnsubscribe();
       } else {
+        // No authenticated user, so clear all user state and stop loading
         setUser(null);
         setUserData(null);
         setIsAdmin(false);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Return the auth listener's unsubscribe function for cleanup
+    return () => authUnsubscribe();
   }, []);
 
   const updateUserData = async (newData) => {
     if (user) {
       const userRef = doc(db, 'users', user.uid);
       try {
-        await setDoc(userRef, newData, { merge: true });
-        setUserData(prevData => ({ ...prevData, ...newData }));
+        // Use updateDoc for partial updates. The onSnapshot listener will handle UI changes.
+        await updateDoc(userRef, newData);
         return { success: true };
       } catch (error) {
         console.error('Error updating user data:', error);

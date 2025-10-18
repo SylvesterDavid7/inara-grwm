@@ -92,7 +92,7 @@ const RoutinePreviewPanel = ({
                 iconName="Zap"
                 iconPosition="left"
              >
-                {isAnalyzing ? 'Analyzing...' : 'Get AI Analysis'}
+                {isAnalyzing ? 'Analyzing...' : 'Get Analysis'}
             </Button>
             <Button 
                 variant="outline"

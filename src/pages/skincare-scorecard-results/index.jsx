@@ -192,13 +192,13 @@ const SkincareScoreCardResults = () => {
     if (error === "No analyses found for your account.") {
         return (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] bg-background text-foreground p-8 text-center">
-                <Icon name="ScanFace" size={48} className="text-muted-foreground mb-4" />
-                <h3 className="text-xl font-heading font-heading-semibold text-foreground mb-2">Track Your Progress</h3>
+                <Icon name="ClipboardList" size={48} className="text-muted-foreground mb-4" />
+                <h3 className="text-xl font-heading font-heading-semibold text-foreground mb-2">Analyze Your Skincare Routine</h3>
                 <p className="text-muted-foreground mb-6 max-w-sm">
-                    You don't have any skin scans yet. Use the Derma Scan feature to get your first AI-powered analysis and start tracking your skin's health over time.
+                    You haven't analyzed a routine yet. Input your current AM/PM routine to generate your first Skincare Scorecard and get personalized insights.
                 </p>
-                <button onClick={() => navigate('/derma-scan')} className="bg-primary text-primary-foreground px-6 py-2 rounded-md font-body-medium">
-                    Go to Derma Scan
+                <button onClick={() => navigate('/skincare-routine-input')} className="bg-primary text-primary-foreground px-6 py-2 rounded-md font-body-medium">
+                    Analyze Your Routine
                 </button>
             </div>
         );

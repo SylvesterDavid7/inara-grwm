@@ -4,10 +4,11 @@ import { WebcamCapture } from '../../components/ui/Webcam';
 import AppIcon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { analyzeDermaScanImage } from '../../utils/gemini';
-import { useUserDataContext } from '../../contexts/UserDataContext';
+import { useUserDataContext } from '../../contexts/UserDataContext.jsx';
 import { db } from '../../firebase';
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '../../config';
+import DotOverlay from '../../components/ui/DotOverlay';
 
 // --- Utility Components ---
 
@@ -312,7 +313,7 @@ const DermaScanPage = () => {
                     <div className="md:col-span-1 space-y-6">
                         
                         {/* Captured Image Preview - Vertical Aspect Ratio */}
-                        <Card className="aspect-[4/5] relative overflow-hidden p-0">
+                        <Card className="relative overflow-hidden p-0">
                             {/* FIX: Set img to w-full h-full object-cover, and remove redundant wrapper */}
                             <img
                                 src={capturedImage}
@@ -441,7 +442,7 @@ const DermaScanPage = () => {
                 <div className="max-w-7xl mx-auto">
                     {!analysis && !capturedImage && (
                         <motion.div layout initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
-                            <h1 className="font-heading text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-600 to-gray-800 mb-4">SKIN ANALYZER</h1>
+                            <h1 className="font-heading text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-600 to-gray-800 mb-4">SKIN ANALYZER</h1>
                             <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto">Initiate professional skin diagnosis using device camera.</p>
                             <Button onClick={startCapture} size="lg" className="text-lg px-8 py-4 rounded-full shadow-lg border border-slate-500 bg-gray-200 hover:bg-gray-300 text-slate-700 transform hover:scale-105 transition-all duration-300">
                                 <AppIcon name="Scan" className="mr-3" />
@@ -454,13 +455,21 @@ const DermaScanPage = () => {
                         <motion.div layout className="text-center flex flex-col items-center">
                             <h2 className="font-heading text-4xl font-bold text-gray-800 mb-4">Image Capture Complete</h2>
                             <p className="text-gray-600 mb-8">Ready for spectral processing.</p>
-                            <img src={capturedImage} alt="Captured skin" className="w-full max-w-lg mx-auto rounded-lg shadow-2xl border border-gray-300 mb-10" />
-                            <div className="flex justify-center space-x-4">
-                                <Button onClick={resetScan} variant="outline" className="w-44 border-gray-400 text-gray-600 hover:bg-gray-100">
+                            <div className="relative w-full max-w-lg mx-auto rounded-lg shadow-2xl border border-gray-300 mb-10 overflow-hidden">
+  <img
+    src={capturedImage}
+    alt="Captured skin"
+    className="w-full h-auto object-cover"
+  />
+  {isLoading && (
+    <DotOverlay width={500} height={500} />
+  )}
+</div>                            <div className="flex justify-center space-x-4">
+                                <Button onClick={resetScan} variant="outline" className="w-44 border-gray-400 text-gray-600 hover:bg-gray-400">
                                     <AppIcon name="Trash2" className="mr-2" />
                                     Reset Capture
                                 </Button>
-                                <Button onClick={handleScan} className="w-44 shadow-lg border border-slate-500 bg-slate-600 hover:bg-slate-700 text-white" disabled={isLoading}>
+                                <Button onClick={handleScan} className="w-44 shadow-lg border border-slate-500 bg-slate-900 hover:bg-slate-700 text-white" disabled={isLoading}>
                                     {isLoading ? (
                                         <><AppIcon name="Loader" className="mr-2 animate-spin" />ANALYZING...</>
                                     ) : (

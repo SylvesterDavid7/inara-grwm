@@ -13,6 +13,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
 
@@ -22,6 +23,9 @@ const Signup = () => {
       setError("Passwords do not match");
       return;
     }
+    setLoading(true);
+    setError("");
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -38,8 +42,9 @@ const Signup = () => {
         photoURL: null, // Initially no photo
       });
 
-      navigate("/dashboard");
+      navigate("/profile");
     } catch (error) {
+      setLoading(false);
       switch (error.code) {
         case "auth/email-already-in-use":
           setError("An account with this email already exists. Please log in or use a different email.");
@@ -143,9 +148,10 @@ const Signup = () => {
               <div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none"
+                  disabled={loading}
+                  className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none disabled:opacity-50"
                 >
-                  Next step
+                  {loading ? 'Creating Account...' : 'Next step'}
                 </button>
               </div>
             </form>

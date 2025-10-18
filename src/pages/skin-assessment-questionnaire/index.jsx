@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/ui/Header';
@@ -10,6 +9,7 @@ import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
 import { fetchGeminiAnalysisFromAssessment } from '../../utils/gemini';
 import { useUserDataContext } from '../../contexts/UserDataContext.jsx';
+import { useAwardPoints } from '../../hooks/useAwardPoints';
 
 const getQuestions = (currencySymbol = '₹') => [
   { 
@@ -296,7 +296,8 @@ const getQuestions = (currencySymbol = '₹') => [
 
 const SkinAssessmentQuestionnaire = () => {
   const navigate = useNavigate();
-  const { updateUserData } = useUserDataContext();
+  const { userData, updateUserData } = useUserDataContext();
+  const { awardPoints } = useAwardPoints();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showSummary, setShowSummary] = useState(false);
@@ -358,6 +359,9 @@ const SkinAssessmentQuestionnaire = () => {
     try {
       const analysis = await fetchGeminiAnalysisFromAssessment(answers, questions);
       
+      if (!userData.assessmentCompleted) {
+        awardPoints('assessment_completed');
+      }
       await updateUserData({ assessmentCompleted: true });
 
       const assessmentData = {

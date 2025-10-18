@@ -30,7 +30,7 @@ const Header = () => {
     {
       label: 'Track',
       items: [
-        { label: 'Dashboard', path: '/progress-tracking-dashboard', icon: 'TrendingUp' }
+        { label: 'Progress', path: '/progress-tracking-dashboard', icon: 'TrendingUp' }
       ]
     },
     {

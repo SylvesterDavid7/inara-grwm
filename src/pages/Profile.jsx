@@ -8,6 +8,7 @@ import BadgesSection from './profile/BadgesSection';
 import StatsSection from './profile/StatsSection';
 import TasksSection from './profile/TasksSection';
 import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '../config';
+import DailyCheckIn from '../components/ui/DailyCheckIn.jsx';
 
 const Profile = () => {
   const { user, userData, updateUserData } = useUserDataContext();
@@ -19,6 +20,38 @@ const Profile = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [profileLinks, setProfileLinks] = useState([]);
+
+  const calculateLevelAndProgress = (points) => {
+    if (points === undefined || points === null) {
+      return { score: 0, level: 'Beginner', progress: 0 };
+    }
+  
+    const levels = [
+      { name: 'Beginner', minPoints: 0, maxPoints: 99 },
+      { name: 'Intermediate', minPoints: 100, maxPoints: 299 },
+      { name: 'Pro', minPoints: 300, maxPoints: 599 },
+      { name: 'Expert', minPoints: 600, maxPoints: Infinity },
+    ];
+  
+    const currentLevel = levels.find(l => points >= l.minPoints && points <= l.maxPoints);
+    
+    if (!currentLevel) {
+        return { score: points, level: 'Expert', progress: 100 };
+    }
+    
+    if (currentLevel.name === 'Expert') {
+        return { score: points, level: 'Expert', progress: 100 };
+    }
+  
+    const nextLevel = levels[levels.indexOf(currentLevel) + 1];
+    const levelProgress = ((points - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100;
+  
+    return {
+      score: points,
+      level: currentLevel.name,
+      progress: levelProgress,
+    };
+  };
 
   useEffect(() => {
     const baseLinks = [
@@ -97,75 +130,96 @@ const Profile = () => {
 
   const calculateBadges = (userData) => {
     if (!userData) return [];
-
+  
     const allBadges = [
-      { id: 'starter', icon: 'Star', title: 'Skincare Starter', description: 'Completed your first skin assessment.', earned: false },
-      { id: 'builder', icon: 'ShieldCheck', title: 'Routine Builder', description: 'Added your first full skincare routine.', earned: false },
-      { id: 'consistency', icon: 'Zap', title: 'Consistency King', description: 'Tracked your routine for 7 days straight.', earned: false },
-      { id: 'guru', icon: 'BookOpen', title: 'Ingredient Guru', description: 'Viewed 10 ingredient details.', earned: false },
+      { id: 'starter', icon: 'Star', title: 'Skincare Starter', description: 'Completed your first skin assessment.', earned: false, points: 50 },
+      { id: 'builder', icon: 'ShieldCheck', title: 'Routine Builder', description: 'Added your first full skincare routine.', earned: false, points: 75 },
+      { id: 'consistency', icon: 'Zap', title: 'Consistency King', description: 'Tracked your routine for 7 days straight.', earned: false, points: 100 },
+      { id: 'guru', icon: 'BookOpen', title: 'Ingredient Guru', description: 'Viewed 10 ingredient details.', earned: false, points: 25 },
+      { id: 'derma_scanner', icon: 'Scan', title: 'Derma Scanner', description: 'Completed your first Derma Scan.', earned: false, points: 100 },
+      { id: 'century_club', icon: 'Award', title: 'Century Club', description: 'Maintained a 100-day check-in streak.', earned: false, points: 500 },
     ];
-
+  
+    let newPoints = 0;
     const earnedBadges = allBadges.map(badge => {
-      let earned = false;
+      let earned = userData.badges?.includes(badge.id);
+      let newlyEarned = false;
+  
       switch (badge.id) {
         case 'starter':
-          if (userData.assessmentCompleted) {
-            earned = true;
-          }
+          if (userData.assessmentCompleted && !earned) newlyEarned = true;
           break;
         case 'builder':
-          if (userData.routine) {
+          if (userData.routine && !earned) {
             const hasProducts = Object.values(userData.routine).some(day => {
-                const amProducts = day.AM || [];
-                const pmProducts = day.PM || [];
-                return amProducts.length > 0 || pmProducts.length > 0;
+              const amProducts = day.AM || [];
+              const pmProducts = day.PM || [];
+              return amProducts.length > 0 || pmProducts.length > 0;
             });
-            if (hasProducts) {
-                earned = true;
-            }
+            if (hasProducts) newlyEarned = true;
           }
           break;
         case 'consistency':
-          if (userData.progress) {
-            const today = new Date();
-            let consecutiveDays = 0;
-            for (let i = 0; i < 7; i++) {
-              const date = new Date(today);
-              date.setDate(today.getDate() - i);
-              const dateKey = date.toISOString().split('T')[0];
-              if (userData.progress[dateKey] && Object.keys(userData.progress[dateKey]).length > 0) {
-                consecutiveDays++;
-              } else {
-                break; // Streak broken
+            if (userData.progress && !earned) {
+                const today = new Date();
+                let consecutiveDays = 0;
+                for (let i = 0; i < 7; i++) {
+                  const date = new Date(today);
+                  date.setDate(today.getDate() - i);
+                  const dateKey = date.toISOString().split('T')[0];
+                  if (userData.progress[dateKey] && Object.keys(userData.progress[dateKey]).length > 0) {
+                    consecutiveDays++;
+                  } else {
+                    break;
+                  }
+                }
+                if (consecutiveDays >= 7) newlyEarned = true;
               }
-            }
-            if (consecutiveDays >= 7) {
-              earned = true;
-            }
-          }
-          break;
+              break;
         case 'guru':
-          if (userData.viewedIngredients && userData.viewedIngredients.length >= 10) {
-            earned = true;
+          if (userData.viewedIngredients && userData.viewedIngredients.length >= 10 && !earned) {
+            newlyEarned = true;
           }
           break;
+        case 'derma_scanner':
+          if (userData.dermaScanCompleted && !earned) newlyEarned = true;
+          break;
+        case 'century_club':
+            if (userData.checkInStreak && userData.checkInStreak >= 100 && !earned) {
+                newlyEarned = true;
+            }
+            break;
         default:
           break;
       }
+  
+      if (newlyEarned) {
+        newPoints += badge.points;
+        earned = true;
+      }
+  
       return { ...badge, earned };
     });
-
+  
+    if (newPoints > 0) {
+      const currentBadges = earnedBadges.filter(b => b.earned).map(b => b.id);
+      updateUserData({ 
+        points: (userData.points || 0) + newPoints,
+        badges: currentBadges
+      });
+    }
+  
     return earnedBadges;
   };
 
   const userBadges = calculateBadges(userData);
+  const userScore = calculateLevelAndProgress(userData?.points);
   
-  const mockScore = { score: 85, level: 'Pro', progress: 85 };
-  const mockStats = {
-    highestScore: 1250,
-    winStreak: 5,
-    quizzesTaken: 23,
-    correctAnswers: 189
+  const liveStats = {
+    highestScore: userData?.stats?.highestScore || 0,
+    winStreak: userData?.stats?.winStreak || 0,
+    quizzesTaken: userData?.stats?.quizzesTaken || 0,
+    correctAnswers: userData?.stats?.correctAnswers || 0
   };
 
   return (
@@ -223,6 +277,7 @@ const Profile = () => {
                 </button>
               </div>
             </div>
+            <DailyCheckIn />
             {/* Tasks for Desktop */}
             <div className="hidden md:block">
               <TasksSection />
@@ -231,8 +286,8 @@ const Profile = () => {
 
           {/* Right Column */}
           <div className="md:col-span-2 space-y-8 order-2">
-            <ScoreSection {...mockScore} />
-            <StatsSection stats={mockStats} />
+            <ScoreSection {...userScore} />
+            <StatsSection stats={liveStats} />
             <BadgesSection badges={userBadges} />
           </div>
 

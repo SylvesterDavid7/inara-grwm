@@ -11,11 +11,13 @@ import RoutineAdherenceCalendar from './components/RoutineAdherenceCalendar';
 import GoalProgressWidget from './components/GoalProgressWidget';
 import SmartInsights from './components/SmartInsights';
 import QuickActions from './components/QuickActions';
+import { useAwardPoints } from '../../hooks/useAwardPoints';
 
 const ProgressTrackingDashboard = () => {
   const [dateRange, setDateRange] = useState('30days');
   const [viewMode, setViewMode] = useState('overview');
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const { awardPoints } = useAwardPoints();
   const [photos, setPhotos] = useState({
     before: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop",
     after: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop&brightness=1.1&contrast=1.1"
@@ -300,6 +302,7 @@ const ProgressTrackingDashboard = () => {
                   adherenceData={adherenceData}
                   currentMonth={currentMonth}
                   onMonthChange={setCurrentMonth}
+                  onDayTrack={() => awardPoints('routine_tracked')}
                 />
               </div>
             </div>
