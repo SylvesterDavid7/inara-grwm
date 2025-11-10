@@ -59,15 +59,15 @@ const SkincareRoutineInput = () => {
     try {
       const analysis = await fetchGeminiAnalysis({ morningProducts, eveningProducts, weeklyTreatments });
       
-      if (!userData.routine) {
-        awardPoints('routine_added');
-      }
-      await updateUserData({ 
-        routine, 
-        routineAnalysisCompleted: true 
-      });
-
       if (user) {
+        if (userData && !userData.routine) {
+          awardPoints('routine_added');
+        }
+        await updateUserData({ 
+          routine, 
+          routineAnalysisCompleted: true 
+        });
+
         const analysisRef = await addDoc(collection(db, 'users', user.uid, 'analyses'), {
           analysis,
           routine,

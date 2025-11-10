@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes as RouterRoutes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
@@ -29,11 +30,11 @@ import ChangePassword from './pages/ChangePassword';
 import Skincare101 from './pages/skincare-101';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
-import AdminUsers from './pages/AdminUsers'; // Import the new page
-import AdminAnalytics from './pages/AdminAnalytics'; // Import the new page
-import AdminReportView from './pages/AdminReportView'; // Import the new page
-import AdminSettings from './pages/AdminSettings'; // Import the new page
-import AdminArticles from './pages/AdminArticles'; // Import the new page
+import AdminUsers from './pages/AdminUsers'; 
+import AdminAnalytics from './pages/AdminAnalytics'; 
+import AdminReportView from './pages/AdminReportView';
+import AdminSettings from './pages/AdminSettings';
+import AdminArticles from './pages/AdminArticles'; 
 import AccessRestricted from './pages/AccessRestricted';
 import DermaScanPage from './pages/derma-scan';
 import GateRoute from './components/GateRoute';
@@ -54,24 +55,23 @@ const Routes = () => {
         <Route path="/access-restricted" element={<AccessRestricted />} />
 
         <Route element={<GateRoute />}>
-          {/* Main App Layout */}
           <Route element={<Layout />}>
             <Route path="/home" element={<HomePage />} />
-            <Route element={<AdminRoute />}>
-              <Route path="/product-recommendations" element={<ProductRecommendations />} />
-              <Route path="/progress-tracking-dashboard" element={<ProgressTrackingDashboard />} />
-            </Route>
-            <Route path="/ingredient-education-hub" element={<IngredientEducationHub />} />
-            <Route path="/skincare-101" element={<Skincare101 />} />
-            <Route path="/skincare-routine-input" element={<SkincareRoutineInput />} />
-            <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />
-            <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
-            <Route path="/skincare-scorecard-results/:analysisId" element={<SkincareScoreCardResults />} />
-            <Route path="/assessment-results" element={<AssessmentResults />} />
-            <Route path="/optimize-routine" element={<OptimizeRoutine />} />
-            <Route path="/compare-routines" element={<CompareRoutines />} />
-            <Route path="/derma-scan" element={<DermaScanPage />} />
             <Route element={<PrivateRoute />}>
+              <Route element={<AdminRoute />}>
+                <Route path="/product-recommendations" element={<ProductRecommendations />} />
+                <Route path="/progress-tracking-dashboard" element={<ProgressTrackingDashboard />} />
+              </Route>
+              <Route path="/ingredient-education-hub" element={<IngredientEducationHub />} />
+              <Route path="/skincare-101" element={<Skincare101 />} />
+              <Route path="/skincare-routine-input" element={<SkincareRoutineInput />} />
+              <Route path="/skin-assessment-questionnaire" element={<SkinAssessmentQuestionnaire />} />
+              <Route path="/skincare-scorecard-results" element={<SkincareScoreCardResults />} />
+              <Route path="/skincare-scorecard-results/:analysisId" element={<SkincareScoreCardResults />} />
+              <Route path="/assessment-results" element={<AssessmentResults />} />
+              <Route path="/optimize-routine" element={<OptimizeRoutine />} />
+              <Route path="/compare-routines" element={<CompareRoutines />} />
+              <Route path="/derma-scan" element={<DermaScanPage />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/user-info" element={<UserInfo />} />
@@ -81,13 +81,11 @@ const Routes = () => {
             </Route>
           </Route>
 
-          {/* Admin Section */}
           <Route element={<AdminRoute />}>
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/analytics" element={<AdminAnalytics />} />
-              {/* This route now accepts the collection type */}
               <Route path="/admin/report/:collection/:reportId" element={<AdminReportView />} />
               <Route path="/admin/settings" element={<AdminSettings />} />
               <Route path="/admin/articles" element={<AdminArticles />} />

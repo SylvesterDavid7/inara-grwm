@@ -78,7 +78,7 @@ const Header = () => {
         <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               {/* Logo */}
-              <Link to="/" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-clinical">
+              <Link to="/home" className="flex items-center space-x-2 md:space-x-3 hover:opacity-80 transition-clinical">
                   <img
                   src="/Inara_Logo.svg"
                   alt="Inara Logo"
@@ -154,7 +154,7 @@ const Header = () => {
         >
           {/* Menu Header */}
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 border-b border-border flex-shrink-0">
-            <Link to="/" onClick={closeMobileMenu} className="flex items-center space-x-2">
+            <Link to="/home" onClick={closeMobileMenu} className="flex items-center space-x-2">
               <img src="/Inara_Logo.svg" alt="Inara Logo" className="h-6 object-contain" />
               <span className="text-gray-800 text-base">X</span>
               <div>

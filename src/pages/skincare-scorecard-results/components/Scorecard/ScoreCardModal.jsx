@@ -107,17 +107,57 @@ const ScoreCardModal = ({ isOpen, onClose, analysis }) => {
     }
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'My Skincare Scorecard',
-        text: 'Check out my skincare scorecard from Inara!',
-        url: window.location.href,
-      })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
-    } else {
-      console.log('Share not supported on this browser, do it the old way.');
+  const handleShare = async () => {
+    const node = isFlipped ? backRef.current : frontRef.current;
+    if (node) {
+      try {
+        if (isFlipped) {
+          node.style.transform = 'none';
+        }
+        const dataUrl = await toPng(node, { pixelRatio: 2 });
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], 'skincare-scorecard.png', { type: blob.type });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'My Skincare Scorecard',
+            text: 'Check out my skincare scorecard from Inara!',
+          });
+          console.log('Successful share');
+        } else {
+          // Fallback to sharing the URL if files are not supported
+          if (navigator.share) {
+            navigator.share({
+              title: 'My Skincare Scorecard',
+              text: 'Check out my skincare scorecard from Inara!',
+              url: window.location.href,
+            })
+              .then(() => console.log('Successful share'))
+              .catch((error) => console.log('Error sharing', error));
+          } else {
+            console.log('Share not supported on this browser, do it the old way.');
+          }
+        }
+      } catch (err) {
+        console.error('oops, something went wrong!', err);
+        // Fallback to sharing the URL on error
+        if (navigator.share) {
+          navigator.share({
+            title: 'My Skincare Scorecard',
+            text: 'Check out my skincare scorecard from Inara!',
+            url: window.location.href,
+          })
+            .then(() => console.log('Successful share'))
+            .catch((error) => console.log('Error sharing', error));
+        } else {
+          console.log('Share not supported on this browser, do it the old way.');
+        }
+      } finally {
+        if (isFlipped) {
+          node.style.transform = '';
+        }
+      }
     }
   };
 

@@ -144,8 +144,9 @@ const TabSection = ({ analysis }) => {
             <div className="flex flex-wrap gap-3">
                 {analysis.concernAreas?.length > 0 ? (
                     analysis.concernAreas.map((area, index) => (
-                        <div key={index} 
-                            className="flex items-center gap-2 bg-gray-100 border border-gray-300 rounded-full py-1 px-3 text-sm flex-shrink-0 shadow-sm"
+                       
+                        <div key={index}
+                             className="flex items-center gap-2 bg-gray-100 border border-gray-300 rounded-lg py-1 px-3 text-sm shadow-sm break-all"
                         >
                             <span className="border border-gray-400 text-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 bg-gray-200">
                                 {index + 1}
