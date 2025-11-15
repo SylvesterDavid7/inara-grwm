@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Icon from '../../components/AppIcon';
-
 import Select from '../../components/ui/Select';
 import SectionContextMenu from '../../components/ui/SectionContextMenu';
 import ProgressMetricsCard from './components/ProgressMetricsCard';
@@ -12,208 +11,156 @@ import GoalProgressWidget from './components/GoalProgressWidget';
 import SmartInsights from './components/SmartInsights';
 import QuickActions from './components/QuickActions';
 import { useAwardPoints } from '../../hooks/useAwardPoints';
+import { useUserDataContext } from '../../contexts/UserDataContext.jsx';
+import { processUserDataForDashboard } from '../../utils/progressUtils';
+import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from '../../config';
 
 const ProgressTrackingDashboard = () => {
+  const { userData, loading, updateUserData } = useUserDataContext();
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState('30days');
   const [viewMode, setViewMode] = useState('overview');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const { awardPoints } = useAwardPoints();
-  const [photos, setPhotos] = useState({
-    before: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop",
-    after: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=400&h=300&fit=crop&brightness=1.1&contrast=1.1"
-  });
+  const photoComparisonRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  // Mock data for progress metrics
-  const progressMetrics = [
-    {
-      title: 'Overall Routine Score',
-      value: '8.4/10',
-      change: '+0.6',
-      changeType: 'positive',
-      icon: 'TrendingUp',
-      description: 'Your routine effectiveness has improved significantly'
-    },
-    {
-      title: 'Routine Consistency',
-      value: '87%',
-      change: '+12%',
-      changeType: 'positive',
-      icon: 'Calendar',
-      description: 'Great improvement in daily routine adherence'
-    },
-    {
-      title: 'Skin Improvement',
-      value: '76%',
-      change: '+8%',
-      changeType: 'positive',
-      icon: 'Sparkles',
-      description: 'Visible improvements in skin texture and clarity'
-    },
-    {
-      title: 'Product Effectiveness',
-      value: '9.1/10',
-      change: '+0.3',
-      changeType: 'positive',
-      icon: 'Star',
-      description: 'Current products are working well for your skin'
-    }
-  ];
-
-  // Mock data for progress charts
-  const routineScoreData = [
-    { date: 'Jan 1', value: 7.2 },
-    { date: 'Jan 8', value: 7.5 },
-    { date: 'Jan 15', value: 7.8 },
-    { date: 'Jan 22', value: 8.1 },
-    { date: 'Jan 29', value: 8.4 },
-    { date: 'Feb 5', value: 8.2 },
-    { date: 'Feb 12', value: 8.6 },
-    { date: 'Feb 19', value: 8.4 },
-    { date: 'Feb 26', value: 8.7 },
-    { date: 'Mar 5', value: 8.9 }
-  ];
-
-  const skinConcernData = [
-    { date: 'Jan 1', value: 65 },
-    { date: 'Jan 8', value: 62 },
-    { date: 'Jan 15', value: 58 },
-    { date: 'Jan 22', value: 55 },
-    { date: 'Jan 29', value: 52 },
-    { date: 'Feb 5', value: 48 },
-    { date: 'Feb 12', value: 45 },
-    { date: 'Feb 19', value: 42 },
-    { date: 'Feb 26', value: 38 },
-    { date: 'Mar 5', value: 35 }
-  ];
-
-  // Mock adherence data
-  const adherenceData = {
-    '2025-01-01': { completion: 95, morning: true, evening: true, productsUsed: 6, totalProducts: 6 },
-    '2025-01-02': { completion: 80, morning: true, evening: false, productsUsed: 4, totalProducts: 6 },
-    '2025-01-03': { completion: 100, morning: true, evening: true, productsUsed: 6, totalProducts: 6 },
-    '2025-01-04': { completion: 75, morning: false, evening: true, productsUsed: 4, totalProducts: 6 },
-    '2025-01-05': { completion: 90, morning: true, evening: true, productsUsed: 5, totalProducts: 6 },
-    '2025-01-06': { completion: 85, morning: true, evening: true, productsUsed: 5, totalProducts: 6 },
-    '2025-01-07': { completion: 100, morning: true, evening: true, productsUsed: 6, totalProducts: 6 },
-    '2025-01-08': { completion: 70, morning: true, evening: false, productsUsed: 4, totalProducts: 6 },
-    '2025-01-09': { completion: 95, morning: true, evening: true, productsUsed: 6, totalProducts: 6 },
-    '2025-01-10': { completion: 80, morning: false, evening: true, productsUsed: 4, totalProducts: 6 }
+  const defaultPhotos = {
+    before: '/Normal Skin.webp',
+    after: '/Sensitive Skin.webp',
   };
 
-  // Mock goals data
-  const goalsData = [
-    {
-      id: 1,
-      title: 'Reduce Acne Breakouts',
-      target: '90% reduction',
-      current: '65% reduction',
-      remaining: '25% to go',
-      progress: 72,
-      status: 'on-track',
-      deadline: 'Mar 30, 2025',
-      milestones: [
-        { title: 'First improvement noticed', date: 'Jan 15' },
-        { title: 'Significant reduction achieved', date: 'Feb 20' }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Improve Skin Hydration',
-      target: 'Optimal hydration levels',
-      current: '85% improved',
-      remaining: '15% to go',
-      progress: 85,
-      status: 'on-track',
-      deadline: 'Feb 28, 2025',
-      milestones: [
-        { title: 'Baseline hydration measured', date: 'Jan 1' },
-        { title: 'Noticeable improvement', date: 'Jan 20' }
-      ]
-    },
-    {
-      id: 3,
-      title: 'Establish Consistent Routine',
-      target: '95% adherence',
-      current: '87% adherence',
-      remaining: '8% to go',
-      progress: 92,
-      status: 'completed',
-      deadline: 'Jan 31, 2025',
-      milestones: [
-        { title: 'Daily routine established', date: 'Jan 5' },
-        { title: 'Target consistency achieved', date: 'Jan 25' }
-      ]
-    }
-  ];
+  const [photos, setPhotos] = useState(defaultPhotos);
 
-  // Mock insights data
-  const insightsData = [
-    {
-      id: 1,
-      type: 'improvement',
-      title: 'Significant Skin Texture Improvement',
-      description: `Your skin texture has improved by 35% over the past month. The combination of retinol and hyaluronic acid in your evening routine is showing excellent results.`,
-      date: '2 days ago',
-      priority: 'high',
-      metrics: [
-        { label: 'Texture Score', value: '8.7/10' },
-        { label: 'Improvement', value: '+35%' }
-      ],
-      actions: [
-        'Continue current evening routine',
-        'Consider adding vitamin C serum',
-        'Schedule progress photo next week'
-      ],
-      actionButtons: [
-        { label: 'View Details', variant: 'outline', icon: 'Eye', action: () => console.log('View details') },
-        { label: 'Share Progress', variant: 'outline', icon: 'Share2', action: () => console.log('Share') }
-      ]
-    },
-    {
-      id: 2,
-      type: 'recommendation',
-      title: 'Optimize Morning Routine Timing',
-      description: `Analysis shows your skin responds better when you apply sunscreen 15 minutes after moisturizer. Consider adjusting your morning routine timing.`,
-      date: '1 week ago',
-      priority: 'medium',
-      actions: [
-        'Wait 15 minutes between moisturizer and sunscreen',
-        'Set a timer reminder',
-        'Track effectiveness over next 2 weeks'
-      ],
-      actionButtons: [
-        { label: 'Set Reminder', variant: 'default', icon: 'Bell', action: () => console.log('Set reminder') }
-      ]
-    },
-    {
-      id: 3,
-      type: 'achievement',
-      title: 'Consistency Milestone Reached',
-      description: `Congratulations! You've maintained 90%+ routine adherence for 4 consecutive weeks. This consistency is key to achieving your skincare goals.`,
-      date: '3 days ago',priority: 'low',
-      metrics: [
-        { label: 'Streak', value: '28 days' },
-        { label: 'Adherence', value: '94%' }
-      ],
-      actionButtons: [
-        { label: 'Celebrate', variant: 'default', icon: 'Award', action: () => console.log('Celebrate') }
-      ]
+  useEffect(() => {
+    if (userData?.photos) {
+      setPhotos(userData.photos);
     }
-  ];
+  }, [userData]);
 
-  const handlePhotoUpload = (newPhoto) => {
-    setPhotos(prevPhotos => ({
-      before: prevPhotos.after,
-      after: newPhoto
-    }));
+  const dashboardData = useMemo(() => {
+    if (!userData) {
+      return {
+        progressMetrics: [],
+        routineScoreData: [],
+        skinConcernData: [],
+        adherenceData: {},
+        goalsData: [],
+        insightsData: []
+      };
+    }
+    return processUserDataForDashboard(userData, dateRange);
+  }, [userData, dateRange]);
+
+  const {
+    progressMetrics,
+    routineScoreData,
+    skinConcernData,
+    adherenceData,
+    goalsData,
+    insightsData
+  } = dashboardData;
+
+  const handlePhotoUpload = async (file) => {
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', 'progress-photos');
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      if (!response.ok) throw new Error('Cloudinary image upload failed');
+      const cloudinaryData = await response.json();
+      const downloadURL = cloudinaryData.secure_url;
+
+      const updatedPhotos = {
+        before: photos.after,
+        after: downloadURL,
+      };
+
+      setPhotos(updatedPhotos);
+      await updateUserData({ photos: updatedPhotos });
+      awardPoints('photo_uploaded');
+    } catch (error) {
+      console.error("Error uploading photo: ", error);
+      alert("Failed to upload photo. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
+
+  const handlePhotoRemove = async (photoType) => {
+    const updatedPhotos = {
+      ...photos,
+      [photoType]: defaultPhotos[photoType],
+    };
+    setPhotos(updatedPhotos);
+    await updateUserData({ photos: updatedPhotos });
+  };
+
+  const handleInsightAction = useCallback((actionId, insightId) => {
+    switch (actionId) {
+      case 'set_reminder':
+        alert('Reminder functionality to be implemented!');
+        break;
+      case 'celebrate_achievement':
+        awardPoints('milestone_achieved');
+        alert('Achievement celebrated! You earned points!');
+        break;
+      case 'view_details':
+        navigate(`/insights/${insightId}`);
+        break;
+      default:
+        console.warn(`Unknown insight action: ${actionId}`);
+    }
+  }, [awardPoints, navigate]);
+
+  const refreshInsights = useCallback(() => {
+    alert('Insights refreshed!');
+  }, []);
+
+  const handleQuickAction = useCallback((actionId) => {
+    switch (actionId) {
+      case 'log-routine':
+        navigate('/dashboard');
+        break;
+      case 'upload-photo':
+        photoComparisonRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'update-assessment':
+        navigate('/skin-assessment-questionnaire');
+        break;
+      case 'schedule-review':
+        alert('Scheduling functionality to be implemented');
+        break;
+      case 'get-support':
+        navigate('/support');
+        break;
+      default:
+        console.warn(`Unknown quick action: ${actionId}`);
+    }
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <p className="font-heading text-lg text-gray-600">Loading dashboard...</p>
+      </div>
+    );
+  }
 
   const dateRangeOptions = [
     { value: '7days', label: 'Last 7 days' },
     { value: '30days', label: 'Last 30 days' },
     { value: '90days', label: 'Last 3 months' },
-    { value: '6months', label: 'Last 6 months' },
-    { value: '1year', label: 'Last year' }
+    { value: 'all', label: 'All Time' }
   ];
 
   const viewModeOptions = [
@@ -221,7 +168,7 @@ const ProgressTrackingDashboard = () => {
     { value: 'detailed', label: 'Detailed View' },
     { value: 'comparison', label: 'Comparison' }
   ];
-
+  
   return (
     <div className="min-h-screen bg-background">
       <main className="py-6 sm:py-8 lg:py-12">
@@ -277,24 +224,29 @@ const ProgressTrackingDashboard = () => {
                 title="Routine Score Trend"
                 type="line"
                 color="#2D5A87"
+                yDomain={[0, 10]} // Set y-axis domain for score
               />
               <ProgressChart
                 data={skinConcernData}
                 title="Skin Concern Improvement"
                 type="area"
                 color="#7BA098"
+                yDomain={[0, 100]} // Set y-axis domain for percentage
               />
             </div>
 
             {/* Photo Comparison and Calendar */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" ref={photoComparisonRef}>
               <div className="lg:col-span-2">
                 <PhotoComparison
                   beforePhoto={photos.before}
                   afterPhoto={photos.after}
-                  date="March 5, 2025"
-                  notes="Significant improvement in skin texture and reduced redness. The new retinol serum is showing excellent results after 8 weeks of consistent use."
+                  date={new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  notes="Compare your progress over time. New photos are compared with your last upload."
                   onPhotoUpload={handlePhotoUpload}
+                  onPhotoRemove={handlePhotoRemove}
+                  isUploading={isUploading}
+                  defaultPhotos={defaultPhotos}
                 />
               </div>
               <div>
@@ -310,11 +262,11 @@ const ProgressTrackingDashboard = () => {
             {/* Goals and Insights */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <GoalProgressWidget goals={goalsData} />
-              <SmartInsights insights={insightsData} />
+              <SmartInsights insights={insightsData} onAction={handleInsightAction} onRefresh={refreshInsights} />
             </div>
 
             {/* Quick Actions */}
-            <QuickActions />
+            <QuickActions onAction={handleQuickAction} />
 
             {/* Navigation Links */}
             <div className="pt-8 sm:pt-12 border-t border-border">

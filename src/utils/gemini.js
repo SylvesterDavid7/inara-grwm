@@ -2,7 +2,7 @@
 // 1. **ACCURACY IMPROVEMENT:** Upgraded from Flash-preview to the latest stable Pro model for maximum reasoning and detail.
 // NOTE: For production, this MUST be moved to a backend environment (like Node.js or Firebase Functions) for security.
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20'; // Use Pro for the highest quality analysis
+const GEMINI_MODEL = 'gemini-2.5-flash'; // Use Pro for the highest quality analysis
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 // Cleans the response text by removing markdown fences (```json ... ```)

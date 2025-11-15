@@ -93,12 +93,11 @@ const UserDashboard = () => {
     if (!userData.routine) return { AM: [], PM: [], Weekly: [] };
     const dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
     const routineForDay = userData.routine[dayOfWeek];
-    const weeklyRoutine = userData.routine.Weekly || userData.routine.weekly || [];
 
     return {
       AM: routineForDay?.AM?.sort((a, b) => a.step - b.step) || [],
       PM: routineForDay?.PM?.sort((a, b) => a.step - b.step) || [],
-      Weekly: Array.isArray(weeklyRoutine) ? weeklyRoutine : weeklyRoutine.products || [],
+      Weekly: routineForDay?.Weekly?.sort((a, b) => a.step - b.step) || [],
     };
   };
 

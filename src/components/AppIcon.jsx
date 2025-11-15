@@ -5,7 +5,7 @@ import {
     RefreshCw, ChevronLeft, ChevronRight, HelpCircle, ArrowRight, Check, Download, LayoutDashboard, 
     User, Smile, AlertCircle, Thermometer, Image, Cloud, DollarSign, Box, Sun, Moon, Wallet, Camera, 
     ShieldCheck, Zap, CheckCircle, Activity, ChevronUp, ChevronDown, Trash2, Loader, Scan, 
-    Copy, AlertTriangle, Heart, ScanSearch, IndianRupee, ThumbsUp 
+    Copy, AlertTriangle, Heart, ScanSearch, IndianRupee, ThumbsUp, Info
 } from 'lucide-react';
 
 const AppIcon = ({ name, ...props }) => {
@@ -64,7 +64,8 @@ const AppIcon = ({ name, ...props }) => {
     Copy,
     AlertTriangle,
     Heart,
-    ScanSearch
+    ScanSearch,
+    Info
   };
 
   const Icon = icons[name];

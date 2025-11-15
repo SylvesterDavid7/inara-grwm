@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
 import { Checkbox } from '../../../components/ui/Checkbox';
 
-const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "" }) => {
-  const [priceRange, setPriceRange] = useState(filters?.priceRange || [0, 200]);
-  const [selectedConcerns, setSelectedConcerns] = useState(filters?.skinConcerns || []);
-  const [selectedIngredients, setSelectedIngredients] = useState(filters?.ingredients || []);
-  const [selectedBrands, setSelectedBrands] = useState(filters?.brands || []);
+const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "", products = [] }) => {
+
+  const popularBrands = React.useMemo(() => {
+    const brands = new Set(products.map(p => p.brand).filter(Boolean));
+    return Array.from(brands).sort().map(brand => ({
+      id: brand.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
+      label: brand
+    }));
+  }, [products]);
+
+  const preferredIngredients = React.useMemo(() => {
+    const ingredients = new Set(products.flatMap(p => p.keyIngredients || []).filter(Boolean));
+    return Array.from(ingredients).sort().map(ingredient => ({
+        id: ingredient.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),
+        label: ingredient
+    }));
+  }, [products]);
 
   const skinConcerns = [
     { id: 'acne', label: 'Acne & Breakouts' },
@@ -17,31 +29,10 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
     { id: 'dryness', label: 'Dryness' },
     { id: 'sensitivity', label: 'Sensitivity' },
     { id: 'hyperpigmentation', label: 'Dark Spots' },
-    { id: 'rosacea', label: 'Rosacea' },
+    { id: 'redness', label: 'Redness' },
     { id: 'oiliness', label: 'Excess Oil' },
-    { id: 'pores', label: 'Large Pores' }
-  ];
-
-  const preferredIngredients = [
-    { id: 'retinol', label: 'Retinol' },
-    { id: 'vitamin-c', label: 'Vitamin C' },
-    { id: 'niacinamide', label: 'Niacinamide' },
-    { id: 'hyaluronic-acid', label: 'Hyaluronic Acid' },
-    { id: 'salicylic-acid', label: 'Salicylic Acid' },
-    { id: 'glycolic-acid', label: 'Glycolic Acid' },
-    { id: 'ceramides', label: 'Ceramides' },
-    { id: 'peptides', label: 'Peptides' }
-  ];
-
-  const popularBrands = [
-    { id: 'cerave', label: 'CeraVe' },
-    { id: 'ordinary', label: 'The Ordinary' },
-    { id: 'paula-choice', label: "Paula\'s Choice" },
-    { id: 'skinceuticals', label: 'SkinCeuticals' },
-    { id: 'drunk-elephant', label: 'Drunk Elephant' },
-    { id: 'la-roche-posay', label: 'La Roche-Posay' },
-    { id: 'neutrogena', label: 'Neutrogena' },
-    { id: 'olay', label: 'Olay' }
+    { id: 'clogged-pores', label: 'Clogged Pores' },
+    { id: 'texture', label: 'Texture' },
   ];
 
   const sortOptions = [
@@ -53,34 +44,18 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
     { value: 'popular', label: 'Most Popular' }
   ];
 
-  const handleConcernChange = (concernId, checked) => {
-    const updated = checked
-      ? [...selectedConcerns, concernId]
-      : selectedConcerns?.filter(id => id !== concernId);
-    setSelectedConcerns(updated);
-    onFiltersChange({ ...filters, skinConcerns: updated });
-  };
-
-  const handleIngredientChange = (ingredientId, checked) => {
-    const updated = checked
-      ? [...selectedIngredients, ingredientId]
-      : selectedIngredients?.filter(id => id !== ingredientId);
-    setSelectedIngredients(updated);
-    onFiltersChange({ ...filters, ingredients: updated });
-  };
-
-  const handleBrandChange = (brandId, checked) => {
-    const updated = checked
-      ? [...selectedBrands, brandId]
-      : selectedBrands?.filter(id => id !== brandId);
-    setSelectedBrands(updated);
-    onFiltersChange({ ...filters, brands: updated });
+  const handleCheckboxChange = (filterType, value, isChecked) => {
+    const currentValues = filters?.[filterType] || [];
+    const updatedValues = isChecked
+        ? [...currentValues, value]
+        : currentValues.filter(v => v !== value);
+    onFiltersChange({ ...filters, [filterType]: updatedValues });
   };
 
   const handlePriceChange = (index, value) => {
-    const updated = [...priceRange];
-    updated[index] = parseInt(value) || 0;
-    setPriceRange(updated);
+    const currentPriceRange = filters?.priceRange || [0, 200];
+    const updated = [...currentPriceRange];
+    updated[index] = parseInt(value) || (index === 0 ? 0 : 200);
     onFiltersChange({ ...filters, priceRange: updated });
   };
 
@@ -88,16 +63,15 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
     onFiltersChange({ ...filters, sortBy: value });
   };
 
-  const clearAllFilters = () => {
-    setPriceRange([0, 200]);
-    setSelectedConcerns([]);
-    setSelectedIngredients([]);
-    setSelectedBrands([]);
-    onClearFilters();
-  };
-
-  const activeFilterCount = selectedConcerns?.length + selectedIngredients?.length + selectedBrands?.length + 
-    (priceRange?.[0] > 0 || priceRange?.[1] < 200 ? 1 : 0);
+  const priceRange = filters?.priceRange || [0, 200];
+  const activeFilterCount = (filters?.skinConcerns?.length || 0) +
+                            (filters?.ingredients?.length || 0) +
+                            (filters?.brands?.length || 0) +
+                            (filters.onSale ? 1 : 0) + 
+                            (filters.crueltyFree ? 1 : 0) + 
+                            (filters.fragranceFree ? 1 : 0) + 
+                            (filters.sampleAvailable ? 1 : 0) +
+                            (priceRange[0] > 0 || priceRange[1] < 200 ? 1 : 0);
 
   return (
     <div className={`bg-background border-r border-border h-full overflow-y-auto ${className}`}>
@@ -111,7 +85,7 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
             <Button
               variant="ghost"
               size="sm"
-              onClick={clearAllFilters}
+              onClick={onClearFilters}
               iconName="X"
               iconPosition="left"
               iconSize={14}
@@ -143,21 +117,21 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
             <Input
               type="number"
               placeholder="Min"
-              value={priceRange?.[0]}
-              onChange={(e) => handlePriceChange(0, e?.target?.value)}
+              value={priceRange[0]}
+              onChange={(e) => handlePriceChange(0, e.target.value)}
               className="flex-1"
             />
             <span className="text-muted-foreground">-</span>
             <Input
               type="number"
               placeholder="Max"
-              value={priceRange?.[1]}
-              onChange={(e) => handlePriceChange(1, e?.target?.value)}
+              value={priceRange[1]}
+              onChange={(e) => handlePriceChange(1, e.target.value)}
               className="flex-1"
             />
           </div>
           <div className="text-xs text-muted-foreground">
-            ${priceRange?.[0]} - ${priceRange?.[1]}
+            ${priceRange[0]} - ${priceRange[1]}
           </div>
         </div>
 
@@ -166,13 +140,13 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
           <h3 className="font-heading font-heading-medium text-sm text-foreground">
             Skin Concerns
           </h3>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {skinConcerns?.map((concern) => (
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {skinConcerns.map((concern) => (
               <Checkbox
-                key={concern?.id}
-                label={concern?.label}
-                checked={selectedConcerns?.includes(concern?.id)}
-                onChange={(e) => handleConcernChange(concern?.id, e?.target?.checked)}
+                key={concern.id}
+                label={concern.label}
+                checked={filters.skinConcerns?.includes(concern.id)}
+                onChange={(e) => handleCheckboxChange('skinConcerns', concern.id, e.target.checked)}
                 size="sm"
               />
             ))}
@@ -184,13 +158,13 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
           <h3 className="font-heading font-heading-medium text-sm text-foreground">
             Preferred Ingredients
           </h3>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {preferredIngredients?.map((ingredient) => (
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {preferredIngredients.map((ingredient) => (
               <Checkbox
-                key={ingredient?.id}
-                label={ingredient?.label}
-                checked={selectedIngredients?.includes(ingredient?.id)}
-                onChange={(e) => handleIngredientChange(ingredient?.id, e?.target?.checked)}
+                key={ingredient.id}
+                label={ingredient.label}
+                checked={filters.ingredients?.includes(ingredient.label)}
+                onChange={(e) => handleCheckboxChange('ingredients', ingredient.label, e.target.checked)}
                 size="sm"
               />
             ))}
@@ -202,13 +176,13 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
           <h3 className="font-heading font-heading-medium text-sm text-foreground">
             Brands
           </h3>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {popularBrands?.map((brand) => (
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {popularBrands.map((brand) => (
               <Checkbox
-                key={brand?.id}
-                label={brand?.label}
-                checked={selectedBrands?.includes(brand?.id)}
-                onChange={(e) => handleBrandChange(brand?.id, e?.target?.checked)}
+                key={brand.id}
+                label={brand.label}
+                checked={filters.brands?.includes(brand.label)}
+                onChange={(e) => handleCheckboxChange('brands', brand.label, e.target.checked)}
                 size="sm"
               />
             ))}
@@ -223,26 +197,26 @@ const FilterSidebar = ({ filters, onFiltersChange, onClearFilters, className = "
           <div className="space-y-2">
             <Checkbox
               label="Sample Available"
-              checked={filters?.sampleAvailable || false}
-              onChange={(e) => onFiltersChange({ ...filters, sampleAvailable: e?.target?.checked })}
+              checked={filters.sampleAvailable || false}
+              onChange={(e) => onFiltersChange({ ...filters, sampleAvailable: e.target.checked })}
               size="sm"
             />
             <Checkbox
               label="On Sale"
-              checked={filters?.onSale || false}
-              onChange={(e) => onFiltersChange({ ...filters, onSale: e?.target?.checked })}
+              checked={filters.onSale || false}
+              onChange={(e) => onFiltersChange({ ...filters, onSale: e.target.checked })}
               size="sm"
             />
             <Checkbox
               label="Cruelty-Free"
-              checked={filters?.crueltyFree || false}
-              onChange={(e) => onFiltersChange({ ...filters, crueltyFree: e?.target?.checked })}
+              checked={filters.crueltyFree || false}
+              onChange={(e) => onFiltersChange({ ...filters, crueltyFree: e.target.checked })}
               size="sm"
             />
             <Checkbox
               label="Fragrance-Free"
-              checked={filters?.fragranceFree || false}
-              onChange={(e) => onFiltersChange({ ...filters, fragranceFree: e?.target?.checked })}
+              checked={filters.fragranceFree || false}
+              onChange={(e) => onFiltersChange({ ...filters, fragranceFree: e.target.checked })}
               size="sm"
             />
           </div>

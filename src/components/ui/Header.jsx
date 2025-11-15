@@ -37,7 +37,8 @@ const Header = () => {
       label: 'Learn',
       items: [
         { label: 'Ingredients', path: '/ingredient-education-hub', icon: 'BookOpen' },
-        { label: 'Skincare 101', path: '/skincare-101', icon: 'Grid3X3' }
+        { label: 'Skincare 101', path: '/skincare-101', icon: 'Grid3X3' },
+        { label: 'About Us', path: '/about', icon: 'Info' }
       ]
     }
   ];

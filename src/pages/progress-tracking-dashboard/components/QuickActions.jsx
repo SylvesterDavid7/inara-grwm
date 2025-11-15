@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 
-const QuickActions = ({ className = "" }) => {
+const QuickActions = ({ onAction, className = "" }) => {
   const quickActions = [
     {
       id: 'log-routine',
@@ -10,7 +10,6 @@ const QuickActions = ({ className = "" }) => {
       description: 'Record your morning and evening skincare routine',
       icon: 'Plus',
       color: 'bg-primary text-primary-foreground',
-      action: () => console.log('Log routine')
     },
     {
       id: 'upload-photo',
@@ -18,7 +17,6 @@ const QuickActions = ({ className = "" }) => {
       description: 'Take a new progress photo to track improvements',
       icon: 'Camera',
       color: 'bg-accent text-accent-foreground',
-      action: () => console.log('Upload photo')
     },
     {
       id: 'update-assessment',
@@ -26,7 +24,6 @@ const QuickActions = ({ className = "" }) => {
       description: 'Reassess your current skin condition and concerns',
       icon: 'ClipboardList',
       color: 'bg-success text-success-foreground',
-      action: () => console.log('Update assessment')
     },
     {
       id: 'schedule-review',
@@ -34,7 +31,6 @@ const QuickActions = ({ className = "" }) => {
       description: 'Set up your next routine evaluation appointment',
       icon: 'Calendar',
       color: 'bg-warning text-warning-foreground',
-      action: () => console.log('Schedule review')
     }
   ];
 
@@ -47,7 +43,7 @@ const QuickActions = ({ className = "" }) => {
         {quickActions?.map((action) => (
           <button
             key={action?.id}
-            onClick={action?.action}
+            onClick={() => onAction(action.id)}
             className="group text-left p-3 sm:p-4 rounded-clinical border border-border hover:border-primary/20 hover:shadow-clinical transition-clinical bg-background hover:bg-secondary/50"
           >
             <div className="flex items-start space-x-3 sm:space-x-4">
@@ -79,7 +75,14 @@ const QuickActions = ({ className = "" }) => {
           <span className="font-body font-body-medium text-sm text-card-foreground text-center sm:text-left">
             Need help with your routine?
           </span>
-          <Button variant="outline" size="sm" iconName="HelpCircle" iconSize={16} className="w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            iconName="HelpCircle" 
+            iconSize={16} 
+            className="w-full sm:w-auto"
+            onClick={() => onAction('get-support')}
+          >
             Get Support
           </Button>
         </div>

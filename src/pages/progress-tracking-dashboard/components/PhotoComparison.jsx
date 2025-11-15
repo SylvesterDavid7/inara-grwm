@@ -1,152 +1,150 @@
 import React, { useState, useRef } from 'react';
 import Icon from '../../../components/AppIcon';
-import Image from '../../../components/AppImage';
-import Button from '../../../components/ui/Button';
 
-const PhotoComparison = ({ beforePhoto, afterPhoto, date, notes, className = "", onPhotoUpload }) => {
+const PhotoComparison = ({
+  beforePhoto,
+  afterPhoto,
+  date,
+  notes,
+  onPhotoUpload,
+  onPhotoRemove,
+  isUploading,
+  defaultPhotos,
+}) => {
   const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleSliderChange = (e) => {
-    const rect = e?.currentTarget?.getBoundingClientRect();
-    const x = e?.clientX - rect?.left;
-    const percentage = (x / rect?.width) * 100;
-    setSliderPosition(Math.max(0, Math.min(100, percentage)));
+    setSliderPosition(e.target.value);
   };
 
-  const handleMouseDown = () => {
-    setIsDragging(true);
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      handleSliderChange(e);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      onPhotoUpload(file);
     }
   };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && onPhotoUpload) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onPhotoUpload(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const handleRemovePhoto = (photoType) => {
+    if (onPhotoRemove) {
+      onPhotoRemove(photoType);
     }
+  };
+
+  const isDefaultPhoto = (photoType) => {
+    return defaultPhotos && defaultPhotos[photoType] === (photoType === 'before' ? beforePhoto : afterPhoto);
   };
 
   return (
-    <div className={`bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical ${className}`}>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4">
-        <h3 className="font-heading font-heading-semibold text-lg text-card-foreground mb-2 sm:mb-0">
-          Progress Comparison
-        </h3>
-        <div className="flex items-center space-x-2">
-          <span className="font-caption font-caption-normal text-sm text-muted-foreground">
-            {date}
-          </span>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            className="hidden"
-            accept="image/*"
-          />
-          <Button variant="outline" size="sm" iconName="Upload" iconSize={16} onClick={() => fileInputRef.current.click()}>
-            Upload New
-          </Button>
-        </div>
-      </div>
-      {/* Photo Comparison Slider */}
-      <div className="relative mb-4">
-        <div 
-          className="relative w-full h-56 sm:h-64 md:h-80 overflow-hidden rounded-clinical cursor-col-resize"
-          onMouseMove={handleMouseMove}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          {/* Before Photo */}
-          <div className="absolute inset-0">
-            <Image
-              src={beforePhoto}
-              alt="Before progress photo"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-background/90 px-2 py-1 sm:px-3 rounded-clinical">
-              <span className="font-body font-body-medium text-xs sm:text-sm text-foreground">Before</span>
-            </div>
-          </div>
-
-          {/* After Photo */}
-          <div 
-            className="absolute inset-0 overflow-hidden"
-            style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
-          >
-            <Image
-              src={afterPhoto}
-              alt="After progress photo"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-background/90 px-2 py-1 sm:px-3 rounded-clinical">
-              <span className="font-body font-body-medium text-xs sm:text-sm text-foreground">After</span>
-            </div>
-          </div>
-
-          {/* Slider Line */}
-          <div 
-            className="absolute top-0 bottom-0 w-0.5 bg-primary cursor-col-resize z-10"
-            style={{ left: `${sliderPosition}%` }}
-          >
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-clinical-lg">
-              <Icon name="Move" size={16} className="text-primary-foreground" />
-            </div>
+    <div 
+        className="bg-card border border-border rounded-clinical p-4 sm:p-6 shadow-clinical relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+    >
+      {isUploading && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10 rounded-clinical">
+          <div className="text-white text-center">
+            <Icon name="Loader" className="animate-spin h-8 w-8 mx-auto" />
+            <p className="mt-2">Uploading...</p>
           </div>
         </div>
-
-        {/* Slider Control */}
-        <div className="mt-4">
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={sliderPosition}
-            onChange={(e) => setSliderPosition(e?.target?.value)}
-            className="w-full h-2 bg-muted rounded-clinical appearance-none cursor-pointer slider"
-            style={{
-              background: `linear-gradient(to right, #2D5A87 0%, #2D5A87 ${sliderPosition}%, #F8F9FA ${sliderPosition}%, #F8F9FA 100%)`
-            }}
-          />
-        </div>
-      </div>
-      {/* Notes Section */}
-      {notes && (
-        <div className="bg-muted rounded-clinical p-3 sm:p-4">
-          <h4 className="font-body font-body-medium text-sm text-foreground mb-2">Progress Notes</h4>
-          <p className="font-body font-body-normal text-sm text-muted-foreground">
+      )}
+      <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
+        <div className="mb-4 sm:mb-0">
+          <h3 className="font-heading font-heading-semibold text-lg text-card-foreground">
+            Progress Comparison
+          </h3>
+          <p className="font-caption font-caption-normal text-sm text-muted-foreground mt-1">
             {notes}
           </p>
         </div>
-      )}
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between mt-4 pt-4 border-t border-border">
-        <div className="flex items-center space-x-2 mb-2 sm:mb-0">
-          <Button variant="outline" size="sm" iconName="Download" iconSize={16} className="flex-grow sm:flex-grow-0">
-            Export
-          </Button>
-          <Button variant="outline" size="sm" iconName="Share2" iconSize={16} className="flex-grow sm:flex-grow-0">
-            Share
-          </Button>
+        <div className="flex items-center space-x-2 self-start sm:self-center">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept="image/*"
+            disabled={isUploading}
+          />
+          <button
+            onClick={handleUploadClick}
+            disabled={isUploading}
+            className="flex items-center justify-center h-9 px-4 bg-primary text-primary-foreground rounded-md text-sm font-body-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+          >
+            <Icon name="Upload" size={16} className="mr-2" />
+            Upload
+          </button>
         </div>
-        <Button variant="outline" size="sm" iconName="Edit3" iconSize={16}>
-          Add Notes
-        </Button>
       </div>
+
+      <div className="relative w-full aspect-[4/3] sm:aspect-video select-none overflow-hidden rounded-lg">
+        <div className="absolute inset-0 w-full h-full">
+          <img
+            src={beforePhoto}
+            alt="Before"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          />
+          <div
+            className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none"
+            style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+          >
+            <img
+              src={afterPhoto}
+              alt="After"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            />
+          </div>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={sliderPosition}
+          onChange={handleSliderChange}
+          className="absolute inset-0 w-full h-full cursor-pointer opacity-0"
+          disabled={isUploading}
+        />
+        <div
+          className="absolute top-0 bottom-0 bg-white w-1 pointer-events-none"
+          style={{ left: `${sliderPosition}%` }}
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg">
+            <Icon name="ChevronsLeftRight" size={16} className="text-gray-600" />
+          </div>
+        </div>
+        
+        {isHovered && !isUploading && (
+            <>
+                {!isDefaultPhoto('before') && (
+                    <button
+                        onClick={() => handleRemovePhoto('before')}
+                        className="absolute top-2 left-2 bg-red-500 text-white rounded-full p-1.5 transition-opacity"
+                        aria-label="Remove before photo"
+                    >
+                        <Icon name="Trash2" size={16} />
+                    </button>
+                )}
+                {!isDefaultPhoto('after') && (
+                    <button
+                        onClick={() => handleRemovePhoto('after')}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 transition-opacity"
+                        aria-label="Remove after photo"
+                    >
+                        <Icon name="Trash2" size={16} />
+                    </button>
+                )}
+            </>
+        )}
+      </div>
+      <p className="text-xs text-muted-foreground mt-4 text-center">
+        Last updated: {date}
+      </p>
     </div>
   );
 };

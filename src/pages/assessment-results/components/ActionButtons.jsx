@@ -31,20 +31,32 @@ const ActionButtons = ({ analysis, assessment }) => {
     days.forEach(day => {
         routine[day] = {
             AM: [...amProducts],
-            PM: [...pmProducts]
+            PM: [...pmProducts],
+            Weekly: []
         };
     });
 
-    if (analysis.weeklyRoutine && analysis.weeklyRoutine.products) {
-        const weeklyDays = ['Wednesday', 'Sunday'];
-        analysis.weeklyRoutine.products.forEach(product => {
-            weeklyDays.forEach(day => {
-                if (routine[day] && routine[day].PM) {
-                    const nextStep = routine[day].PM.length > 0 ? Math.max(...routine[day].PM.map(p => p.step)) + 1 : 1;
-                    routine[day].PM.push({ ...product, step: nextStep });
+    if (analysis.weeklyRoutine && analysis.weeklyRoutine.products && analysis.weeklyRoutine.products.length > 0) {
+        const weeklyProducts = analysis.weeklyRoutine.products;
+        const numWeeklyProducts = weeklyProducts.length;
+        
+        if (numWeeklyProducts === 1) {
+            // Assign to Wednesday
+            const day = days[2];
+            routine[day].Weekly.push({ ...weeklyProducts[0], step: 1 });
+        } else if (numWeeklyProducts > 1) {
+            // Distribute products evenly, starting from Monday
+            const interval = Math.floor(7 / numWeeklyProducts);
+            let currentDayIndex = 0; 
+
+            weeklyProducts.forEach((product, index) => {
+                if(currentDayIndex < 7) {
+                    const day = days[currentDayIndex];
+                    routine[day].Weekly.push({ ...product, step: index + 1 });
+                    currentDayIndex += interval;
                 }
             });
-        });
+        }
     }
 
     return routine;

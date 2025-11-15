@@ -43,7 +43,7 @@ export const UserDataProvider = ({ children }) => {
             setIsAdmin(adminEmails.includes(completeUserData.email));
           } else {
             // If the user document doesn't exist, create it
-            const newUser = {
+            let newUser = {
               ...defaultData,
               email: authUser.email,
               uid: authUser.uid,
@@ -51,6 +51,32 @@ export const UserDataProvider = ({ children }) => {
               photoURL: authUser.photoURL,
               createdAt: serverTimestamp(),
             };
+
+            // *** ADD DEMO DATA FOR THE SPECIFIC USER ***
+            if (authUser.email === 'rize@inaragroups.com') {
+              newUser = {
+                ...newUser,
+                points: 1500,
+                checkInStreak: 7,
+                totalCheckIns: 25,
+                lastCheckIn: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
+                isAdmin: true, // Also make them an admin
+                routine: {
+                  am: ['Cleanser', 'Toner', 'Vitamin C Serum', 'Moisturizer', 'Sunscreen'],
+                  pm: ['Cleanser', 'Exfoliant', 'Retinol Serum', 'Night Cream'],
+                },
+                progress: [
+                  { date: '2024-07-01', photo: '/public/assets/images/no_image.png', notes: 'Skin feels hydrated.' },
+                  { date: '2024-07-08', photo: '/public/assets/images/no_image.png', notes: 'Noticing a reduction in redness.' },
+                  { date: '2024-07-15', photo: '/public/assets/images/no_image.png', notes: 'Texture seems to be improving.' },
+                ],
+                dashboard: {
+                  skinConcerns: ['Acne', 'Redness', 'Uneven Texture'],
+                  currentGoals: ['Reduce breakouts', 'Improve skin tone'],
+                }
+              };
+            }
+
             await setDoc(userRef, newUser);
             // The snapshot listener will automatically update the state with the new user data
           }

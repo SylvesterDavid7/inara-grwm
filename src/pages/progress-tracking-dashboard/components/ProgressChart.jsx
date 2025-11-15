@@ -1,15 +1,15 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
-const ProgressChart = ({ data, title, type = 'line', color = '#2D5A87', className = "" }) => {
+const ProgressChart = ({ data, title, type = 'line', color = '#2D5A87', yDomain = [0, 10], className = "" }) => {
   const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload?.length) {
+    if (active && payload && payload?.length && payload[0].value !== null) {
       return (
         <div className="bg-popover border border-border rounded-clinical p-3 shadow-clinical-lg">
           <p className="font-body font-body-medium text-sm text-popover-foreground mb-1">{label}</p>
           {payload?.map((entry, index) => (
             <p key={index} className="font-data font-data-normal text-sm" style={{ color: entry?.color }}>
-              {entry?.name}: {entry?.value}
+              {entry?.name}: {entry?.value?.toFixed(1)}
             </p>
           ))}
         </div>
@@ -18,58 +18,44 @@ const ProgressChart = ({ data, title, type = 'line', color = '#2D5A87', classNam
     return null;
   };
 
-  const renderChart = () => {
-    if (type === 'area') {
-      return (
-        <AreaChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-          <XAxis 
-            dataKey="date" 
-            tick={{ fontSize: 10, fill: '#6B7280' }}
-            axisLine={{ stroke: '#E5E7EB' }}
-            tickLine={{ stroke: '#E5E7EB' }}
-          />
-          <YAxis 
-            tick={{ fontSize: 10, fill: '#6B7280' }}
-            axisLine={{ stroke: '#E5E7EB' }}
-            tickLine={{ stroke: '#E5E7EB' }}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Area 
-            type="monotone" 
-            dataKey="value" 
-            stroke={color} 
-            fill={`${color}20`}
-            strokeWidth={2}
-          />
-        </AreaChart>
-      );
-    }
+  // Check if there is any data to display in the chart
+  const hasData = data.some(item => item.value !== null);
 
+  const renderChart = () => {
+    const ChartComponent = type === 'area' ? AreaChart : LineChart;
+    const ChartElement = type === 'area' ? Area : Line;
+    
     return (
-      <LineChart data={data}>
+      <ChartComponent data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
         <XAxis 
           dataKey="date" 
           tick={{ fontSize: 10, fill: '#6B7280' }}
           axisLine={{ stroke: '#E5E7EB' }}
           tickLine={{ stroke: '#E5E7EB' }}
+          interval="preserveStartEnd"
+          padding={{ left: 10, right: 10 }}
         />
         <YAxis 
           tick={{ fontSize: 10, fill: '#6B7280' }}
           axisLine={{ stroke: '#E5E7EB' }}
           tickLine={{ stroke: '#E5E7EB' }}
+          domain={yDomain} // Use the yDomain prop here
         />
-        <Tooltip content={<CustomTooltip />} />
-        <Line 
-          type="monotone" 
-          dataKey="value" 
-          stroke={color} 
-          strokeWidth={2}
-          dot={{ fill: color, strokeWidth: 1.5, r: 3 }}
-          activeDot={{ r: 5, stroke: color, strokeWidth: 2 }}
-        />
-      </LineChart>
+        {hasData && <Tooltip content={<CustomTooltip />} />}
+        {hasData && (
+          <ChartElement
+            type="monotone"
+            dataKey="value"
+            stroke={color}
+            fill={type === 'area' ? `${color}20` : 'none'}
+            strokeWidth={2}
+            dot={type === 'line' ? { fill: color, strokeWidth: 1.5, r: 3 } : false}
+            activeDot={type === 'line' ? { r: 5, stroke: color, strokeWidth: 2 } : undefined}
+            connectNulls={false}
+          />
+        )}
+      </ChartComponent>
     );
   };
 

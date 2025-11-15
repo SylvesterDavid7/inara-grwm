@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes as RouterRoutes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
@@ -40,6 +39,8 @@ import DermaScanPage from './pages/derma-scan';
 import GateRoute from './components/GateRoute';
 import SkincareBasicsQuiz from './pages/quizzes/SkincareBasicsQuiz';
 import IngredientKnowledgeQuiz from './pages/quizzes/IngredientKnowledgeQuiz';
+import SupportPage from './pages/support';
+import AboutPage from './pages/AboutPage';
 
 const Routes = () => {
   return (
@@ -57,6 +58,7 @@ const Routes = () => {
         <Route element={<GateRoute />}>
           <Route element={<Layout />}>
             <Route path="/home" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route element={<PrivateRoute />}>
               <Route element={<AdminRoute />}>
                 <Route path="/product-recommendations" element={<ProductRecommendations />} />
@@ -78,6 +80,7 @@ const Routes = () => {
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path="/quizzes/skincare-basics" element={<SkincareBasicsQuiz />} />
               <Route path="/quizzes/ingredient-knowledge" element={<IngredientKnowledgeQuiz />} />
+              <Route path="/support" element={<SupportPage />} />
             </Route>
           </Route>
 
